@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System;
-using Microsoft.VisualBasic;
 using System.Windows.Forms;
-using mRemoteNG.My;
 using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.App;
 

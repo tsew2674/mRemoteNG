@@ -14,32 +14,37 @@ namespace mRemoteNG.Config.Settings
 {
     public class SettingsSaver
     {
-        public static void SaveSettings()
+        private frmMain _parentForm;
+        public SettingsSaver(frmMain parentForm)
+        {
+            _parentForm = parentForm;
+        }
+
+        public void SaveSettings()
         {
             try
             {
-                var with1 = frmMain.Default;
-                var windowPlacement = new WindowPlacement(frmMain.Default);
-                if (with1.WindowState == FormWindowState.Minimized & windowPlacement.RestoreToMaximized)
+                var windowPlacement = new WindowPlacement(_parentForm);
+                if (_parentForm.WindowState == FormWindowState.Minimized & windowPlacement.RestoreToMaximized)
                 {
-                    with1.Opacity = 0;
-                    with1.WindowState = FormWindowState.Maximized;
+                    _parentForm.Opacity = 0;
+                    _parentForm.WindowState = FormWindowState.Maximized;
                 }
 
-                mRemoteNG.Settings.Default.MainFormLocation = with1.Location;
-                mRemoteNG.Settings.Default.MainFormSize = with1.Size;
+                mRemoteNG.Settings.Default.MainFormLocation = _parentForm.Location;
+                mRemoteNG.Settings.Default.MainFormSize = _parentForm.Size;
 
-                if (with1.WindowState != FormWindowState.Normal)
+                if (_parentForm.WindowState != FormWindowState.Normal)
                 {
-                    mRemoteNG.Settings.Default.MainFormRestoreLocation = with1.RestoreBounds.Location;
-                    mRemoteNG.Settings.Default.MainFormRestoreSize = with1.RestoreBounds.Size;
+                    mRemoteNG.Settings.Default.MainFormRestoreLocation = _parentForm.RestoreBounds.Location;
+                    mRemoteNG.Settings.Default.MainFormRestoreSize = _parentForm.RestoreBounds.Size;
                 }
 
-                mRemoteNG.Settings.Default.MainFormState = with1.WindowState;
+                mRemoteNG.Settings.Default.MainFormState = _parentForm.WindowState;
 
-                if (with1.Fullscreen != null)
+                if (_parentForm.Fullscreen != null)
                 {
-                    mRemoteNG.Settings.Default.MainFormKiosk = with1.Fullscreen.Value;
+                    mRemoteNG.Settings.Default.MainFormKiosk = _parentForm.Fullscreen.Value;
                 }
 
                 mRemoteNG.Settings.Default.FirstStart = false;
@@ -47,27 +52,27 @@ namespace mRemoteNG.Config.Settings
                 mRemoteNG.Settings.Default.ResetToolbars = false;
                 mRemoteNG.Settings.Default.NoReconnect = false;
 
-                mRemoteNG.Settings.Default.ExtAppsTBLocation = with1.tsExternalTools.Location;
-                if (with1.tsExternalTools.Parent != null)
+                mRemoteNG.Settings.Default.ExtAppsTBLocation = _parentForm.tsExternalTools.Location;
+                if (_parentForm.tsExternalTools.Parent != null)
                 {
-                    mRemoteNG.Settings.Default.ExtAppsTBParentDock = with1.tsExternalTools.Parent.Dock.ToString();
+                    mRemoteNG.Settings.Default.ExtAppsTBParentDock = _parentForm.tsExternalTools.Parent.Dock.ToString();
                 }
-                mRemoteNG.Settings.Default.ExtAppsTBVisible = with1.tsExternalTools.Visible;
-                mRemoteNG.Settings.Default.ExtAppsTBShowText = with1.cMenToolbarShowText.Checked;
+                mRemoteNG.Settings.Default.ExtAppsTBVisible = _parentForm.tsExternalTools.Visible;
+                mRemoteNG.Settings.Default.ExtAppsTBShowText = _parentForm.cMenToolbarShowText.Checked;
 
-                mRemoteNG.Settings.Default.QuickyTBLocation = with1.tsQuickConnect.Location;
-                if (with1.tsQuickConnect.Parent != null)
+                mRemoteNG.Settings.Default.QuickyTBLocation = _parentForm.tsQuickConnect.Location;
+                if (_parentForm.tsQuickConnect.Parent != null)
                 {
-                    mRemoteNG.Settings.Default.QuickyTBParentDock = with1.tsQuickConnect.Parent.Dock.ToString();
+                    mRemoteNG.Settings.Default.QuickyTBParentDock = _parentForm.tsQuickConnect.Parent.Dock.ToString();
                 }
-                mRemoteNG.Settings.Default.QuickyTBVisible = with1.tsQuickConnect.Visible;
+                mRemoteNG.Settings.Default.QuickyTBVisible = _parentForm.tsQuickConnect.Visible;
 
                 mRemoteNG.Settings.Default.ConDefaultPassword =
                     Crypt.Encrypt(Convert.ToString(mRemoteNG.Settings.Default.ConDefaultPassword), GeneralAppInfo.EncryptionKey);
 
                 mRemoteNG.Settings.Default.Save();
 
-                SavePanelsToXML();
+                SavePanelsToXml();
                 SaveExternalAppsToXML();
             }
             catch (Exception ex)
@@ -77,7 +82,7 @@ namespace mRemoteNG.Config.Settings
             }
         }
 
-        public static void SavePanelsToXML()
+        public void SavePanelsToXml()
         {
             try
             {
@@ -86,7 +91,7 @@ namespace mRemoteNG.Config.Settings
                     Directory.CreateDirectory(SettingsFileInfo.SettingsPath);
                 }
 
-                frmMain.Default.pnlDock.SaveAsXml(SettingsFileInfo.SettingsPath + "\\" + SettingsFileInfo.LayoutFileName);
+                _parentForm.pnlDock.SaveAsXml(SettingsFileInfo.SettingsPath + "\\" + SettingsFileInfo.LayoutFileName);
             }
             catch (Exception ex)
             {

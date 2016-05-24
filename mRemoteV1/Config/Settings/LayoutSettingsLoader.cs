@@ -10,11 +10,11 @@ namespace mRemoteNG.Config.Settings
 {
     public class LayoutSettingsLoader
     {
-        private frmMain _MainForm;
+        private frmMain _mainForm;
 
         public LayoutSettingsLoader(frmMain MainForm)
         {
-            _MainForm = MainForm;
+            _mainForm = MainForm;
         }
 
         public void LoadPanelsFromXML()
@@ -25,9 +25,9 @@ namespace mRemoteNG.Config.Settings
                 Windows.configPanel = null;
                 Windows.errorsPanel = null;
 
-                while (_MainForm.pnlDock.Contents.Count > 0)
+                while (_mainForm.pnlDock.Contents.Count > 0)
                 {
-                    DockContent dc = (DockContent)_MainForm.pnlDock.Contents[0];
+                    DockContent dc = (DockContent)_mainForm.pnlDock.Contents[0];
                     dc.Close();
                 }
 
@@ -37,17 +37,17 @@ namespace mRemoteNG.Config.Settings
                 string newPath = SettingsFileInfo.SettingsPath + "\\" + SettingsFileInfo.LayoutFileName;
                 if (File.Exists(newPath))
                 {
-                    _MainForm.pnlDock.LoadFromXml(newPath, GetContentFromPersistString);
+                    _mainForm.pnlDock.LoadFromXml(newPath, GetContentFromPersistString);
 #if !PORTABLE
 				}
 				else if (File.Exists(oldPath))
 				{
-					_MainForm.pnlDock.LoadFromXml(oldPath, GetContentFromPersistString);
+					_mainForm.pnlDock.LoadFromXml(oldPath, GetContentFromPersistString);
 #endif
                 }
                 else
                 {
-                    Startup.SetDefaultLayout();
+                    _mainForm.SetDefaultLayout();
                 }
             }
             catch (Exception ex)

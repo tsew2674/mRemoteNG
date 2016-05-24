@@ -4,6 +4,7 @@ using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Forms.OptionsPages;
 using mRemoteNG.UI.Window;
 using System;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace mRemoteNG.App
@@ -41,7 +42,7 @@ namespace mRemoteNG.App
         public static AnnouncementWindow AnnouncementForm;
         public static DockContent AnnouncementPanel = new DockContent();
 
-        public static void Show(WindowType windowType, bool portScanImport = false)
+        public static void Show(WindowType windowType, DockPanel dockPanel, bool portScanImport = false)
         {
             try
             {
@@ -52,7 +53,7 @@ namespace mRemoteNG.App
                         aboutForm = new AboutWindow(aboutPanel);
                         aboutPanel = aboutForm;
                     }
-                    aboutForm.Show(frmMain.Default.pnlDock);
+                    aboutForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.ActiveDirectoryImport))
                 {
@@ -61,20 +62,20 @@ namespace mRemoteNG.App
                         adimportForm = new ActiveDirectoryImportWindow(adimportPanel);
                         adimportPanel = adimportForm;
                     }
-                    adimportPanel.Show(frmMain.Default.pnlDock);
+                    adimportPanel.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.Options))
                 {
                     using (var optionsForm = new frmOptions())
                     {
-                        optionsForm.ShowDialog(frmMain.Default.pnlDock);
+                        optionsForm.ShowDialog(dockPanel);
                     }
                 }
                 else if (windowType.Equals(WindowType.SSHTransfer))
                 {
                     sshtransferForm = new SSHTransferWindow(sshtransferPanel);
                     sshtransferPanel = sshtransferForm;
-                    sshtransferForm.Show(frmMain.Default.pnlDock);
+                    sshtransferForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.Update))
                 {
@@ -83,7 +84,7 @@ namespace mRemoteNG.App
                         updateForm = new UpdateWindow(updatePanel);
                         updatePanel = updateForm;
                     }
-                    updateForm.Show(frmMain.Default.pnlDock);
+                    updateForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.Help))
                 {
@@ -92,7 +93,7 @@ namespace mRemoteNG.App
                         helpForm = new HelpWindow(helpPanel);
                         helpPanel = helpForm;
                     }
-                    helpForm.Show(frmMain.Default.pnlDock);
+                    helpForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.ExternalApps))
                 {
@@ -101,13 +102,13 @@ namespace mRemoteNG.App
                         externalappsForm = new ExternalToolsWindow(externalappsPanel);
                         externalappsPanel = externalappsForm;
                     }
-                    externalappsForm.Show(frmMain.Default.pnlDock);
+                    externalappsForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.PortScan))
                 {
                     portscanForm = new PortScanWindow(portscanPanel, portScanImport);
                     portscanPanel = portscanForm;
-                    portscanForm.Show(frmMain.Default.pnlDock);
+                    portscanForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.UltraVNCSC))
                 {
@@ -116,7 +117,7 @@ namespace mRemoteNG.App
                         ultravncscForm = new UltraVNCWindow(ultravncscPanel);
                         ultravncscPanel = ultravncscForm;
                     }
-                    ultravncscForm.Show(frmMain.Default.pnlDock);
+                    ultravncscForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.ComponentsCheck))
                 {
@@ -125,7 +126,7 @@ namespace mRemoteNG.App
                         componentscheckForm = new ComponentsCheckWindow(componentscheckPanel);
                         componentscheckPanel = componentscheckForm;
                     }
-                    componentscheckForm.Show(frmMain.Default.pnlDock);
+                    componentscheckForm.Show(dockPanel);
                 }
                 else if (windowType.Equals(WindowType.Announcement))
                 {
@@ -134,7 +135,7 @@ namespace mRemoteNG.App
                         AnnouncementForm = new AnnouncementWindow(AnnouncementPanel);
                         AnnouncementPanel = AnnouncementForm;
                     }
-                    AnnouncementForm.Show(frmMain.Default.pnlDock);
+                    AnnouncementForm.Show(dockPanel);
                 }
             }
             catch (Exception ex)

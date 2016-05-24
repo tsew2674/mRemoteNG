@@ -1,10 +1,8 @@
 using System;
-using Microsoft.VisualBasic;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using mRemoteNG.App;
-using mRemoteNG.My;
 
 
 namespace mRemoteNG.UI.Window

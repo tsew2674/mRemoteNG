@@ -26,15 +26,15 @@ namespace mRemoteNG.UI.Forms
     {
         #region Private Variables
         private static clipboardchangeEventHandler clipboardchangeEvent;
-        private bool _inSizeMove = false;
-        private bool _inMouseActivate = false;
+        private bool _inSizeMove;
+        private bool _inMouseActivate;
         private IntPtr fpChainedWindowHandle;
         private int[] SysMenSubItems = new int[51];
-	    private bool _isClosing = false;
-        private bool _usingSqlServer = false;
-        private string _connectionsFileName = null;
+	    private bool _isClosing;
+        private bool _usingSqlServer;
+        private string _connectionsFileName;
         private bool _showFullPathInTitle;
-        private ConnectionInfo _selectedConnection = null;
+        private ConnectionInfo _selectedConnection;
         public MiscTools.Fullscreen _fullscreen;
         #endregion
 
@@ -43,39 +43,6 @@ namespace mRemoteNG.UI.Forms
 		{
 			_showFullPathInTitle = Settings.Default.ShowCompleteConsPathInTitle;
 			InitializeComponent();
-			//Added to support default instance behavour in C#. This should be removed at the earliest opportunity.
-            if (_defaultInstance == null)
-                _defaultInstance = this;
-		}
-        #endregion
-
-        #region Default Instance
-        private static frmMain _defaultInstance;
-		
-		/// <summary>
-		/// Added by the VB.Net to C# Converter to support default instance behavour in C#
-		/// </summary>
-        public static frmMain Default
-		{
-			get
-			{
-				if (_defaultInstance == null)
-				{
-					_defaultInstance = new frmMain();
-					_defaultInstance.FormClosed += defaultInstance_FormClosed;
-				}
-				
-				return _defaultInstance;
-			}
-			set
-			{
-				_defaultInstance = value;
-			}
-		}
-		
-		static void defaultInstance_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			_defaultInstance = null;
 		}
         #endregion
 
@@ -193,7 +160,7 @@ namespace mRemoteNG.UI.Forms
 			Config.Putty.Sessions.StartWatcher();
 			if (Settings.Default.StartupComponentsCheck)
 			{
-                Windows.Show(WindowType.ComponentsCheck);
+                Windows.Show(WindowType.ComponentsCheck, pnlDock);
 			}
 
             ApplySpecialSettingsForPortableVersion();
@@ -352,6 +319,11 @@ namespace mRemoteNG.UI.Forms
 //									}
 		}
 
+        private void Cleanup()
+        {
+            Config.Putty.Sessions.StopWatcher();
+        }
+
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
 		{
             if (!(Runtime.WindowList == null || Runtime.WindowList.Count == 0))
@@ -379,7 +351,7 @@ namespace mRemoteNG.UI.Forms
 				}
 			}
 
-            Shutdown.Cleanup();
+            Cleanup();
 									
 			_isClosing = true;
 
@@ -391,7 +363,7 @@ namespace mRemoteNG.UI.Forms
 				}
 			}
 
-            Shutdown.StartUpdate();
+            //Shutdown.StartUpdate();
 									
 			Debug.Print("[END] - " + Convert.ToString(DateTime.Now, CultureInfo.InvariantCulture));
 		}
@@ -627,14 +599,27 @@ namespace mRemoteNG.UI.Forms
             Windows.Show(WindowType.PortScan, true);
 		}
 
-        private static void mMenFileExport_Click(object sender, EventArgs e)
+        private void mMenFileExport_Click(object sender, EventArgs e)
 		{
-            Export.ExportToFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            ExportToFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
 		}
+
+        private void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                Runtime.MessageCollector.AddExceptionMessage("App.Export.ExportToFile() failed.", ex, logOnly: true);
+            }
+        }
 
         private static void mMenFileExit_Click(object sender, EventArgs e)
 		{
-            Shutdown.Quit();
+            //Shutdown.Quit();
+            //TODO:Deal with quitting the application right here
 		}
         #endregion
 
@@ -745,9 +730,28 @@ namespace mRemoteNG.UI.Forms
             var msgBoxResult = MessageBox.Show(Language.strConfirmResetLayout, "", MessageBoxButtons.YesNo);
             if (msgBoxResult == DialogResult.Yes)
 			{
-				Startup.SetDefaultLayout();
+				SetDefaultLayout();
 			}
 		}
+
+
+        public void SetDefaultLayout()
+        {
+            pnlDock.Visible = false;
+
+            pnlDock.DockLeftPortion = pnlDock.Width * 0.2;
+            pnlDock.DockRightPortion = pnlDock.Width * 0.2;
+            pnlDock.DockTopPortion = pnlDock.Height * 0.25;
+            pnlDock.DockBottomPortion = pnlDock.Height * 0.25;
+
+            Windows.treePanel.Show(pnlDock, DockState.DockLeft);
+            Windows.configPanel.Show(pnlDock);
+            Windows.configPanel.DockTo(Windows.treePanel.Pane, DockStyle.Bottom, -1);
+
+            Windows.screenshotForm.Hide();
+
+            pnlDock.Visible = true;
+        }
 
         private void mMenViewAddConnectionPanel_Click(object sender, EventArgs e)
 		{
@@ -1092,8 +1096,23 @@ namespace mRemoteNG.UI.Forms
 					{
 						if (SysMenSubItems[i] == m.WParam.ToInt32())
 						{
-							Screens.SendFormToScreen(Screen.AllScreens[i]);
-							break;
+                            //Screens.SendFormToScreen(Screen.AllScreens[i]);
+                            bool wasMax = false;
+
+                            if (WindowState == FormWindowState.Maximized)
+                            {
+                                wasMax = true;
+                                WindowState = FormWindowState.Normal;
+                            }
+
+                            Location = Screen.AllScreens[i].Bounds.Location;
+
+                            if (wasMax)
+                            {
+                                WindowState = FormWindowState.Maximized;
+                            }
+
+                            break;
 						}
 					}
 				}
@@ -1136,10 +1155,7 @@ namespace mRemoteNG.UI.Forms
 		{
 			ActivateConnection();
             var connectionWindow = pnlDock.ActiveDocument as ConnectionWindow;
-			if (connectionWindow != null)
-			{
-				connectionWindow.UpdateSelectedConnection();
-			}
+            connectionWindow?.UpdateSelectedConnection();
 		}
 		
 		private void UpdateWindowTitle()

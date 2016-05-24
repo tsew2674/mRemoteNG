@@ -338,7 +338,7 @@ namespace mRemoteNG.Connection.Protocol.RDP
 					{
 						_rdpClient.TransportSettings.GatewayCredsSource = 1; // TSC_PROXY_CREDS_MODE_SMARTCARD
 					}
-					if (_rdpVersion >= Versions.RDC61 && !((Force & ConnectionInfo.Force.NoCredentials) == ConnectionInfo.Force.NoCredentials))
+					if (_rdpVersion >= Versions.RDC61 && (Force & ConnectionInfo.Force.NoCredentials) != ConnectionInfo.Force.NoCredentials)
 					{
 						if (_connectionInfo.RDGatewayUseConnectionCredentials == RDGatewayUseConnectionCredentials.Yes)
 						{

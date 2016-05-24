@@ -18,7 +18,7 @@ namespace mRemoteNG.UI.Window
 	{
         #region Form Init
 		internal ContextMenuStrip cmenTab;
-		private System.ComponentModel.Container components = null;
+		private System.ComponentModel.Container components;
 		internal ToolStripMenuItem cmenTabFullscreen;
 		internal ToolStripMenuItem cmenTabScreenshot;
 		internal ToolStripMenuItem cmenTabTransferFile;
@@ -252,7 +252,7 @@ namespace mRemoteNG.UI.Window
         #endregion
 				
         #region Public Methods
-		public ConnectionWindow(DockContent Panel, string FormText = "")
+		public ConnectionWindow(DockContent Panel, frmMain mainForm, string FormText = "")
 		{
 			if (FormText == "")
 			{
@@ -365,8 +365,8 @@ namespace mRemoteNG.UI.Window
 			ApplyLanguage();
 		}
 				
-		private bool _documentHandlersAdded = false;
-		private bool _floatHandlersAdded = false;
+		private bool _documentHandlersAdded;
+		private bool _floatHandlersAdded;
 		private void Connection_DockStateChanged(Object sender, EventArgs e)
 		{
 			if (DockState == DockState.Float)
@@ -1069,7 +1069,7 @@ namespace mRemoteNG.UI.Window
 		{
 			try
 			{
-				string nTitle = Interaction.InputBox(Prompt: Language.strNewTitle + ":", DefaultResponse: TabController.SelectedTab.Title.Replace("&&", "&"));
+				string nTitle = Interaction.InputBox(Language.strNewTitle + ":", DefaultResponse: TabController.SelectedTab.Title.Replace("&&", "&"));
 				
 				if (!string.IsNullOrEmpty(nTitle))
 				{
@@ -1135,7 +1135,7 @@ namespace mRemoteNG.UI.Window
 			}
 		}
 				
-		private bool _ignoreChangeSelectedTabClick = false;
+		private bool _ignoreChangeSelectedTabClick;
 		private void TabController_SelectionChanged(object sender, EventArgs e)
 		{
 			_ignoreChangeSelectedTabClick = true;
@@ -1144,7 +1144,7 @@ namespace mRemoteNG.UI.Window
 			RefreshIC();
 		}
 				
-		private int _firstClickTicks = 0;
+		private int _firstClickTicks;
 		private Rectangle _doubleClickRectangle;
 		private void TabController_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -1264,7 +1264,7 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.Connection.WndProc() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.Connection.WndProc() failed.", ex, logOnly: true);
 			}
 					
 			base.WndProc(ref m);
@@ -1272,19 +1272,10 @@ namespace mRemoteNG.UI.Window
         #endregion
 				
         #region Tab drag and drop
-		private bool _InTabDrag = false;
-        public bool InTabDrag
-		{
-			get
-			{
-				return _InTabDrag;
-			}
-			set
-			{
-				_InTabDrag = value;
-			}
-		}
-		private void TabController_PageDragStart(object sender, MouseEventArgs e)
+
+        public bool InTabDrag { get; set; }
+
+        private void TabController_PageDragStart(object sender, MouseEventArgs e)
 		{
 			Cursor = Cursors.SizeWE;
 		}

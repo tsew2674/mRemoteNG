@@ -30,6 +30,11 @@ namespace mRemoteNG.App
 {
     public class Runtime
     {
+        private frmMain _mainForm;
+        public Runtime(frmMain mainForm)
+        {
+            _mainForm = mainForm;
+        }
         #region Private Variables
 
         //private static System.Timers.Timer _timerSqlWatcher;
@@ -37,7 +42,6 @@ namespace mRemoteNG.App
         #endregion
 
         #region Public Properties
-        public static frmMain MainForm { get; set; }
 
         public static ConnectionList ConnectionList { get; set; }
 
@@ -64,7 +68,7 @@ namespace mRemoteNG.App
         public static bool IsConnectionsFileLoaded { get; set; }
 
 
-        public static SqlConnectionsProvider SQLConnProvider { get; set; }
+        public static SqlConnectionsProvider SqlConnProvider { get; set; }
 
         /*
         public static System.Timers.Timer TimerSqlWatcher
@@ -220,14 +224,14 @@ namespace mRemoteNG.App
         #endregion
 
         #region Panels
-        public static Form AddPanel(string title = "", bool noTabber = false)
+        public Form AddPanel(string title = "", bool noTabber = false)
         {
             try
             {
-                ConnectionWindow connectionForm = new ConnectionWindow(new DockContent());
+                ConnectionWindow connectionForm = new ConnectionWindow(new DockContent(), _mainForm);
                 BuildConnectionWindowContextMenu(connectionForm);
                 SetConnectionWindowTitle(title, connectionForm);
-                ShowConnectionWindow(connectionForm);
+                connectionForm.Show(_mainForm.pnlDock, DockState.Document);
                 PrepareTabControllerSupport(noTabber, connectionForm);
                 return connectionForm;
             }
@@ -236,11 +240,6 @@ namespace mRemoteNG.App
                 MessageCollector.AddMessage(MessageClass.ErrorMsg, "Couldn\'t add panel" + Environment.NewLine + ex.Message);
                 return null;
             }
-        }
-
-        private static void ShowConnectionWindow(ConnectionWindow connectionForm)
-        {
-            connectionForm.Show(frmMain.Default.pnlDock, DockState.Document);
         }
 
         private static void PrepareTabControllerSupport(bool noTabber, ConnectionWindow connectionForm)
@@ -260,7 +259,7 @@ namespace mRemoteNG.App
 
         private static void BuildConnectionWindowContextMenu(DockContent pnlcForm)
         {
-            ContextMenuStrip cMen = new ContextMenuStrip();
+            var cMen = new ContextMenuStrip();
             ToolStripMenuItem cMenRen = CreateRenameMenuItem(pnlcForm);
             ToolStripMenuItem cMenScreens = CreateScreensMenuItem(pnlcForm);
             cMen.Items.AddRange(new ToolStripMenuItem[] { cMenRen, cMenScreens });
@@ -269,10 +268,12 @@ namespace mRemoteNG.App
 
         private static ToolStripMenuItem CreateScreensMenuItem(DockContent pnlcForm)
         {
-            ToolStripMenuItem cMenScreens = new ToolStripMenuItem();
-            cMenScreens.Text = Language.strSendTo;
-            cMenScreens.Image = Resources.Monitor;
-            cMenScreens.Tag = pnlcForm;
+            var cMenScreens = new ToolStripMenuItem
+            {
+                Text = Language.strSendTo,
+                Image = Resources.Monitor,
+                Tag = pnlcForm
+            };
             cMenScreens.DropDownItems.Add("Dummy");
             cMenScreens.DropDownOpening += cMenConnectionPanelScreens_DropDownOpening;
             return cMenScreens;
@@ -442,8 +443,8 @@ namespace mRemoteNG.App
             try
             {
                 // disable sql update checking while we are loading updates
-                if (SQLConnProvider != null)
-                    SQLConnProvider.Disable();
+                if (SqlConnProvider != null)
+                    SqlConnProvider.Disable();
 
                 if (ConnectionList != null && ContainerList != null)
                 {
@@ -493,12 +494,12 @@ namespace mRemoteNG.App
                 ConnectionTree.ResetTree();
 
                 connectionsLoader.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
-                connectionsLoader.UseSQL = Settings.Default.UseSQLServer;
-                connectionsLoader.SQLHost = Settings.Default.SQLHost;
-                connectionsLoader.SQLDatabaseName = Settings.Default.SQLDatabaseName;
-                connectionsLoader.SQLUsername = Settings.Default.SQLUser;
-                connectionsLoader.SQLPassword = Security.Crypt.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
-                connectionsLoader.SQLUpdate = update;
+                connectionsLoader.UseSql = Settings.Default.UseSQLServer;
+                connectionsLoader.SqlHost = Settings.Default.SQLHost;
+                connectionsLoader.SqlDatabaseName = Settings.Default.SQLDatabaseName;
+                connectionsLoader.SqlUsername = Settings.Default.SQLUser;
+                connectionsLoader.SqlPassword = Security.Crypt.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
+                connectionsLoader.SqlUpdate = update;
                 connectionsLoader.LoadConnections(false);
 
                 if (Settings.Default.UseSQLServer)
@@ -519,9 +520,9 @@ namespace mRemoteNG.App
                 }
 
                 // re-enable sql update checking after updates are loaded
-                if (Settings.Default.UseSQLServer && SQLConnProvider != null)
+                if (Settings.Default.UseSQLServer)
                 {
-                    SQLConnProvider.Enable();
+                    SqlConnProvider?.Enable();
                 }
             }
             catch (Exception ex)
@@ -545,28 +546,24 @@ namespace mRemoteNG.App
                             return;
                     }
                 }
-                else
-                {
-                    if (ex is FileNotFoundException && !withDialog)
-                    {
-                        MessageCollector.AddExceptionMessage(string.Format(Language.strConnectionsFileCouldNotBeLoadedNew, connectionsLoader.ConnectionFileName), ex, MessageClass.InformationMsg);
-                        NewConnections(Convert.ToString(connectionsLoader.ConnectionFileName));
-                        return;
-                    }
 
-                    MessageCollector.AddExceptionMessage(string.Format(Language.strConnectionsFileCouldNotBeLoaded, connectionsLoader.ConnectionFileName), ex);
-                    if (connectionsLoader.ConnectionFileName != GetStartupConnectionFileName())
-                    {
-                        LoadConnections(withDialog, update);
-                        return;
-                    }
-                    else
-                    {
-                        Interaction.MsgBox(string.Format(Language.strErrorStartupConnectionFileLoad, Environment.NewLine, Application.ProductName, GetStartupConnectionFileName(), MiscTools.GetExceptionMessageRecursive(ex)), (int)MsgBoxStyle.OkOnly + MsgBoxStyle.Critical, null);
-                        Application.Exit();
-                        return;
-                    }
+                if (ex is FileNotFoundException && !withDialog)
+                {
+                    MessageCollector.AddExceptionMessage(string.Format(Language.strConnectionsFileCouldNotBeLoadedNew, connectionsLoader.ConnectionFileName), ex, MessageClass.InformationMsg);
+                    NewConnections(Convert.ToString(connectionsLoader.ConnectionFileName));
+                    return;
                 }
+
+                MessageCollector.AddExceptionMessage(string.Format(Language.strConnectionsFileCouldNotBeLoaded, connectionsLoader.ConnectionFileName), ex);
+                if (connectionsLoader.ConnectionFileName != GetStartupConnectionFileName())
+                {
+                    LoadConnections(withDialog, update);
+                    return;
+                }
+
+                Interaction.MsgBox(string.Format(Language.strErrorStartupConnectionFileLoad, Environment.NewLine, Application.ProductName, GetStartupConnectionFileName(), MiscTools.GetExceptionMessageRecursive(ex)), (int)MsgBoxStyle.OkOnly + MsgBoxStyle.Critical, null);
+                Application.Exit();
+                return;
             }
         }
 
@@ -674,9 +671,9 @@ namespace mRemoteNG.App
                     return;
                 }
 
-                if (SQLConnProvider != null)
+                if (SqlConnProvider != null)
                 {
-                    SQLConnProvider.Disable();
+                    SqlConnProvider.Disable();
                 }
 
                 ConnectionsSaver conS = new ConnectionsSaver();
@@ -714,22 +711,22 @@ namespace mRemoteNG.App
             }
             finally
             {
-                if (SQLConnProvider != null)
+                if (SqlConnProvider != null)
                 {
-                    SQLConnProvider.Enable();
+                    SqlConnProvider.Enable();
                 }
             }
         }
 
-        public static void SaveConnectionsAs()
+        public void SaveConnectionsAs()
         {
             ConnectionsSaver connectionsSave = new ConnectionsSaver();
 
             try
             {
-                if (SQLConnProvider != null)
+                if (SqlConnProvider != null)
                 {
-                    SQLConnProvider.Disable();
+                    SqlConnProvider.Disable();
                 }
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -778,10 +775,7 @@ namespace mRemoteNG.App
             }
             finally
             {
-                if (SQLConnProvider != null)
-                {
-                    SQLConnProvider.Enable();
-                }
+                SqlConnProvider?.Enable();
             }
         }
         #endregion

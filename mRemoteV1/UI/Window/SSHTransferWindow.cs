@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using mRemoteNG.My;
 using Tamir.SharpSsh;
 using WeifenLuo.WinFormsUI.Docking;
 

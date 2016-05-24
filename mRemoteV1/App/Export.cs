@@ -9,14 +9,13 @@ namespace mRemoteNG.App
 {
 	public class Export
 	{
-		public static void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode)
+		public static void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode, Form parentForm)
 		{
 			try
 			{
-				TreeNode exportTreeNode = default(TreeNode);
-				Security.Save saveSecurity = new Security.Save();
+			    var saveSecurity = new Security.Save();
 					
-				using (ExportForm exportForm = new ExportForm())
+				using (var exportForm = new ExportForm())
 				{
 					if (Tree.ConnectionTreeNode.GetNodeType(selectedTreeNode) == Tree.TreeNodeType.Container)
 					{
@@ -31,12 +30,13 @@ namespace mRemoteNG.App
 						exportForm.SelectedConnection = selectedTreeNode;
 					}
 						
-					if (exportForm.ShowDialog(frmMain.Default) != DialogResult.OK)
+					if (exportForm.ShowDialog(parentForm) != DialogResult.OK)
 					{
 						return ;
 					}
-						
-					switch (exportForm.Scope)
+
+				    TreeNode exportTreeNode;
+				    switch (exportForm.Scope)
 					{
 						case mRemoteNG.Forms.ExportForm.ExportScope.SelectedFolder:
 							exportTreeNode = exportForm.SelectedFolder;
@@ -68,9 +68,9 @@ namespace mRemoteNG.App
 		{
 			try
 			{
-                if (Runtime.SQLConnProvider != null)
+                if (Runtime.SqlConnProvider != null)
 				{
-                    Runtime.SQLConnProvider.Disable();
+                    Runtime.SqlConnProvider.Disable();
 				}
 					
 				ConnectionsSaver connectionsSave = new ConnectionsSaver();
@@ -89,9 +89,9 @@ namespace mRemoteNG.App
 			}
 			finally
 			{
-                if (Runtime.SQLConnProvider != null)
+                if (Runtime.SqlConnProvider != null)
 				{
-                    Runtime.SQLConnProvider.Enable();
+                    Runtime.SqlConnProvider.Enable();
 				}
 			}
 		}

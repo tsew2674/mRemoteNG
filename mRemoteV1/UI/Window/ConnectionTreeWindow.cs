@@ -3,7 +3,6 @@ using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
-using mRemoteNG.My;
 using mRemoteNG.Tree;
 using System;
 using System.Drawing;

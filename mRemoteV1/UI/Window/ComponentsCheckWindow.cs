@@ -5,7 +5,6 @@ using System.IO;
 using mRemoteNG.App;
 using System.Threading;
 using mRemoteNG.Connection.Protocol.RDP;
-using mRemoteNG.My;
 
 
 namespace mRemoteNG.UI.Window

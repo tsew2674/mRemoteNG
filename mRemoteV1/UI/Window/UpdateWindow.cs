@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.ComponentModel;
-using mRemoteNG.My;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using mRemoteNG.App;

@@ -7,9 +7,8 @@ namespace mRemoteNG.UI.Window
 	public class BaseWindow : DockContent
     {
         #region Private Variables
-        private WindowType _WindowType;
-        private DockContent _DockPnl;
-        #endregion
+
+	    #endregion
 
         #region Constructors
         public BaseWindow()
@@ -19,37 +18,30 @@ namespace mRemoteNG.UI.Window
         #endregion
 
         #region Public Properties
-        public WindowType WindowType
-		{
-			get { return this._WindowType; }
-			set { this._WindowType = value; }
-		}
-		
-        public DockContent DockPnl
-		{
-			get { return this._DockPnl; }
-			set { this._DockPnl = value; }
-		}
-        #endregion
+        public WindowType WindowType { get; set; }
+
+	    public DockContent DockPnl { get; set; }
+
+	    #endregion
 				
         #region Public Methods
 		public void SetFormText(string Text)
 		{
 			this.Text = Text;
-			this.TabText = Text;
+			TabText = Text;
 		}
         #endregion
 				
-        #region Private Methods
-		private void Base_Load(System.Object sender, System.EventArgs e)
-		{
-			frmMain.Default.ShowHidePanelTabs();
-		}
+  //      #region Private Methods
+		//private void Base_Load(object sender, System.EventArgs e)
+		//{
+		//	frmMain.Default.ShowHidePanelTabs();
+		//}
 				
-		private void Base_FormClosed(System.Object sender, System.Windows.Forms.FormClosedEventArgs e)
-		{
-			frmMain.Default.ShowHidePanelTabs(this);
-		}
-        #endregion
+		//private void Base_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+		//{
+		//	frmMain.Default.ShowHidePanelTabs(this);
+		//}
+  //      #endregion
 	}
 }
