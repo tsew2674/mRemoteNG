@@ -11,6 +11,11 @@ namespace mRemoteNG.App
 {
     public class Windows
     {
+        private frmMain _mainForm;
+        public Windows(frmMain mainForm)
+        {
+            _mainForm = mainForm;
+        }
         public static ConnectionTreeWindow treeForm;
         public static DockContent treePanel = new DockContent();
         public static ConfigWindow configForm;
@@ -42,100 +47,94 @@ namespace mRemoteNG.App
         public static AnnouncementWindow AnnouncementForm;
         public static DockContent AnnouncementPanel = new DockContent();
 
-        public static void Show(WindowType windowType, DockPanel dockPanel, bool portScanImport = false)
+        public void Show(WindowType windowType, DockPanel dockPanel, bool portScanImport = false)
         {
             try
             {
-                if (windowType.Equals(WindowType.About))
+                switch (windowType)
                 {
-                    if (aboutForm == null || aboutForm.IsDisposed)
-                    {
-                        aboutForm = new AboutWindow(aboutPanel);
-                        aboutPanel = aboutForm;
-                    }
-                    aboutForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.ActiveDirectoryImport))
-                {
-                    if (adimportForm == null || adimportForm.IsDisposed)
-                    {
-                        adimportForm = new ActiveDirectoryImportWindow(adimportPanel);
-                        adimportPanel = adimportForm;
-                    }
-                    adimportPanel.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.Options))
-                {
-                    using (var optionsForm = new frmOptions())
-                    {
-                        optionsForm.ShowDialog(dockPanel);
-                    }
-                }
-                else if (windowType.Equals(WindowType.SSHTransfer))
-                {
-                    sshtransferForm = new SSHTransferWindow(sshtransferPanel);
-                    sshtransferPanel = sshtransferForm;
-                    sshtransferForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.Update))
-                {
-                    if (updateForm == null || updateForm.IsDisposed)
-                    {
-                        updateForm = new UpdateWindow(updatePanel);
-                        updatePanel = updateForm;
-                    }
-                    updateForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.Help))
-                {
-                    if (helpForm == null || helpForm.IsDisposed)
-                    {
-                        helpForm = new HelpWindow(helpPanel);
-                        helpPanel = helpForm;
-                    }
-                    helpForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.ExternalApps))
-                {
-                    if (externalappsForm == null || externalappsForm.IsDisposed)
-                    {
-                        externalappsForm = new ExternalToolsWindow(externalappsPanel);
-                        externalappsPanel = externalappsForm;
-                    }
-                    externalappsForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.PortScan))
-                {
-                    portscanForm = new PortScanWindow(portscanPanel, portScanImport);
-                    portscanPanel = portscanForm;
-                    portscanForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.UltraVNCSC))
-                {
-                    if (ultravncscForm == null || ultravncscForm.IsDisposed)
-                    {
-                        ultravncscForm = new UltraVNCWindow(ultravncscPanel);
-                        ultravncscPanel = ultravncscForm;
-                    }
-                    ultravncscForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.ComponentsCheck))
-                {
-                    if (componentscheckForm == null || componentscheckForm.IsDisposed)
-                    {
-                        componentscheckForm = new ComponentsCheckWindow(componentscheckPanel);
-                        componentscheckPanel = componentscheckForm;
-                    }
-                    componentscheckForm.Show(dockPanel);
-                }
-                else if (windowType.Equals(WindowType.Announcement))
-                {
-                    if (AnnouncementForm == null || AnnouncementForm.IsDisposed)
-                    {
-                        AnnouncementForm = new AnnouncementWindow(AnnouncementPanel);
-                        AnnouncementPanel = AnnouncementForm;
-                    }
-                    AnnouncementForm.Show(dockPanel);
+                    case WindowType.About:
+                        if (aboutForm == null || aboutForm.IsDisposed)
+                        {
+                            aboutForm = new AboutWindow(aboutPanel);
+                            aboutPanel = aboutForm;
+                        }
+                        aboutForm.Show(dockPanel);
+                        break;
+                    case WindowType.Options:
+                        using (var optionsForm = new frmOptions(_mainForm))
+                        {
+                            optionsForm.ShowDialog(dockPanel);
+                        }
+                        break;
+                    case WindowType.Update:
+                        if (updateForm == null || updateForm.IsDisposed)
+                        {
+                            updateForm = new UpdateWindow(updatePanel, _mainForm);
+                            updatePanel = updateForm;
+                        }
+                        updateForm.Show(dockPanel);
+                        break;
+                    case WindowType.SSHTransfer:
+                        sshtransferForm = new SSHTransferWindow(sshtransferPanel);
+                        sshtransferPanel = sshtransferForm;
+                        sshtransferForm.Show(dockPanel);
+                        break;
+                    case WindowType.ActiveDirectoryImport:
+                        if (adimportForm == null || adimportForm.IsDisposed)
+                        {
+                            adimportForm = new ActiveDirectoryImportWindow(adimportPanel, _mainForm);
+                            adimportPanel = adimportForm;
+                        }
+                        adimportPanel.Show(dockPanel);
+                        break;
+                    case WindowType.Help:
+                        if (helpForm == null || helpForm.IsDisposed)
+                        {
+                            helpForm = new HelpWindow(helpPanel);
+                            helpPanel = helpForm;
+                        }
+                        helpForm.Show(dockPanel);
+                        break;
+                    case WindowType.ExternalApps:
+                        if (externalappsForm == null || externalappsForm.IsDisposed)
+                        {
+                            externalappsForm = new ExternalToolsWindow(externalappsPanel, _mainForm);
+                            externalappsPanel = externalappsForm;
+                        }
+                        externalappsForm.Show(dockPanel);
+                        break;
+                    case WindowType.PortScan:
+                        portscanForm = new PortScanWindow(portscanPanel, _mainForm, portScanImport);
+                        portscanPanel = portscanForm;
+                        portscanForm.Show(dockPanel);
+                        break;
+                    case WindowType.UltraVNCSC:
+                        if (ultravncscForm == null || ultravncscForm.IsDisposed)
+                        {
+                            ultravncscForm = new UltraVNCWindow(ultravncscPanel);
+                            ultravncscPanel = ultravncscForm;
+                        }
+                        ultravncscForm.Show(dockPanel);
+                        break;
+                    case WindowType.ComponentsCheck:
+                        if (componentscheckForm == null || componentscheckForm.IsDisposed)
+                        {
+                            componentscheckForm = new ComponentsCheckWindow(componentscheckPanel);
+                            componentscheckPanel = componentscheckForm;
+                        }
+                        componentscheckForm.Show(dockPanel);
+                        break;
+                    case WindowType.Announcement:
+                        if (AnnouncementForm == null || AnnouncementForm.IsDisposed)
+                        {
+                            AnnouncementForm = new AnnouncementWindow(AnnouncementPanel);
+                            AnnouncementPanel = AnnouncementForm;
+                        }
+                        AnnouncementForm.Show(dockPanel);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(windowType), windowType, null);
                 }
             }
             catch (Exception ex)

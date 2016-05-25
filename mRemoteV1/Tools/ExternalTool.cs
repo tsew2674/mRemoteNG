@@ -8,12 +8,19 @@ using System.ComponentModel;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.My;
+using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.Tools
 {
 	public class ExternalTool
 	{
+	    private frmMain _mainForm;
+	    public ExternalTool(frmMain mainForm)
+	    {
+	        _mainForm = mainForm;
+
+	    }
         #region Public Properties
 		public string DisplayName { get; set; }
 		public string FileName { get; set; }
@@ -47,9 +54,9 @@ namespace mRemoteNG.Tools
 		
 		public ExternalTool(string displayName = "", string fileName = "", string arguments = "")
 		{
-			this.DisplayName = displayName;
-			this.FileName = fileName;
-			this.Arguments = arguments;
+			DisplayName = displayName;
+			FileName = fileName;
+			Arguments = arguments;
 		}
 
         public void Start(ConnectionInfo startConnectionInfo = null)
@@ -100,7 +107,8 @@ namespace mRemoteNG.Tools
 			try
 			{
                 ConnectionInfo newConnectionInfo = BuildConnectionInfoForIntegratedApp();
-				Runtime.OpenConnection(newConnectionInfo);
+                var runtime = new Runtime(_mainForm);
+                runtime.OpenConnection(newConnectionInfo);
 			}
 			catch (Exception ex)
 			{
@@ -118,10 +126,10 @@ namespace mRemoteNG.Tools
         private ConnectionInfo GetAppropriateInstanceOfConnectionInfo()
         {
             ConnectionInfo newConnectionInfo = default(ConnectionInfo);
-            if (this.ConnectionInfo == null)
+            if (ConnectionInfo == null)
                 newConnectionInfo = new ConnectionInfo();
             else
-                newConnectionInfo = this.ConnectionInfo.Copy();
+                newConnectionInfo = ConnectionInfo.Copy();
             return newConnectionInfo;
         }
 

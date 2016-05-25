@@ -13,6 +13,7 @@ using System.Drawing;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
+using mRemoteNG.UI.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 
@@ -35,6 +36,13 @@ namespace mRemoteNG.UI.Window
         internal ToolStripMenuItem propertyGridContextMenuReset;
         internal ToolStripSeparator ToolStripSeparator1;
         internal FilteredPropertyGrid pGrid;
+
+        private frmMain _mainForm;
+
+        public ConfigWindow(frmMain mainForm)
+        {
+            _mainForm = mainForm;
+        }
 
 
         private void InitializeComponent()
@@ -728,7 +736,9 @@ namespace mRemoteNG.UI.Window
                 UpdateRootInfoNode(e);
                 UpdateInheritanceNode();
                 ShowHideGridItems();
-                Runtime.SaveConnectionsBG();
+                //Runtime.SaveConnectionsBG();
+                var runtime = new Runtime(_mainForm);
+                runtime.SaveConnectionsBg();
             }
             catch (Exception ex)
 			{
@@ -784,7 +794,11 @@ namespace mRemoteNG.UI.Window
                             if (Settings.Default.UseSQLServer)
                                 passwordName = Language.strSQLServer.TrimEnd(':');
                             else
-                                passwordName = Path.GetFileName(Runtime.GetStartupConnectionFileName());
+                            {
+                                var runtime = new Runtime(_mainForm);
+                                passwordName = Path.GetFileName(runtime.GetStartupConnectionFileName());
+                            }
+                                
 
                             string password = MiscTools.PasswordDialog(passwordName);
                             if (string.IsNullOrEmpty(password))
@@ -1704,8 +1718,8 @@ namespace mRemoteNG.UI.Window
 						
 				connectionInfo.Icon = iconName;
 				pGrid.Refresh();
-						
-				Runtime.SaveConnectionsBG();
+			    var runtime = new Runtime(_mainForm);
+                runtime.SaveConnectionsBg();
 			}
 			catch (Exception ex)
 			{

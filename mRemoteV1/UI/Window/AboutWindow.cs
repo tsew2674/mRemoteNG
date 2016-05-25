@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using mRemoteNG.App;
+using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.UI.Window
@@ -10,261 +11,268 @@ namespace mRemoteNG.UI.Window
 	public class AboutWindow : BaseWindow
 	{
         #region Form Init
-		internal System.Windows.Forms.Label lblCopyright;
-		internal System.Windows.Forms.Label lblTitle;
-		internal System.Windows.Forms.Label lblVersion;
-		internal System.Windows.Forms.Label lblLicense;
-		internal System.Windows.Forms.TextBox txtChangeLog;
-		internal System.Windows.Forms.Label lblChangeLog;
-		internal System.Windows.Forms.Panel pnlBottom;
-		internal System.Windows.Forms.PictureBox pbLogo;
-		internal System.Windows.Forms.Label lblEdition;
-		internal System.Windows.Forms.LinkLabel llblFAMFAMFAM;
-		internal System.Windows.Forms.LinkLabel llblMagicLibrary;
-		internal System.Windows.Forms.LinkLabel llblWeifenLuo;
-		internal System.Windows.Forms.Panel pnlTop;
+		internal Label LblCopyright;
+		internal Label LblTitle;
+		internal Label LblVersion;
+		internal Label LblLicense;
+		internal TextBox TxtChangeLog;
+		internal Label LblChangeLog;
+		internal Panel PnlBottom;
+		internal PictureBox PbLogo;
+		internal Label LblEdition;
+		internal LinkLabel LlblFamfamfam;
+		internal LinkLabel LlblMagicLibrary;
+		internal LinkLabel LlblWeifenLuo;
+		internal Panel PnlTop;
+
+	    private frmMain _mainForm;
+
+	    public AboutWindow(frmMain mainForm)
+	    {
+	        _mainForm = mainForm;
+	    }
 				
 		private void InitializeComponent()
 		{
-			this.pnlTop = new System.Windows.Forms.Panel();
-			this.Load += new System.EventHandler(About_Load);
-			this.lblEdition = new System.Windows.Forms.Label();
-			this.pbLogo = new System.Windows.Forms.PictureBox();
-			this.pnlBottom = new System.Windows.Forms.Panel();
-			this.llblWeifenLuo = new System.Windows.Forms.LinkLabel();
-			this.llblWeifenLuo.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblWeifenLuo_LinkClicked);
-			this.llblMagicLibrary = new System.Windows.Forms.LinkLabel();
-			this.llblMagicLibrary.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblMagicLibrary_LinkClicked);
-			this.llblFAMFAMFAM = new System.Windows.Forms.LinkLabel();
-			this.llblFAMFAMFAM.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llblFAMFAMFAM_LinkClicked);
-			this.txtChangeLog = new System.Windows.Forms.TextBox();
-			this.lblTitle = new System.Windows.Forms.Label();
-			this.lblVersion = new System.Windows.Forms.Label();
-			this.lblChangeLog = new System.Windows.Forms.Label();
-			this.lblLicense = new System.Windows.Forms.Label();
-			this.lblCopyright = new System.Windows.Forms.Label();
-			this.pnlTop.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize) this.pbLogo).BeginInit();
-			this.pnlBottom.SuspendLayout();
-			this.SuspendLayout();
+			PnlTop = new Panel();
+			Load += new EventHandler(About_Load);
+			LblEdition = new Label();
+			PbLogo = new PictureBox();
+			PnlBottom = new Panel();
+			LlblWeifenLuo = new LinkLabel();
+			LlblWeifenLuo.LinkClicked += new LinkLabelLinkClickedEventHandler(llblWeifenLuo_LinkClicked);
+			LlblMagicLibrary = new LinkLabel();
+			LlblMagicLibrary.LinkClicked += new LinkLabelLinkClickedEventHandler(llblMagicLibrary_LinkClicked);
+			LlblFamfamfam = new LinkLabel();
+			LlblFamfamfam.LinkClicked += new LinkLabelLinkClickedEventHandler(llblFAMFAMFAM_LinkClicked);
+			TxtChangeLog = new TextBox();
+			LblTitle = new Label();
+			LblVersion = new Label();
+			LblChangeLog = new Label();
+			LblLicense = new Label();
+			LblCopyright = new Label();
+			PnlTop.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize) PbLogo).BeginInit();
+			PnlBottom.SuspendLayout();
+			SuspendLayout();
 			//
 			//pnlTop
 			//
-			this.pnlTop.Anchor = (System.Windows.Forms.AnchorStyles) ((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right);
-			this.pnlTop.BackColor = System.Drawing.Color.Black;
-			this.pnlTop.Controls.Add(this.lblEdition);
-			this.pnlTop.Controls.Add(this.pbLogo);
-			this.pnlTop.ForeColor = System.Drawing.Color.White;
-			this.pnlTop.Location = new System.Drawing.Point(-1, -1);
-			this.pnlTop.Name = "pnlTop";
-			this.pnlTop.Size = new System.Drawing.Size(788, 145);
-			this.pnlTop.TabIndex = 0;
+			PnlTop.Anchor = (AnchorStyles) ((AnchorStyles.Top | AnchorStyles.Left) 
+				| AnchorStyles.Right);
+			PnlTop.BackColor = System.Drawing.Color.Black;
+			PnlTop.Controls.Add(LblEdition);
+			PnlTop.Controls.Add(PbLogo);
+			PnlTop.ForeColor = System.Drawing.Color.White;
+			PnlTop.Location = new System.Drawing.Point(-1, -1);
+			PnlTop.Name = "PnlTop";
+			PnlTop.Size = new System.Drawing.Size(788, 145);
+			PnlTop.TabIndex = 0;
 			//
 			//lblEdition
 			//
-			this.lblEdition.Anchor = (System.Windows.Forms.AnchorStyles) (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right);
-			this.lblEdition.BackColor = System.Drawing.Color.Black;
-			this.lblEdition.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (14.25F), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblEdition.ForeColor = System.Drawing.Color.White;
-			this.lblEdition.Location = new System.Drawing.Point(512, 112);
-			this.lblEdition.Name = "lblEdition";
-			this.lblEdition.Size = new System.Drawing.Size(264, 24);
-			this.lblEdition.TabIndex = 0;
-			this.lblEdition.Text = "Edition";
-			this.lblEdition.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.lblEdition.Visible = false;
+			LblEdition.Anchor = (AnchorStyles) (AnchorStyles.Top | AnchorStyles.Right);
+			LblEdition.BackColor = System.Drawing.Color.Black;
+			LblEdition.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (14.25F), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblEdition.ForeColor = System.Drawing.Color.White;
+			LblEdition.Location = new System.Drawing.Point(512, 112);
+			LblEdition.Name = "LblEdition";
+			LblEdition.Size = new System.Drawing.Size(264, 24);
+			LblEdition.TabIndex = 0;
+			LblEdition.Text = "Edition";
+			LblEdition.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+			LblEdition.Visible = false;
 			//
 			//pbLogo
 			//
-			this.pbLogo.Image = Resources.Logo;
-			this.pbLogo.Location = new System.Drawing.Point(8, 8);
-			this.pbLogo.Name = "pbLogo";
-			this.pbLogo.Size = new System.Drawing.Size(492, 128);
-			this.pbLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.pbLogo.TabIndex = 1;
-			this.pbLogo.TabStop = false;
+			PbLogo.Image = Resources.Logo;
+			PbLogo.Location = new System.Drawing.Point(8, 8);
+			PbLogo.Name = "PbLogo";
+			PbLogo.Size = new System.Drawing.Size(492, 128);
+			PbLogo.SizeMode = PictureBoxSizeMode.AutoSize;
+			PbLogo.TabIndex = 1;
+			PbLogo.TabStop = false;
 			//
 			//pnlBottom
 			//
-			this.pnlBottom.Anchor = (System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-				| System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right);
-			this.pnlBottom.BackColor = System.Drawing.SystemColors.Control;
-			this.pnlBottom.Controls.Add(this.llblWeifenLuo);
-			this.pnlBottom.Controls.Add(this.llblMagicLibrary);
-			this.pnlBottom.Controls.Add(this.llblFAMFAMFAM);
-			this.pnlBottom.Controls.Add(this.txtChangeLog);
-			this.pnlBottom.Controls.Add(this.lblTitle);
-			this.pnlBottom.Controls.Add(this.lblVersion);
-			this.pnlBottom.Controls.Add(this.lblChangeLog);
-			this.pnlBottom.Controls.Add(this.lblLicense);
-			this.pnlBottom.Controls.Add(this.lblCopyright);
-			this.pnlBottom.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.pnlBottom.Location = new System.Drawing.Point(-1, 144);
-			this.pnlBottom.Name = "pnlBottom";
-			this.pnlBottom.Size = new System.Drawing.Size(788, 418);
-			this.pnlBottom.TabIndex = 1;
+			PnlBottom.Anchor = (AnchorStyles) (((AnchorStyles.Top | AnchorStyles.Bottom) 
+				| AnchorStyles.Left) 
+				| AnchorStyles.Right);
+			PnlBottom.BackColor = System.Drawing.SystemColors.Control;
+			PnlBottom.Controls.Add(LlblWeifenLuo);
+			PnlBottom.Controls.Add(LlblMagicLibrary);
+			PnlBottom.Controls.Add(LlblFamfamfam);
+			PnlBottom.Controls.Add(TxtChangeLog);
+			PnlBottom.Controls.Add(LblTitle);
+			PnlBottom.Controls.Add(LblVersion);
+			PnlBottom.Controls.Add(LblChangeLog);
+			PnlBottom.Controls.Add(LblLicense);
+			PnlBottom.Controls.Add(LblCopyright);
+			PnlBottom.ForeColor = System.Drawing.SystemColors.ControlText;
+			PnlBottom.Location = new System.Drawing.Point(-1, 144);
+			PnlBottom.Name = "PnlBottom";
+			PnlBottom.Size = new System.Drawing.Size(788, 418);
+			PnlBottom.TabIndex = 1;
 			//
 			//llblWeifenLuo
 			//
-			this.llblWeifenLuo.AutoSize = true;
-			this.llblWeifenLuo.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.llblWeifenLuo.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.llblWeifenLuo.LinkColor = System.Drawing.Color.Blue;
-			this.llblWeifenLuo.Location = new System.Drawing.Point(16, 158);
-			this.llblWeifenLuo.Name = "llblWeifenLuo";
-			this.llblWeifenLuo.Size = new System.Drawing.Size(78, 22);
-			this.llblWeifenLuo.TabIndex = 9;
-			this.llblWeifenLuo.TabStop = true;
-			this.llblWeifenLuo.Text = "WeifenLuo";
-			this.llblWeifenLuo.UseCompatibleTextRendering = true;
+			LlblWeifenLuo.AutoSize = true;
+			LlblWeifenLuo.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LlblWeifenLuo.ForeColor = System.Drawing.SystemColors.ControlText;
+			LlblWeifenLuo.LinkColor = System.Drawing.Color.Blue;
+			LlblWeifenLuo.Location = new System.Drawing.Point(16, 158);
+			LlblWeifenLuo.Name = "LlblWeifenLuo";
+			LlblWeifenLuo.Size = new System.Drawing.Size(78, 22);
+			LlblWeifenLuo.TabIndex = 9;
+			LlblWeifenLuo.TabStop = true;
+			LlblWeifenLuo.Text = "WeifenLuo";
+			LlblWeifenLuo.UseCompatibleTextRendering = true;
 			//
 			//llblMagicLibrary
 			//
-			this.llblMagicLibrary.AutoSize = true;
-			this.llblMagicLibrary.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.llblMagicLibrary.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.llblMagicLibrary.LinkColor = System.Drawing.Color.Blue;
-			this.llblMagicLibrary.Location = new System.Drawing.Point(16, 136);
-			this.llblMagicLibrary.Name = "llblMagicLibrary";
-			this.llblMagicLibrary.Size = new System.Drawing.Size(92, 22);
-			this.llblMagicLibrary.TabIndex = 8;
-			this.llblMagicLibrary.TabStop = true;
-			this.llblMagicLibrary.Text = "MagicLibrary";
-			this.llblMagicLibrary.UseCompatibleTextRendering = true;
+			LlblMagicLibrary.AutoSize = true;
+			LlblMagicLibrary.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LlblMagicLibrary.ForeColor = System.Drawing.SystemColors.ControlText;
+			LlblMagicLibrary.LinkColor = System.Drawing.Color.Blue;
+			LlblMagicLibrary.Location = new System.Drawing.Point(16, 136);
+			LlblMagicLibrary.Name = "LlblMagicLibrary";
+			LlblMagicLibrary.Size = new System.Drawing.Size(92, 22);
+			LlblMagicLibrary.TabIndex = 8;
+			LlblMagicLibrary.TabStop = true;
+			LlblMagicLibrary.Text = "MagicLibrary";
+			LlblMagicLibrary.UseCompatibleTextRendering = true;
 			//
 			//llblFAMFAMFAM
 			//
-			this.llblFAMFAMFAM.AutoSize = true;
-			this.llblFAMFAMFAM.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.llblFAMFAMFAM.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.llblFAMFAMFAM.LinkColor = System.Drawing.Color.Blue;
-			this.llblFAMFAMFAM.Location = new System.Drawing.Point(16, 116);
-			this.llblFAMFAMFAM.Name = "llblFAMFAMFAM";
-			this.llblFAMFAMFAM.Size = new System.Drawing.Size(101, 22);
-			this.llblFAMFAMFAM.TabIndex = 4;
-			this.llblFAMFAMFAM.TabStop = true;
-			this.llblFAMFAMFAM.Text = "FAMFAMFAM";
-			this.llblFAMFAMFAM.UseCompatibleTextRendering = true;
+			LlblFamfamfam.AutoSize = true;
+			LlblFamfamfam.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LlblFamfamfam.ForeColor = System.Drawing.SystemColors.ControlText;
+			LlblFamfamfam.LinkColor = System.Drawing.Color.Blue;
+			LlblFamfamfam.Location = new System.Drawing.Point(16, 116);
+			LlblFamfamfam.Name = "LlblFamfamfam";
+			LlblFamfamfam.Size = new System.Drawing.Size(101, 22);
+			LlblFamfamfam.TabIndex = 4;
+			LlblFamfamfam.TabStop = true;
+			LlblFamfamfam.Text = "FAMFAMFAM";
+			LlblFamfamfam.UseCompatibleTextRendering = true;
 			//
 			//txtChangeLog
 			//
-			this.txtChangeLog.Anchor = (System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-				| System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right);
-			this.txtChangeLog.BackColor = System.Drawing.SystemColors.Control;
-			this.txtChangeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.txtChangeLog.Cursor = System.Windows.Forms.Cursors.Default;
-			this.txtChangeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (9.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.txtChangeLog.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.txtChangeLog.Location = new System.Drawing.Point(24, 224);
-			this.txtChangeLog.Multiline = true;
-			this.txtChangeLog.Name = "txtChangeLog";
-			this.txtChangeLog.ReadOnly = true;
-			this.txtChangeLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtChangeLog.Size = new System.Drawing.Size(760, 192);
-			this.txtChangeLog.TabIndex = 7;
-			this.txtChangeLog.TabStop = false;
+			TxtChangeLog.Anchor = (AnchorStyles) (((AnchorStyles.Top | AnchorStyles.Bottom) 
+				| AnchorStyles.Left) 
+				| AnchorStyles.Right);
+			TxtChangeLog.BackColor = System.Drawing.SystemColors.Control;
+			TxtChangeLog.BorderStyle = BorderStyle.None;
+			TxtChangeLog.Cursor = Cursors.Default;
+			TxtChangeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (9.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			TxtChangeLog.ForeColor = System.Drawing.SystemColors.ControlText;
+			TxtChangeLog.Location = new System.Drawing.Point(24, 224);
+			TxtChangeLog.Multiline = true;
+			TxtChangeLog.Name = "TxtChangeLog";
+			TxtChangeLog.ReadOnly = true;
+			TxtChangeLog.ScrollBars = ScrollBars.Vertical;
+			TxtChangeLog.Size = new System.Drawing.Size(760, 192);
+			TxtChangeLog.TabIndex = 7;
+			TxtChangeLog.TabStop = false;
 			//
 			//lblTitle
 			//
-			this.lblTitle.AutoSize = true;
-			this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (14.0F), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblTitle.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblTitle.Location = new System.Drawing.Point(16, 16);
-			this.lblTitle.Name = "lblTitle";
-			this.lblTitle.Size = new System.Drawing.Size(122, 27);
-			this.lblTitle.TabIndex = 0;
-			this.lblTitle.Text = "mRemoteNG";
-			this.lblTitle.UseCompatibleTextRendering = true;
+			LblTitle.AutoSize = true;
+			LblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (14.0F), System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblTitle.ForeColor = System.Drawing.SystemColors.ControlText;
+			LblTitle.Location = new System.Drawing.Point(16, 16);
+			LblTitle.Name = "LblTitle";
+			LblTitle.Size = new System.Drawing.Size(122, 27);
+			LblTitle.TabIndex = 0;
+			LblTitle.Text = "mRemoteNG";
+			LblTitle.UseCompatibleTextRendering = true;
 			//
 			//lblVersion
 			//
-			this.lblVersion.AutoSize = true;
-			this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblVersion.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblVersion.Location = new System.Drawing.Point(16, 56);
-			this.lblVersion.Name = "lblVersion";
-			this.lblVersion.Size = new System.Drawing.Size(57, 22);
-			this.lblVersion.TabIndex = 1;
-			this.lblVersion.Text = "Version";
-			this.lblVersion.UseCompatibleTextRendering = true;
+			LblVersion.AutoSize = true;
+			LblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblVersion.ForeColor = System.Drawing.SystemColors.ControlText;
+			LblVersion.Location = new System.Drawing.Point(16, 56);
+			LblVersion.Name = "LblVersion";
+			LblVersion.Size = new System.Drawing.Size(57, 22);
+			LblVersion.TabIndex = 1;
+			LblVersion.Text = "Version";
+			LblVersion.UseCompatibleTextRendering = true;
 			//
 			//lblChangeLog
 			//
-			this.lblChangeLog.AutoSize = true;
-			this.lblChangeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblChangeLog.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblChangeLog.Location = new System.Drawing.Point(16, 199);
-			this.lblChangeLog.Name = "lblChangeLog";
-			this.lblChangeLog.Size = new System.Drawing.Size(92, 22);
-			this.lblChangeLog.TabIndex = 6;
-			this.lblChangeLog.Text = "Change Log:";
-			this.lblChangeLog.UseCompatibleTextRendering = true;
+			LblChangeLog.AutoSize = true;
+			LblChangeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblChangeLog.ForeColor = System.Drawing.SystemColors.ControlText;
+			LblChangeLog.Location = new System.Drawing.Point(16, 199);
+			LblChangeLog.Name = "LblChangeLog";
+			LblChangeLog.Size = new System.Drawing.Size(92, 22);
+			LblChangeLog.TabIndex = 6;
+			LblChangeLog.Text = "Change Log:";
+			LblChangeLog.UseCompatibleTextRendering = true;
 			//
 			//lblLicense
 			//
-			this.lblLicense.AutoSize = true;
-			this.lblLicense.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblLicense.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblLicense.Location = new System.Drawing.Point(16, 96);
-			this.lblLicense.Name = "lblLicense";
-			this.lblLicense.Size = new System.Drawing.Size(58, 22);
-			this.lblLicense.TabIndex = 5;
-			this.lblLicense.Text = "License";
-			this.lblLicense.UseCompatibleTextRendering = true;
+			LblLicense.AutoSize = true;
+			LblLicense.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblLicense.ForeColor = System.Drawing.SystemColors.ControlText;
+			LblLicense.Location = new System.Drawing.Point(16, 96);
+			LblLicense.Name = "LblLicense";
+			LblLicense.Size = new System.Drawing.Size(58, 22);
+			LblLicense.TabIndex = 5;
+			LblLicense.Text = "License";
+			LblLicense.UseCompatibleTextRendering = true;
 			//
 			//lblCopyright
 			//
-			this.lblCopyright.AutoSize = true;
-			this.lblCopyright.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.lblCopyright.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblCopyright.Location = new System.Drawing.Point(16, 76);
-			this.lblCopyright.Name = "lblCopyright";
-			this.lblCopyright.Size = new System.Drawing.Size(70, 22);
-			this.lblCopyright.TabIndex = 2;
-			this.lblCopyright.Text = "Copyright";
-			this.lblCopyright.UseCompatibleTextRendering = true;
+			LblCopyright.AutoSize = true;
+			LblCopyright.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (11.0F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			LblCopyright.ForeColor = System.Drawing.SystemColors.ControlText;
+			LblCopyright.Location = new System.Drawing.Point(16, 76);
+			LblCopyright.Name = "LblCopyright";
+			LblCopyright.Size = new System.Drawing.Size(70, 22);
+			LblCopyright.TabIndex = 2;
+			LblCopyright.Text = "Copyright";
+			LblCopyright.UseCompatibleTextRendering = true;
 			//
 			//About
 			//
-			this.BackColor = System.Drawing.SystemColors.Control;
-			this.ClientSize = new System.Drawing.Size(784, 564);
-			this.Controls.Add(this.pnlTop);
-			this.Controls.Add(this.pnlBottom);
-			this.Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (8.25F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
-			this.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.Icon = Resources.mRemote_Icon;
-			this.MaximumSize = new System.Drawing.Size(20000, 10000);
-			this.Name = "About";
-			this.TabText = "About";
-			this.Text = "About";
-			this.pnlTop.ResumeLayout(false);
-			this.pnlTop.PerformLayout();
-			((System.ComponentModel.ISupportInitialize) this.pbLogo).EndInit();
-			this.pnlBottom.ResumeLayout(false);
-			this.pnlBottom.PerformLayout();
-			this.ResumeLayout(false);
+			BackColor = System.Drawing.SystemColors.Control;
+			ClientSize = new System.Drawing.Size(784, 564);
+			Controls.Add(PnlTop);
+			Controls.Add(PnlBottom);
+			Font = new System.Drawing.Font("Microsoft Sans Serif", (float) (8.25F), System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, Convert.ToByte(0));
+			ForeColor = System.Drawing.SystemColors.ControlText;
+			Icon = Resources.mRemote_Icon;
+			MaximumSize = new System.Drawing.Size(20000, 10000);
+			Name = "About";
+			TabText = "About";
+			Text = "About";
+			PnlTop.ResumeLayout(false);
+			PnlTop.PerformLayout();
+			((System.ComponentModel.ISupportInitialize) PbLogo).EndInit();
+			PnlBottom.ResumeLayout(false);
+			PnlBottom.PerformLayout();
+			ResumeLayout(false);
 					
 		}
         #endregion
 				
         #region Public Methods
-		public AboutWindow(DockContent Panel)
+		public AboutWindow(DockContent panel)
 		{
-			this.WindowType = WindowType.About;
-			this.DockPnl = Panel;
-			this.InitializeComponent();
-			App.Runtime.FontOverride(this);
+			WindowType = WindowType.About;
+			DockPnl = panel;
+			InitializeComponent();
+			Runtime.FontOverride(this);
 		}
         #endregion
 				
         #region Private Methods
 		private void ApplyLanguage()
 		{
-			lblLicense.Text = Language.strLabelReleasedUnderGPL;
-			lblChangeLog.Text = Language.strLabelChangeLog;
+			LblLicense.Text = Language.strLabelReleasedUnderGPL;
+			LblChangeLog.Text = Language.strLabelChangeLog;
 			TabText = Language.strAbout;
 			Text = Language.strAbout;
 		}
@@ -272,54 +280,54 @@ namespace mRemoteNG.UI.Window
 		private void ApplyEditions()
 		{
             #if PORTABLE
-			lblEdition.Text = Language.strLabelPortableEdition;
-			lblEdition.Visible = true;
+			LblEdition.Text = Language.strLabelPortableEdition;
+			LblEdition.Visible = true;
             #endif
 		}
 				
-		private void FillLinkLabel(LinkLabel llbl, string Text, string URL)
+		private void FillLinkLabel(LinkLabel llbl, string text, string url)
 		{
 			llbl.Links.Clear();
 					
-			int Open = Text.IndexOf("[");
-			int Close = 0;
-			while (Open != -1)
+			int open = text.IndexOf("[");
+			int close = 0;
+			while (open != -1)
 			{
-				Text = Text.Remove(Open, 1);
-				Close = Text.IndexOf("]", Open);
-				if (Close == -1)
+				text = text.Remove(open, 1);
+				close = text.IndexOf("]", open);
+				if (close == -1)
 				{
 					break;
 				}
-				Text = Text.Remove(Close, 1);
-				llbl.Links.Add(Open, Close - Open, URL);
-				Open = Text.IndexOf("[", Open);
+				text = text.Remove(close, 1);
+				llbl.Links.Add(open, close - open, url);
+				open = text.IndexOf("[", open);
 			}
 					
-			llbl.Text = Text;
+			llbl.Text = text;
 		}
         #endregion
 				
         #region Form Stuff
-		private void About_Load(object sender, System.EventArgs e)
+		private void About_Load(object sender, EventArgs e)
 		{
 			ApplyLanguage();
 			ApplyEditions();
 					
 			try
 			{
-				lblCopyright.Text = (new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.Copyright;
+				LblCopyright.Text = (new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.Copyright;
 						
-				this.lblVersion.Text = "Version " + (new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.Version.ToString();
+				LblVersion.Text = "Version " + (new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.Version.ToString();
 						
-				FillLinkLabel(llblFAMFAMFAM, Language.strFAMFAMFAMAttribution, Language.strFAMFAMFAMAttributionURL);
-				FillLinkLabel(llblMagicLibrary, Language.strMagicLibraryAttribution, Language.strMagicLibraryAttributionURL);
-				FillLinkLabel(llblWeifenLuo, Language.strWeifenLuoAttribution, Language.strWeifenLuoAttributionURL);
+				FillLinkLabel(LlblFamfamfam, Language.strFAMFAMFAMAttribution, Language.strFAMFAMFAMAttributionURL);
+				FillLinkLabel(LlblMagicLibrary, Language.strMagicLibraryAttribution, Language.strMagicLibraryAttributionURL);
+				FillLinkLabel(LlblWeifenLuo, Language.strWeifenLuoAttribution, Language.strWeifenLuoAttributionURL);
 						
 				if (File.Exists((new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.DirectoryPath + "\\CHANGELOG.TXT"))
 				{
 					StreamReader sR = new StreamReader((new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.DirectoryPath + "\\CHANGELOG.TXT");
-					this.txtChangeLog.Text = sR.ReadToEnd();
+					TxtChangeLog.Text = sR.ReadToEnd();
 					sR.Close();
 				}
 			}
@@ -329,19 +337,23 @@ namespace mRemoteNG.UI.Window
 			}
 		}
 				
-		private void llblFAMFAMFAM_LinkClicked(System.Object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+		private void llblFAMFAMFAM_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			App.Runtime.GoToURL(Language.strFAMFAMFAMAttributionURL);
+			//Runtime.GoToUrl(Language.strFAMFAMFAMAttributionURL);
+            var runtime = new Runtime(_mainForm);
+            runtime.GoToUrl(Language.strFAMFAMFAMAttributionURL);
+        }
+				
+		private void llblMagicLibrary_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+            var runtime = new Runtime(_mainForm);
+            runtime.GoToUrl(Language.strMagicLibraryAttributionURL);
 		}
 				
-		private void llblMagicLibrary_LinkClicked(System.Object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+		private void llblWeifenLuo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			App.Runtime.GoToURL(Language.strMagicLibraryAttributionURL);
-		}
-				
-		private void llblWeifenLuo_LinkClicked(System.Object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
-		{
-			App.Runtime.GoToURL(Language.strWeifenLuoAttributionURL);
+            var runtime = new Runtime(_mainForm);
+            runtime.GoToUrl(Language.strWeifenLuoAttributionURL);
 		}
         #endregion
 	}

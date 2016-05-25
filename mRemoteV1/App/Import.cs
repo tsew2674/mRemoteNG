@@ -7,6 +7,7 @@ using mRemoteNG.Config.Import;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
 using mRemoteNG.Tree;
+using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
 
 namespace mRemoteNG.App
@@ -29,7 +30,14 @@ namespace mRemoteNG.App
 
         #region Public Methods
 
-        public static void ImportFromFile(TreeNode rootTreeNode, TreeNode selectedTreeNode,
+        private frmMain _mainForm;
+
+        public Import(frmMain mainForm)
+        {
+            _mainForm = mainForm;
+        }
+
+        public void ImportFromFile(TreeNode rootTreeNode, TreeNode selectedTreeNode,
             bool alwaysUseSelectedTreeNode = false)
         {
             try
@@ -98,7 +106,8 @@ namespace mRemoteNG.App
                         parentContainer.IsExpanded = true;
                     }
 
-                    Runtime.SaveConnectionsBG();
+                    var runtime = new Runtime(_mainForm);
+                    runtime.SaveConnectionsBg();
                 }
             }
             catch (Exception ex)
@@ -107,7 +116,7 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void ImportFromActiveDirectory(string ldapPath)
+        public void ImportFromActiveDirectory(string ldapPath)
         {
             try
             {
@@ -129,7 +138,8 @@ namespace mRemoteNG.App
                     parentContainer.IsExpanded = true;
                 }
 
-                Runtime.SaveConnectionsBG();
+                var runtime = new Runtime(_mainForm);
+                runtime.SaveConnectionsBg();
             }
             catch (Exception ex)
             {
@@ -138,7 +148,7 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void ImportFromPortScan(IEnumerable hosts, ProtocolType protocol)
+        public void ImportFromPortScan(IEnumerable hosts, ProtocolType protocol)
         {
             try
             {
@@ -160,7 +170,8 @@ namespace mRemoteNG.App
                     parentContainer.IsExpanded = true;
                 }
 
-                Runtime.SaveConnectionsBG();
+                var runtime = new Runtime(_mainForm);
+                runtime.SaveConnectionsBg();
             }
             catch (Exception ex)
             {

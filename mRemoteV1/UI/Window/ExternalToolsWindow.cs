@@ -12,12 +12,17 @@ namespace mRemoteNG.UI.Window
 	public partial class ExternalToolsWindow : BaseWindow
 	{
         #region Constructors
-		public ExternalToolsWindow(DockContent panel)
+
+	    private frmMain _mainForm;
+		public ExternalToolsWindow(DockContent panel, frmMain mainForm)
 		{
 			InitializeComponent();
 					
 			WindowType = WindowType.ExternalApps;
 			DockPnl = panel;
+
+		    _mainForm = mainForm;
+
 		}
         #endregion
 				
@@ -267,7 +272,7 @@ namespace mRemoteNG.UI.Window
 						
 				ToolsListView.EndUpdate();
 						
-				frmMain.Default.AddExternalToolsToToolBar();
+				_mainForm.AddExternalToolsToToolBar();
 			}
 			catch (Exception ex)
 			{

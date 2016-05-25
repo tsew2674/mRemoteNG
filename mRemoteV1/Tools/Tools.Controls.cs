@@ -43,6 +43,12 @@ namespace mRemoteNG.Tools
 
 		    public bool Disposed { get; set; }
 
+		    private frmMain _mainForm;
+		    public NotificationAreaIcon(frmMain mainForm)
+		    {
+		        _mainForm = mainForm;
+		    }
+
 
 		    //Public Event MouseClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
 			//Public Event MouseDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.MouseEventArgs)
@@ -117,11 +123,13 @@ namespace mRemoteNG.Tools
 				{
 					foreach (TreeNode tNode in tnc)
 					{
-						ToolStripMenuItem tMenItem = new ToolStripMenuItem();
-						tMenItem.Text = tNode.Text;
-						tMenItem.Tag = tNode;
-							
-						if (Tree.ConnectionTreeNode.GetNodeType(tNode) == Tree.TreeNodeType.Container)
+					    var tMenItem = new ToolStripMenuItem
+					    {
+					        Text = tNode.Text,
+					        Tag = tNode
+					    };
+
+					    if (Tree.ConnectionTreeNode.GetNodeType(tNode) == Tree.TreeNodeType.Container)
 						{
 							tMenItem.Image = Resources.Folder;
 							tMenItem.Tag = tNode.Tag;
@@ -148,7 +156,7 @@ namespace mRemoteNG.Tools
 				
 			private void nI_MouseDoubleClick(object sender, MouseEventArgs e)
 			{
-				if (frmMain.Default.Visible == true)
+				if (_mainForm.Visible == true)
 				{
 					HideForm();
 				}
@@ -160,8 +168,8 @@ namespace mRemoteNG.Tools
 				
 			private void ShowForm()
 			{
-				frmMain.Default.Show();
-				frmMain.Default.WindowState = frmMain.Default.PreviousWindowState;
+                _mainForm.Show();
+                _mainForm.WindowState = _mainForm.PreviousWindowState;
 					
 				if (Settings.Default.ShowSystemTrayIcon == false)
 				{
@@ -172,8 +180,8 @@ namespace mRemoteNG.Tools
 				
 			private void HideForm()
 			{
-				frmMain.Default.Hide();
-				frmMain.Default.PreviousWindowState = frmMain.Default.WindowState;
+                _mainForm.Hide();
+                _mainForm.PreviousWindowState = _mainForm.WindowState;
 			}
 				
 			private void ConMenItem_MouseUp(object sender, MouseEventArgs e)
@@ -183,11 +191,12 @@ namespace mRemoteNG.Tools
 					if (((Control)sender).Tag is Connection.ConnectionInfo)
 					{
                         //TODO:Raise an event to show form if it's not visible.
-						//if (frmMain.Default.Visible == false)
+						//if (_mainForm.Visible == false)
 						//{
 						//	ShowForm();
 						//}
-                        Runtime.OpenConnection((Connection.ConnectionInfo)((Control)sender).Tag);
+                        var runtime = new Runtime(_mainForm);
+                        runtime.OpenConnection((Connection.ConnectionInfo)((Control)sender).Tag);
 					}
 				}
 			}
@@ -237,12 +246,14 @@ namespace mRemoteNG.Tools
 		
 		public static OpenFileDialog ImportConnectionsRdpFileDialog()
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.CheckFileExists = true;
-			openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-			openFileDialog.Filter = string.Join("|", new[] {Language.strFilterRDP, "*.rdp", Language.strFilterAll, "*.*"});
-			openFileDialog.Multiselect = true;
-			return openFileDialog;
+		    var openFileDialog = new OpenFileDialog
+		    {
+		        CheckFileExists = true,
+		        InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+		        Filter = string.Join("|", new[] {Language.strFilterRDP, "*.rdp", Language.strFilterAll, "*.*"}),
+		        Multiselect = true
+		    };
+		    return openFileDialog;
 		}
 	}
 }

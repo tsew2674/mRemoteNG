@@ -35,12 +35,12 @@ namespace mRemoteNG.UI.Window
   //      #region Private Methods
 		//private void Base_Load(object sender, System.EventArgs e)
 		//{
-		//	frmMain.Default.ShowHidePanelTabs();
+		//	_mainForm.ShowHidePanelTabs();
 		//}
 				
 		//private void Base_FormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
 		//{
-		//	frmMain.Default.ShowHidePanelTabs(this);
+		//	_mainForm.ShowHidePanelTabs(this);
 		//}
   //      #endregion
 	}

@@ -30,7 +30,7 @@ namespace mRemoteNG.Forms
 				ExportFormat exportFormat = cboFileFormat.SelectedItem as ExportFormat;
 				if (exportFormat == null)
 				{
-					return Config.Connections.ConnectionsSaver.Format.mRXML;
+					return Config.Connections.ConnectionsSaver.Format.MRxml;
 				}
 				else
 				{
@@ -201,9 +201,9 @@ namespace mRemoteNG.Forms
 		public void ExportForm_Load(object sender, EventArgs e)
 		{
 			cboFileFormat.Items.Clear();
-            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.mRXML));
-            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.mRCSV));
-            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.vRDCSV));
+            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.MRxml));
+            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.MRcsv));
+            cboFileFormat.Items.Add(new ExportFormat(Config.Connections.ConnectionsSaver.Format.VRdcsv));
 			cboFileFormat.SelectedIndex = 0;
 				
 			ApplyLanguage();
@@ -313,11 +313,11 @@ namespace mRemoteNG.Forms
 			{
 				switch (Format)
 				{
-					case Config.Connections.ConnectionsSaver.Format.mRXML:
+					case Config.Connections.ConnectionsSaver.Format.MRxml:
 						return Language.strMremoteNgXml;
-                    case Config.Connections.ConnectionsSaver.Format.mRCSV:
+                    case Config.Connections.ConnectionsSaver.Format.MRcsv:
 						return Language.strMremoteNgCsv;
-                    case Config.Connections.ConnectionsSaver.Format.vRDCSV:
+                    case Config.Connections.ConnectionsSaver.Format.VRdcsv:
 						return Language.strVisionAppRemoteDesktopCsv;
 					default:
 						return Format.ToString();

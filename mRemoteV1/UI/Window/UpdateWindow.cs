@@ -7,6 +7,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using System.IO;
 using mRemoteNG.App;
 using mRemoteNG.App.Update;
+using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.UI.Window
@@ -14,8 +15,11 @@ namespace mRemoteNG.UI.Window
 	public partial class UpdateWindow : BaseWindow
 	{
         #region Public Methods
-		public UpdateWindow(DockContent panel)
+
+	    private frmMain _mainForm;
+		public UpdateWindow(DockContent panel, frmMain mainForm)
 		{
+		    _mainForm = mainForm;
 			WindowType = WindowType.Update;
 			DockPnl = panel;
 			InitializeComponent();
@@ -254,7 +258,7 @@ namespace mRemoteNG.UI.Window
 						
 				if (MessageBox.Show(Language.strUpdateDownloadComplete, Language.strMenuCheckForUpdates, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.OK)
 				{
-					Shutdown.Quit(_appUpdate.CurrentUpdateInfo.UpdateFilePath);
+					//TODO:Shutdown.Quit(_appUpdate.CurrentUpdateInfo.UpdateFilePath);
 					return ;
 				}
 				else

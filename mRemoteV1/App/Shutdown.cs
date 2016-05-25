@@ -22,7 +22,7 @@ namespace mRemoteNG.App
     //    public static void Quit(string updateFilePath = null)
     //    {
     //        _updateFilePath = updateFilePath;
-    //        frmMain.Default.Close();
+    //        _mainForm.Close();
     //    }
 
     //    public static void Cleanup()

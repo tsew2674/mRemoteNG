@@ -9,8 +9,10 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 {
     public partial class SqlServerPage
     {
-        public SqlServerPage()
+        private frmMain _mainform;
+        public SqlServerPage(frmMain mainForm)
         {
+            _mainform = mainForm;
             InitializeComponent();
         }
 
@@ -38,34 +40,35 @@ namespace mRemoteNG.UI.Forms.OptionsPages
         {
             base.SaveSettings();
 
-            chkUseSQLServer.Checked = mRemoteNG.Settings.Default.UseSQLServer;
-            txtSQLServer.Text = mRemoteNG.Settings.Default.SQLHost;
-            txtSQLDatabaseName.Text = mRemoteNG.Settings.Default.SQLDatabaseName;
-            txtSQLUsername.Text = mRemoteNG.Settings.Default.SQLUser;
-            txtSQLPassword.Text = Crypt.Decrypt(mRemoteNG.Settings.Default.SQLPass, GeneralAppInfo.EncryptionKey);
+            chkUseSQLServer.Checked = Settings.Default.UseSQLServer;
+            txtSQLServer.Text = Settings.Default.SQLHost;
+            txtSQLDatabaseName.Text = Settings.Default.SQLDatabaseName;
+            txtSQLUsername.Text = Settings.Default.SQLUser;
+            txtSQLPassword.Text = Crypt.Decrypt(Settings.Default.SQLPass, GeneralAppInfo.EncryptionKey);
         }
 
         public override void SaveSettings()
         {
             base.SaveSettings();
 
-            mRemoteNG.Settings.Default.UseSQLServer = chkUseSQLServer.Checked;
-            mRemoteNG.Settings.Default.SQLHost = txtSQLServer.Text;
-            mRemoteNG.Settings.Default.SQLDatabaseName = txtSQLDatabaseName.Text;
-            mRemoteNG.Settings.Default.SQLUser = txtSQLUsername.Text;
-            mRemoteNG.Settings.Default.SQLPass = Crypt.Encrypt(txtSQLPassword.Text, GeneralAppInfo.EncryptionKey);
+            Settings.Default.UseSQLServer = chkUseSQLServer.Checked;
+            Settings.Default.SQLHost = txtSQLServer.Text;
+            Settings.Default.SQLDatabaseName = txtSQLDatabaseName.Text;
+            Settings.Default.SQLUser = txtSQLUsername.Text;
+            Settings.Default.SQLPass = Crypt.Encrypt(txtSQLPassword.Text, GeneralAppInfo.EncryptionKey);
             ReinitializeSqlUpdater();
         }
 
-        private static void ReinitializeSqlUpdater()
+        private void ReinitializeSqlUpdater()
         {
             if (Runtime.SqlConnProvider != null)
             {
                 Runtime.SqlConnProvider.Dispose();
-                frmMain.Default.AreWeUsingSqlServerForSavingConnections = mRemoteNG.Settings.Default.UseSQLServer;
-                if (mRemoteNG.Settings.Default.UseSQLServer)
+                _mainform.AreWeUsingSqlServerForSavingConnections = Settings.Default.UseSQLServer;
+                if (Settings.Default.UseSQLServer)
                 {
-                    Runtime.SqlConnProvider = new SqlConnectionsProvider();
+
+                    Runtime.SqlConnProvider = new SqlConnectionsProvider(_mainform);
                     Runtime.SqlConnProvider.Enable();
                 }
             }

@@ -23,6 +23,12 @@ namespace mRemoteNG.UI.Window
 		internal SaveFileDialog dlgSaveSingleImage;
 		internal FolderBrowserDialog dlgSaveAllImages;
 		internal FlowLayoutPanel flpScreenshots;
+
+	    private frmMain _mainForm;
+	    public ScreenshotManagerWindow(frmMain mainForm)
+	    {
+	        _mainForm = mainForm;
+	    }
 				
 		private void InitializeComponent()
 		{
@@ -190,7 +196,7 @@ namespace mRemoteNG.UI.Window
 				nBtn.Location = new Point(nPB.Width - nBtn.Width, -1);
 				nBtn.Show();
 						
-				Show(frmMain.Default.pnlDock);
+				Show(_mainForm.pnlDock);
 			}
 			catch (Exception ex)
 			{

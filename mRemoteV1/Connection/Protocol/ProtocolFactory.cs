@@ -10,14 +10,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using mRemoteNG.My;
+using mRemoteNG.UI.Forms;
 
 namespace mRemoteNG.Connection.Protocol
 {
     public class ProtocolFactory
     {
-        public ProtocolFactory()
-        {
 
+        private frmMain _mainForm;
+        public ProtocolFactory(frmMain mainForm)
+        {
+            _mainForm = mainForm;
         }
 
         public ProtocolBase CreateProtocol(ConnectionInfo connectionInfo)
@@ -26,7 +29,7 @@ namespace mRemoteNG.Connection.Protocol
 			switch (connectionInfo.Protocol)
 			{
 				case ProtocolType.RDP:
-					newProtocol = new ProtocolRDP();
+					newProtocol = new ProtocolRDP(_mainForm);
 					((ProtocolRDP) newProtocol).tmrReconnect.Elapsed += ((ProtocolRDP) newProtocol).tmrReconnect_Elapsed;
 					break;
 				case ProtocolType.VNC:

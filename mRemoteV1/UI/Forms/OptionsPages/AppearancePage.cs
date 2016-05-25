@@ -7,8 +7,10 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 {
     public partial class AppearancePage
     {
-        public AppearancePage()
+        private frmMain _mainform;
+        public AppearancePage(frmMain mainForm)
         {
+            _mainform = mainForm;
             InitializeComponent();
         }
 
@@ -73,7 +75,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
             Settings.Default.ShowDescriptionTooltipsInTree = chkShowDescriptionTooltipsInTree.Checked;
             Settings.Default.ShowCompleteConsPathInTitle = chkShowFullConnectionsFilePathInTitle.Checked;
-            frmMain.Default.ShowFullPathInTitle = chkShowFullConnectionsFilePathInTitle.Checked;
+            _mainform.ShowFullPathInTitle = chkShowFullConnectionsFilePathInTitle.Checked;
 
             Settings.Default.ShowSystemTrayIcon = chkShowSystemTrayIcon.Checked;
             if (Settings.Default.ShowSystemTrayIcon)

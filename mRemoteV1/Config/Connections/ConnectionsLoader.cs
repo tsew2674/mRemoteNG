@@ -133,9 +133,10 @@ namespace mRemoteNG.Config.Connections
 						
 				_sqlRd.Read();
 						
-				if (_sqlRd.HasRows == false)
+				if (!_sqlRd.HasRows)
 				{
-                    Runtime.SaveConnections();
+				    var runtime = new Runtime(_mainForm);
+                    runtime.SaveConnections();
 							
 					_sqlQuery = new SqlCommand("SELECT * FROM tblRoot", _sqlCon);
 					_sqlRd = _sqlQuery.ExecuteReader(CommandBehavior.CloseConnection);
@@ -148,11 +149,11 @@ namespace mRemoteNG.Config.Connections
 				if (_confVersion > maxSupportedSchemaVersion)
 				{
                     CTaskDialog.ShowTaskDialogBox(
-                        frmMain.Default, 
+                        _mainForm, 
                         Application.ProductName, 
                         "Incompatible database schema",
                         $"The database schema on the server is not supported. Please upgrade to a newer version of {Application.ProductName}.", 
-                        string.Format("Schema Version: {1}{0}Highest Supported Version: {2}", Environment.NewLine, _confVersion.ToString(), maxSupportedSchemaVersion.ToString()), 
+                        string.Format("Schema Version: {1}{0}Highest Supported Version: {2}", Environment.NewLine, _confVersion.ToString(CultureInfo.InvariantCulture), maxSupportedSchemaVersion.ToString(CultureInfo.InvariantCulture)), 
                         "", 
                         "", 
                         "", 
@@ -206,20 +207,23 @@ namespace mRemoteNG.Config.Connections
                 Windows.treeForm.tvConnections.EndUpdate();
 						
 				//open connections from last mremote session
-				if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)
-				{
-					foreach (ConnectionInfo conI in ConnectionList)
-					{
-						if (conI.PleaseConnect == true)
-						{
-                            Runtime.OpenConnection(conI);
-						}
-					}
-				}
+			    if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)
+			    {
+			        foreach (ConnectionInfo conI in ConnectionList)
+			        {
+			            if (conI.PleaseConnect)
+			            {
 
-                Runtime.IsConnectionsFileLoaded = true;
-                Windows.treeForm.InitialRefresh();
-				SetSelectedNode(_selectedTreeNode);
+			                //Runtime.OpenConnection(conI);
+			                var runtime = new Runtime(_mainForm);
+			                runtime.OpenConnection(conI);
+			            }
+			        }
+
+			        Runtime.IsConnectionsFileLoaded = true;
+			        Windows.treeForm.InitialRefresh();
+			        SetSelectedNode(_selectedTreeNode);
+			    }
 			}
 			catch (Exception)
 			{
@@ -668,7 +672,7 @@ namespace mRemoteNG.Config.Connections
 				if (_confVersion > maxSupportedConfVersion)
 				{
                     CTaskDialog.ShowTaskDialogBox(
-                        frmMain.Default,
+                        _mainForm,
                         Application.ProductName, 
                         "Incompatible connection file format", 
                         string.Format("The format of this connection file is not supported. Please upgrade to a newer version of {0}.", Application.ProductName), 
@@ -772,9 +776,11 @@ namespace mRemoteNG.Config.Connections
 				{
 					foreach (ConnectionInfo conI in ConnectionList)
 					{
-						if (conI.PleaseConnect == true)
+						if (conI.PleaseConnect)
 						{
-							Runtime.OpenConnection(conI);
+							//Runtime.OpenConnection(conI);
+                            var runtime = new Runtime(_mainForm);
+                            runtime.OpenConnection(conI);
 						}
 					}
 				}

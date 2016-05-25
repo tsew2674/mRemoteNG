@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.App;
+using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.UI.Window
@@ -9,9 +10,12 @@ namespace mRemoteNG.UI.Window
 	public partial class ActiveDirectoryImportWindow : BaseWindow
 	{
         #region Constructors
-		public ActiveDirectoryImportWindow(DockContent panel)
+
+	    private frmMain _mainForm;
+		public ActiveDirectoryImportWindow(DockContent panel, frmMain mainForm)
 		{
-			InitializeComponent();
+		    _mainForm = mainForm;
+            InitializeComponent();
 			Runtime.FontOverride(this);
 			WindowType = WindowType.ActiveDirectoryImport;
 			DockPnl = panel;
@@ -27,14 +31,15 @@ namespace mRemoteNG.UI.Window
 			EnableDisableImportButton();
 		}
 				
-		public void btnImport_Click(Object sender, EventArgs e)
+		public void btnImport_Click(object sender, EventArgs e)
 		{
-			Import.ImportFromActiveDirectory(ActiveDirectoryTree.ADPath);
+            var import = new Import(_mainForm);
+            import.ImportFromActiveDirectory(ActiveDirectoryTree.ADPath);
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 				
-		static public void txtDomain_PreviewKeyDown(Object sender, PreviewKeyDownEventArgs e)
+		public static void txtDomain_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
@@ -42,7 +47,7 @@ namespace mRemoteNG.UI.Window
 			}
 		}
 				
-		public void txtDomain_KeyDown(Object sender, KeyEventArgs e)
+		public void txtDomain_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter)
 			{
@@ -51,7 +56,7 @@ namespace mRemoteNG.UI.Window
 			}
 		}
 				
-		public void btnChangeDomain_Click(Object sender, EventArgs e)
+		public void btnChangeDomain_Click(object sender, EventArgs e)
 		{
 			ChangeDomain();
 		}

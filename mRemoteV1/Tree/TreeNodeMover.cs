@@ -2,36 +2,36 @@
 using mRemoteNG.Connection;
 using mRemoteNG.Container;
 using System.Windows.Forms;
+using mRemoteNG.UI.Forms;
 
 namespace mRemoteNG.Tree
 {
     public class TreeNodeMover
     {
         TreeNode _nodeBeingMoved;
-
-        public TreeNodeMover (TreeNode NodeBeingMoved)
+        private frmMain _mainForm;
+        public TreeNodeMover (TreeNode nodeBeingMoved, frmMain mainForm)
         {
-            _nodeBeingMoved = NodeBeingMoved;
+            _nodeBeingMoved = nodeBeingMoved;
+            _mainForm = mainForm;
         }
 
-        public void MoveNode(TreeNode TargetNode)
+        public void MoveNode(TreeNode targetNode)
         {
-            if (WeAreAllowedToMoveThisNode(TargetNode))
+            if (WeAreAllowedToMoveThisNode(targetNode))
             {
                 RemoveNodeFromCurrentLocation();
-                AddNodeToNewLocation(TargetNode);
+                AddNodeToNewLocation(targetNode);
                 UpdateParentReferences();
                 SelectTheNewNode();
-                Runtime.SaveConnectionsBG();
+                var runtime = new Runtime(_mainForm);
+                runtime.SaveConnectionsBg();
             }
         }
 
         private bool WeAreAllowedToMoveThisNode(TreeNode targetNode)
         {
-            bool weShouldMoveThisNode = true;
-
-            if (_nodeBeingMoved == targetNode)
-                weShouldMoveThisNode = false;
+            bool weShouldMoveThisNode = _nodeBeingMoved != targetNode;
             if (ConnectionTreeNode.GetNodeType(_nodeBeingMoved) == TreeNodeType.Root)
                 weShouldMoveThisNode = false;
             if (_nodeBeingMoved == targetNode.Parent)

@@ -9,7 +9,14 @@ namespace mRemoteNG.App
 {
 	public class Export
 	{
-		public static void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode, Form parentForm)
+	    private frmMain _mainForm;
+
+	    public Export(frmMain mainForm)
+	    {
+	        _mainForm = mainForm;
+	    }
+
+		public void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode)
 		{
 			try
 			{
@@ -30,7 +37,7 @@ namespace mRemoteNG.App
 						exportForm.SelectedConnection = selectedTreeNode;
 					}
 						
-					if (exportForm.ShowDialog(parentForm) != DialogResult.OK)
+					if (exportForm.ShowDialog(_mainForm) != DialogResult.OK)
 					{
 						return ;
 					}
@@ -64,7 +71,7 @@ namespace mRemoteNG.App
 			}
 		}
 			
-		private static void SaveExportFile(string fileName, ConnectionsSaver.Format saveFormat, TreeNode rootNode, Security.Save saveSecurity)
+		private void SaveExportFile(string fileName, ConnectionsSaver.Format saveFormat, TreeNode rootNode, Security.Save saveSecurity)
 		{
 			try
 			{
@@ -72,20 +79,22 @@ namespace mRemoteNG.App
 				{
                     Runtime.SqlConnProvider.Disable();
 				}
-					
-				ConnectionsSaver connectionsSave = new ConnectionsSaver();
-				connectionsSave.Export = true;
-				connectionsSave.ConnectionFileName = fileName;
-				connectionsSave.SaveFormat = saveFormat;
-                connectionsSave.ConnectionList = Runtime.ConnectionList;
-                connectionsSave.ContainerList = Runtime.ContainerList;
-				connectionsSave.RootTreeNode = rootNode;
-				connectionsSave.SaveSecurity = saveSecurity;
-				connectionsSave.SaveConnections();
+
+			    var connectionsSave = new ConnectionsSaver(_mainForm)
+			    {
+			        Export = true,
+			        ConnectionFileName = fileName,
+			        SaveFormat = saveFormat,
+			        ConnectionList = Runtime.ConnectionList,
+			        ContainerList = Runtime.ContainerList,
+			        RootTreeNode = rootNode,
+			        SaveSecurity = saveSecurity
+			    };
+			    connectionsSave.SaveConnections();
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(string.Format("Export.SaveExportFile(\"{0}\") failed.", fileName), ex);
+				Runtime.MessageCollector.AddExceptionMessage($"Export.SaveExportFile(\"{fileName}\") failed.", ex);
 			}
 			finally
 			{

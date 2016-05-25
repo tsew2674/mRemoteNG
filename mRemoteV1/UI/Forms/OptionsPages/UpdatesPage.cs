@@ -20,8 +20,10 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         #endregion
 
-        public UpdatesPage()
+        private frmMain _mainForm;
+        public UpdatesPage(frmMain mainForm)
         {
+            _mainForm = mainForm;
             InitializeComponent();
         }
 
@@ -156,7 +158,8 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         public void btnUpdateCheckNow_Click(object sender, EventArgs e)
         {
-            Windows.Show(WindowType.Update);
+            var windows = new Windows(_mainForm);
+            windows.Show(WindowType.Update, _mainForm.pnlDock);
         }
 
         public void chkUseProxyForAutomaticUpdates_CheckedChanged(object sender, EventArgs e)

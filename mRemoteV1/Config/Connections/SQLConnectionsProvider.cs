@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Timers;
 using mRemoteNG.My;
+using mRemoteNG.UI.Forms;
 
 namespace mRemoteNG.Config.Connections
 {
@@ -14,13 +15,14 @@ namespace mRemoteNG.Config.Connections
         SqlUpdateTimer _updateTimer;
         SqlConnectionsUpdateChecker _sqlUpdateChecker;
 
-
-        public SqlConnectionsProvider()
+        private frmMain _mainForm;
+        public SqlConnectionsProvider(frmMain mainForm)
         {
+            _mainForm = mainForm;
             _updateTimer = new SqlUpdateTimer();
             _sqlUpdateChecker = new SqlConnectionsUpdateChecker();
             SqlUpdateTimer.SqlUpdateTimerElapsed += SqlUpdateTimer_SqlUpdateTimerElapsed;
-            SqlConnectionsUpdateChecker.SQLUpdateCheckFinished += SQLUpdateCheckFinished;
+            SqlConnectionsUpdateChecker.SQLUpdateCheckFinished += SqlUpdateCheckFinished;
         }
 
         ~SqlConnectionsProvider()
@@ -57,7 +59,7 @@ namespace mRemoteNG.Config.Connections
         private void DestroySQLUpdateHandlers()
         {
             SqlUpdateTimer.SqlUpdateTimerElapsed -= SqlUpdateTimer_SqlUpdateTimerElapsed;
-            SqlConnectionsUpdateChecker.SQLUpdateCheckFinished -= SQLUpdateCheckFinished;
+            SqlConnectionsUpdateChecker.SQLUpdateCheckFinished -= SqlUpdateCheckFinished;
         }
 
         private void SqlUpdateTimer_SqlUpdateTimerElapsed()
@@ -65,12 +67,14 @@ namespace mRemoteNG.Config.Connections
             _sqlUpdateChecker.IsDatabaseUpdateAvailableAsync();
         }
 
-        private void SQLUpdateCheckFinished(bool UpdateIsAvailable)
+        private void SqlUpdateCheckFinished(bool updateIsAvailable)
         {
-            if (UpdateIsAvailable)
+            if (updateIsAvailable)
             {
+                var runtime = new Runtime(_mainForm);
+                runtime.LoadConnectionsBg();
+
                 Runtime.MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strSqlUpdateCheckUpdateAvailable, true);
-                Runtime.LoadConnectionsBG();
             }
         }
     }

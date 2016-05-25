@@ -14,8 +14,10 @@ namespace mRemoteNG.UI.Forms
         private Dictionary<string, OptionsPage> _pages;
         private ImageList _pageIconImageList;
 
-        public frmOptions()
+        private frmMain _mainForm;
+        public frmOptions(frmMain mainForm)
         {
+            _mainForm = mainForm;
             InitializeComponent();
         }
 
@@ -56,11 +58,11 @@ namespace mRemoteNG.UI.Forms
         {
             _pages = new Dictionary<string, OptionsPage>();
             _pages.Add(typeof(StartupExitPage).Name, new StartupExitPage());
-            _pages.Add(typeof(AppearancePage).Name, new AppearancePage());
-            _pages.Add(typeof(TabsPanelsPage).Name, new TabsPanelsPage());
-            _pages.Add(typeof(ConnectionsPage).Name, new ConnectionsPage());
-            _pages.Add(typeof(SqlServerPage).Name, new SqlServerPage());
-            _pages.Add(typeof(UpdatesPage).Name, new UpdatesPage());
+            _pages.Add(typeof(AppearancePage).Name, new AppearancePage(_mainForm));
+            _pages.Add(typeof(TabsPanelsPage).Name, new TabsPanelsPage(_mainForm));
+            _pages.Add(typeof(ConnectionsPage).Name, new ConnectionsPage(_mainForm));
+            _pages.Add(typeof(SqlServerPage).Name, new SqlServerPage(_mainForm));
+            _pages.Add(typeof(UpdatesPage).Name, new UpdatesPage(_mainForm));
             _pages.Add(typeof(ThemePage).Name, new ThemePage());
             _pages.Add(typeof(AdvancedPage).Name, new AdvancedPage());
         }

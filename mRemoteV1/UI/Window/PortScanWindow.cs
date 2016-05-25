@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.App;
+using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.UI.Window
@@ -10,13 +11,17 @@ namespace mRemoteNG.UI.Window
 	public partial class PortScanWindow : BaseWindow
 	{
         #region Constructors
-		public PortScanWindow(DockContent panel, bool import)
+
+	    private frmMain _mainForm;
+		public PortScanWindow(DockContent panel, frmMain mainForm, bool import)
 		{
 			InitializeComponent();
 					
 			WindowType = WindowType.PortScan;
 			DockPnl = panel;
 			_import = import;
+		    _mainForm = mainForm;
+
 		}
         #endregion
 				
@@ -138,7 +143,8 @@ namespace mRemoteNG.UI.Window
 					hosts.Add(scanHost);
 				}
 			}
-			App.Import.ImportFromPortScan(hosts, protocol);
+            var import = new Import(_mainForm);
+            import.ImportFromPortScan(hosts, protocol);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

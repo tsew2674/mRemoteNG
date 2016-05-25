@@ -31,7 +31,8 @@ namespace mRemoteNG.Config.Settings
                     dc.Close();
                 }
 
-                Startup.CreatePanels();
+                var startUp = new Startup(_mainForm);
+                startUp.CreatePanels();
 
                 string oldPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + (new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.ProductName + "\\" + SettingsFileInfo.LayoutFileName;
                 string newPath = SettingsFileInfo.SettingsPath + "\\" + SettingsFileInfo.LayoutFileName;

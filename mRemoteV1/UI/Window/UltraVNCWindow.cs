@@ -1,5 +1,6 @@
 using System;
 using mRemoteNG.App;
+using mRemoteNG.UI.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 
@@ -7,6 +8,11 @@ namespace mRemoteNG.UI.Window
 {
 	public class UltraVNCWindow : BaseWindow
 	{
+	    private frmMain _mainForm;
+	    public UltraVNCWindow(frmMain mainForm)
+	    {
+	        _mainForm = mainForm;
+	    }
         #region Form Init
 		internal System.Windows.Forms.ToolStrip tsMain;
 		internal System.Windows.Forms.Panel pnlContainer;
@@ -15,56 +21,56 @@ namespace mRemoteNG.UI.Window
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UltraVNCWindow));
-			this.tsMain = new System.Windows.Forms.ToolStrip();
-			this.Load += new System.EventHandler(UltraVNCSC_Load);
-			this.btnDisconnect = new System.Windows.Forms.ToolStripButton();
-			this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
-			this.pnlContainer = new System.Windows.Forms.Panel();
-			this.tsMain.SuspendLayout();
-			this.SuspendLayout();
+			tsMain = new System.Windows.Forms.ToolStrip();
+			Load += new EventHandler(UltraVNCSC_Load);
+			btnDisconnect = new System.Windows.Forms.ToolStripButton();
+			btnDisconnect.Click += new EventHandler(btnDisconnect_Click);
+			pnlContainer = new System.Windows.Forms.Panel();
+			tsMain.SuspendLayout();
+			SuspendLayout();
 			//
 			//tsMain
 			//
-			this.tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.btnDisconnect});
-			this.tsMain.Location = new System.Drawing.Point(0, 0);
-			this.tsMain.Name = "tsMain";
-			this.tsMain.Size = new System.Drawing.Size(446, 25);
-			this.tsMain.TabIndex = 0;
-			this.tsMain.Text = "ToolStrip1";
+			tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {btnDisconnect});
+			tsMain.Location = new System.Drawing.Point(0, 0);
+			tsMain.Name = "tsMain";
+			tsMain.Size = new System.Drawing.Size(446, 25);
+			tsMain.TabIndex = 0;
+			tsMain.Text = "ToolStrip1";
 			//
 			//btnDisconnect
 			//
-			this.btnDisconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.btnDisconnect.Image = (System.Drawing.Image) (resources.GetObject("btnDisconnect.Image"));
-			this.btnDisconnect.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.btnDisconnect.Name = "btnDisconnect";
-			this.btnDisconnect.Size = new System.Drawing.Size(63, 22);
-			this.btnDisconnect.Text = "Disconnect";
+			btnDisconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			btnDisconnect.Image = (System.Drawing.Image) (resources.GetObject("btnDisconnect.Image"));
+			btnDisconnect.ImageTransparentColor = System.Drawing.Color.Magenta;
+			btnDisconnect.Name = "btnDisconnect";
+			btnDisconnect.Size = new System.Drawing.Size(63, 22);
+			btnDisconnect.Text = "Disconnect";
 			//
 			//pnlContainer
 			//
-			this.pnlContainer.Anchor = (System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			pnlContainer.Anchor = (System.Windows.Forms.AnchorStyles) (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right);
-			this.pnlContainer.Location = new System.Drawing.Point(0, 27);
-			this.pnlContainer.Name = "pnlContainer";
-			this.pnlContainer.Size = new System.Drawing.Size(446, 335);
-			this.pnlContainer.TabIndex = 1;
+			pnlContainer.Location = new System.Drawing.Point(0, 27);
+			pnlContainer.Name = "pnlContainer";
+			pnlContainer.Size = new System.Drawing.Size(446, 335);
+			pnlContainer.TabIndex = 1;
 			//
 			//UltraVNCSC
 			//
-			this.ClientSize = new System.Drawing.Size(446, 362);
-			this.Controls.Add(this.pnlContainer);
-			this.Controls.Add(this.tsMain);
-			this.Icon = Resources.UVNC_SC_Icon;
-			this.Name = "UltraVNCSC";
-			this.TabText = "UltraVNC SC";
-			this.Text = "UltraVNC SC";
-			this.tsMain.ResumeLayout(false);
-			this.tsMain.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+			ClientSize = new System.Drawing.Size(446, 362);
+			Controls.Add(pnlContainer);
+			Controls.Add(tsMain);
+			Icon = Resources.UVNC_SC_Icon;
+			Name = "UltraVNCSC";
+			TabText = "UltraVNC SC";
+			Text = "UltraVNC SC";
+			tsMain.ResumeLayout(false);
+			tsMain.PerformLayout();
+			ResumeLayout(false);
+			PerformLayout();
 					
 		}
         #endregion
@@ -76,14 +82,14 @@ namespace mRemoteNG.UI.Window
         #region Public Methods
 		public UltraVNCWindow(DockContent Panel)
 		{
-			this.WindowType = WindowType.UltraVNCSC;
-			this.DockPnl = Panel;
-			this.InitializeComponent();
+			WindowType = WindowType.UltraVNCSC;
+			DockPnl = Panel;
+			InitializeComponent();
 		}
         #endregion
 		
         #region Private Methods
-		private void UltraVNCSC_Load(object sender, System.EventArgs e)
+		private void UltraVNCSC_Load(object sender, EventArgs e)
 		{
 			ApplyLanguage();
 					
@@ -145,11 +151,12 @@ namespace mRemoteNG.UI.Window
 		//    StartListening()
 		//End Sub
 				
-		private void btnDisconnect_Click(System.Object sender, System.EventArgs e)
+		private void btnDisconnect_Click(object sender, EventArgs e)
 		{
 			//vnc.Dispose()
 			Dispose();
-			Windows.Show(WindowType.UltraVNCSC);
+            var windows = new Windows(_mainForm);
+            windows.Show(WindowType.UltraVNCSC, _mainForm.pnlDock);
 		}
         #endregion
 	}

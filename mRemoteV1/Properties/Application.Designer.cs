@@ -41,7 +41,7 @@ using mRemoteNG.UI.Forms;
 //		[global::System.Diagnostics.DebuggerStepThroughAttribute()]
 //        protected override void OnCreateMainForm()
 //		{
-//			this.MainForm = frmMain.Default;
+//			this.MainForm = _mainForm;
 //		}
 //	}
 //}

@@ -228,7 +228,7 @@ namespace mRemoteNG.App
         {
             try
             {
-                ConnectionWindow connectionForm = new ConnectionWindow(new DockContent(), _mainForm);
+                var connectionForm = new ConnectionWindow(new DockContent(), _mainForm);
                 BuildConnectionWindowContextMenu(connectionForm);
                 SetConnectionWindowTitle(title, connectionForm);
                 connectionForm.Show(_mainForm.pnlDock, DockState.Document);
@@ -260,8 +260,8 @@ namespace mRemoteNG.App
         private static void BuildConnectionWindowContextMenu(DockContent pnlcForm)
         {
             var cMen = new ContextMenuStrip();
-            ToolStripMenuItem cMenRen = CreateRenameMenuItem(pnlcForm);
-            ToolStripMenuItem cMenScreens = CreateScreensMenuItem(pnlcForm);
+            var cMenRen = CreateRenameMenuItem(pnlcForm);
+            var cMenScreens = CreateScreensMenuItem(pnlcForm);
             cMen.Items.AddRange(new ToolStripMenuItem[] { cMenRen, cMenScreens });
             pnlcForm.TabPageContextMenuStrip = cMen;
         }
@@ -281,7 +281,7 @@ namespace mRemoteNG.App
 
         private static ToolStripMenuItem CreateRenameMenuItem(DockContent pnlcForm)
         {
-            ToolStripMenuItem cMenRen = new ToolStripMenuItem();
+            var cMenRen = new ToolStripMenuItem();
             cMenRen.Text = Language.strRename;
             cMenRen.Image = Resources.Rename;
             cMenRen.Tag = pnlcForm;
@@ -293,10 +293,10 @@ namespace mRemoteNG.App
         {
             try
             {
-                ConnectionWindow conW = default(ConnectionWindow);
+                var conW = default(ConnectionWindow);
                 conW = (ConnectionWindow)((Control)sender).Tag;
 
-                string nTitle = Interaction.InputBox(Prompt: Language.strNewTitle + ":", DefaultResponse: Convert.ToString(((Control)((Control)sender).Tag).Text.Replace("&&", "&")));
+                var nTitle = Interaction.InputBox(Prompt: Language.strNewTitle + ":", DefaultResponse: Convert.ToString(((Control)((Control)sender).Tag).Text.Replace("&&", "&")));
 
                 if (!string.IsNullOrEmpty(nTitle))
                 {
@@ -313,12 +313,12 @@ namespace mRemoteNG.App
         {
             try
             {
-                ToolStripMenuItem cMenScreens = (ToolStripMenuItem)sender;
+                var cMenScreens = (ToolStripMenuItem)sender;
                 cMenScreens.DropDownItems.Clear();
 
-                for (int i = 0; i <= Screen.AllScreens.Length - 1; i++)
+                for (var i = 0; i <= Screen.AllScreens.Length - 1; i++)
                 {
-                    ToolStripMenuItem cMenScreen = new ToolStripMenuItem(Language.strScreen + " " + Convert.ToString(i + 1));
+                    var cMenScreen = new ToolStripMenuItem(Language.strScreen + " " + Convert.ToString(i + 1));
                     cMenScreen.Tag = new ArrayList();
                     cMenScreen.Image = Resources.Monitor_GoTo;
                     (cMenScreen.Tag as ArrayList).Add(Screen.AllScreens[i]);
@@ -339,10 +339,10 @@ namespace mRemoteNG.App
             DockContent panel = null;
             try
             {
-                IEnumerable tagEnumeration = (IEnumerable)((ToolStripMenuItem)sender).Tag;
+                var tagEnumeration = (IEnumerable)((ToolStripMenuItem)sender).Tag;
                 if (tagEnumeration != null)
                 {
-                    foreach (Object obj in tagEnumeration)
+                    foreach (var obj in tagEnumeration)
                     {
                         if (obj is Screen)
                         {
@@ -370,7 +370,7 @@ namespace mRemoteNG.App
             {
                 ConnectionList = new ConnectionList();
                 ContainerList = new ContainerList();
-                ConnectionsLoader connectionsLoader = new ConnectionsLoader();
+                var connectionsLoader = new ConnectionsLoader();
 
                 if (filename == GetDefaultStartupConnectionFileName())
                 {
@@ -385,9 +385,9 @@ namespace mRemoteNG.App
                 Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
                 // Use File.Open with FileMode.CreateNew so that we don't overwrite an existing file
-                using (FileStream fileStream = File.Open(filename, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+                using (var fileStream = File.Open(filename, FileMode.CreateNew, FileAccess.Write, FileShare.None))
                 {
-                    using (XmlTextWriter xmlTextWriter = new XmlTextWriter(fileStream, System.Text.Encoding.UTF8))
+                    using (var xmlTextWriter = new XmlTextWriter(fileStream, System.Text.Encoding.UTF8))
                     {
                         xmlTextWriter.Formatting = Formatting.Indented;
                         xmlTextWriter.Indentation = 4;
@@ -420,31 +420,30 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void LoadConnectionsBG(bool WithDialog = false, bool Update = false)
+        public void LoadConnectionsBg(bool withDialog = false, bool update = false)
         {
             _withDialog = false;
             _loadUpdate = true;
 
-            Thread t = new Thread(LoadConnectionsBGd);
+            var t = new Thread(LoadConnectionsBGd);
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
 
-        private static bool _withDialog = false;
-        private static bool _loadUpdate = false;
-        private static void LoadConnectionsBGd()
+        private static bool _withDialog;
+        private static bool _loadUpdate;
+        private void LoadConnectionsBGd()
         {
             LoadConnections(_withDialog, _loadUpdate);
         }
 
-        public static void LoadConnections(bool withDialog = false, bool update = false)
+        public void LoadConnections(bool withDialog = false, bool update = false)
         {
-            ConnectionsLoader connectionsLoader = new ConnectionsLoader();
+            var connectionsLoader = new ConnectionsLoader(_mainForm);
             try
             {
                 // disable sql update checking while we are loading updates
-                if (SqlConnProvider != null)
-                    SqlConnProvider.Disable();
+                SqlConnProvider?.Disable();
 
                 if (ConnectionList != null && ContainerList != null)
                 {
@@ -459,7 +458,7 @@ namespace mRemoteNG.App
                 {
                     if (withDialog)
                     {
-                        OpenFileDialog loadDialog = Tools.Controls.ConnectionsLoadDialog();
+                        var loadDialog = Tools.Controls.ConnectionsLoadDialog();
                         if (loadDialog.ShowDialog() == DialogResult.OK)
                         {
                             connectionsLoader.ConnectionFileName = loadDialog.FileName;
@@ -530,7 +529,7 @@ namespace mRemoteNG.App
                 if (Settings.Default.UseSQLServer)
                 {
                     MessageCollector.AddExceptionMessage(Language.strLoadFromSqlFailed, ex);
-                    string commandButtons = string.Join("|", new[] { Language.strCommandTryAgain, Language.strCommandOpenConnectionFile, string.Format(Language.strCommandExitProgram, Application.ProductName) });
+                    var commandButtons = string.Join("|", new[] { Language.strCommandTryAgain, Language.strCommandOpenConnectionFile, string.Format(Language.strCommandExitProgram, Application.ProductName) });
                     CTaskDialog.ShowCommandBox(Application.ProductName, Language.strLoadFromSqlFailed, Language.strLoadFromSqlFailedContent, MiscTools.GetExceptionMessageRecursive(ex), "", "", commandButtons, false, ESysIcons.Error, ESysIcons.Error);
                     switch (CTaskDialog.CommandButtonResult)
                     {
@@ -577,7 +576,7 @@ namespace mRemoteNG.App
 
             try
             {
-                string backupFileName = string.Format(Settings.Default.BackupFileNameFormat, fileName, DateTime.UtcNow);
+                var backupFileName = string.Format(Settings.Default.BackupFileNameFormat, fileName, DateTime.UtcNow);
                 File.Copy(fileName, backupFileName);
                 PruneBackupFiles(fileName);
             }
@@ -590,16 +589,16 @@ namespace mRemoteNG.App
 
         protected static void PruneBackupFiles(string baseName)
         {
-            string fileName = Path.GetFileName(baseName);
-            string directoryName = Path.GetDirectoryName(baseName);
+            var fileName = Path.GetFileName(baseName);
+            var directoryName = Path.GetDirectoryName(baseName);
 
             if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(directoryName))
             {
                 return;
             }
 
-            string searchPattern = string.Format(Settings.Default.BackupFileNameFormat, fileName, "*");
-            string[] files = Directory.GetFiles(directoryName, searchPattern);
+            var searchPattern = string.Format(Settings.Default.BackupFileNameFormat, fileName, "*");
+            var files = Directory.GetFiles(directoryName, searchPattern);
 
             if (files.Length <= Settings.Default.BackupFileKeepCount)
             {
@@ -609,7 +608,7 @@ namespace mRemoteNG.App
             Array.Sort(files);
             Array.Resize(ref files, files.Length - Settings.Default.BackupFileKeepCount);
 
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 File.Delete(file);
             }
@@ -617,7 +616,7 @@ namespace mRemoteNG.App
 
         public static string GetDefaultStartupConnectionFileName()
         {
-            string newPath = ConnectionsFileInfo.DefaultConnectionsPath + "\\" + ConnectionsFileInfo.DefaultConnectionsFile;
+            var newPath = ConnectionsFileInfo.DefaultConnectionsPath + "\\" + ConnectionsFileInfo.DefaultConnectionsFile;
 #if !PORTABLE
 			string oldPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + Application.ProductName + "\\" + ConnectionsFileInfo.DefaultConnectionsFile;
 			if (File.Exists(oldPath))
@@ -628,36 +627,33 @@ namespace mRemoteNG.App
             return newPath;
         }
 
-        public static string GetStartupConnectionFileName()
+        public string GetStartupConnectionFileName()
         {
-            if (Settings.Default.LoadConsFromCustomLocation == false)
+            if (!Settings.Default.LoadConsFromCustomLocation)
             {
                 return GetDefaultStartupConnectionFileName();
             }
-            else
-            {
-                return Settings.Default.CustomConsPath;
-            }
+            return Settings.Default.CustomConsPath;
         }
 
-        public static void SaveConnectionsBG()
+        public void SaveConnectionsBg()
         {
             _saveUpdate = true;
-            Thread t = new Thread(SaveConnectionsBGd);
+            var t = new Thread(SaveConnectionsBGd);
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
         }
 
-        private static bool _saveUpdate = false;
+        private static bool _saveUpdate;
         private static object _saveLock = new object();
-        private static void SaveConnectionsBGd()
+        private void SaveConnectionsBGd()
         {
             Monitor.Enter(_saveLock);
             SaveConnections(_saveUpdate);
             Monitor.Exit(_saveLock);
         }
 
-        public static void SaveConnections(bool Update = false)
+        public void SaveConnections(bool update = false)
         {
             if (!IsConnectionsFileLoaded)
             {
@@ -666,7 +662,7 @@ namespace mRemoteNG.App
 
             try
             {
-                if (Update && Settings.Default.UseSQLServer == false)
+                if (update && Settings.Default.UseSQLServer == false)
                 {
                     return;
                 }
@@ -676,7 +672,7 @@ namespace mRemoteNG.App
                     SqlConnProvider.Disable();
                 }
 
-                ConnectionsSaver conS = new ConnectionsSaver();
+                var conS = new ConnectionsSaver(_mainForm);
 
                 if (!Settings.Default.UseSQLServer)
                 {
@@ -691,11 +687,11 @@ namespace mRemoteNG.App
 
                 if (Settings.Default.UseSQLServer)
                 {
-                    conS.SaveFormat = ConnectionsSaver.Format.SQL;
-                    conS.SQLHost = Convert.ToString(Settings.Default.SQLHost);
-                    conS.SQLDatabaseName = Convert.ToString(Settings.Default.SQLDatabaseName);
-                    conS.SQLUsername = Convert.ToString(Settings.Default.SQLUser);
-                    conS.SQLPassword = Security.Crypt.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
+                    conS.SaveFormat = ConnectionsSaver.Format.Sql;
+                    conS.SqlHost = Convert.ToString(Settings.Default.SQLHost);
+                    conS.SqlDatabaseName = Convert.ToString(Settings.Default.SQLDatabaseName);
+                    conS.SqlUsername = Convert.ToString(Settings.Default.SQLUser);
+                    conS.SqlPassword = Security.Crypt.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
                 }
 
                 conS.SaveConnections();
@@ -720,34 +716,31 @@ namespace mRemoteNG.App
 
         public void SaveConnectionsAs()
         {
-            ConnectionsSaver connectionsSave = new ConnectionsSaver();
+            var connectionsSave = new ConnectionsSaver(_mainForm);
 
             try
             {
-                if (SqlConnProvider != null)
-                {
-                    SqlConnProvider.Disable();
-                }
+                SqlConnProvider?.Disable();
 
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                using (var saveFileDialog = new SaveFileDialog())
                 {
                     saveFileDialog.CheckPathExists = true;
                     saveFileDialog.InitialDirectory = ConnectionsFileInfo.DefaultConnectionsPath;
                     saveFileDialog.FileName = ConnectionsFileInfo.DefaultConnectionsFile;
                     saveFileDialog.OverwritePrompt = true;
 
-                    List<string> fileTypes = new List<string>();
+                    var fileTypes = new List<string>();
                     fileTypes.AddRange(new[] { Language.strFiltermRemoteXML, "*.xml" });
                     fileTypes.AddRange(new[] { Language.strFilterAll, "*.*" });
 
                     saveFileDialog.Filter = string.Join("|", fileTypes.ToArray());
 
-                    if (!(saveFileDialog.ShowDialog(frmMain.Default) == DialogResult.OK))
+                    if (!(saveFileDialog.ShowDialog(_mainForm) == DialogResult.OK))
                     {
                         return;
                     }
 
-                    connectionsSave.SaveFormat = ConnectionsSaver.Format.mRXML;
+                    connectionsSave.SaveFormat = ConnectionsSaver.Format.MRxml;
                     connectionsSave.ConnectionFileName = saveFileDialog.FileName;
                     connectionsSave.Export = false;
                     connectionsSave.SaveSecurity = new Security.Save();
@@ -785,13 +778,13 @@ namespace mRemoteNG.App
         {
             try
             {
-                Uri uri = new Uri("dummyscheme" + Uri.SchemeDelimiter + connectionString);
+                var uri = new Uri("dummyscheme" + Uri.SchemeDelimiter + connectionString);
                 if (string.IsNullOrEmpty(uri.Host))
                 {
                     return null;
                 }
 
-                ConnectionInfo newConnectionInfo = new ConnectionInfo();
+                var newConnectionInfo = new ConnectionInfo();
 
                 if (Settings.Default.IdentifyQuickConnectTabs)
                 {
@@ -823,7 +816,7 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection()
+        public void OpenConnection()
         {
             try
             {
@@ -835,7 +828,7 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo.Force Force)
+        public void OpenConnection(ConnectionInfo.Force force)
         {
             try
             {
@@ -846,7 +839,7 @@ namespace mRemoteNG.App
 
                 if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
                 {
-                    OpenConnection((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, Force);
+                    OpenConnection((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, force);
                 }
                 else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
                 {
@@ -856,7 +849,7 @@ namespace mRemoteNG.App
                         {
                             if (tNode.Tag != null)
                             {
-                                OpenConnection((ConnectionInfo)tNode.Tag, Force);
+                                OpenConnection((ConnectionInfo)tNode.Tag, force);
                             }
                         }
                     }
@@ -868,11 +861,11 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo)
+        public void OpenConnection(ConnectionInfo connectionInfo)
         {
             try
             {
-                OpenConnection(ConnectionInfo, ConnectionInfo.Force.None);
+                OpenConnection(connectionInfo, ConnectionInfo.Force.None);
             }
             catch (Exception ex)
             {
@@ -880,11 +873,11 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo, Form ConnectionForm)
+        public void OpenConnection(ConnectionInfo connectionInfo, Form connectionForm)
         {
             try
             {
-                OpenConnectionFinal(ConnectionInfo, ConnectionInfo.Force.None, ConnectionForm);
+                OpenConnectionFinal(connectionInfo, ConnectionInfo.Force.None, connectionForm);
             }
             catch (Exception ex)
             {
@@ -892,11 +885,11 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo, Form ConnectionForm, ConnectionInfo.Force Force)
+        public void OpenConnection(ConnectionInfo connectionInfo, Form connectionForm, ConnectionInfo.Force force)
         {
             try
             {
-                OpenConnectionFinal(ConnectionInfo, Force, ConnectionForm);
+                OpenConnectionFinal(connectionInfo, force, connectionForm);
             }
             catch (Exception ex)
             {
@@ -904,11 +897,11 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force)
+        public void OpenConnection(ConnectionInfo connectionInfo, ConnectionInfo.Force force)
         {
             try
             {
-                OpenConnectionFinal(ConnectionInfo, Force, null);
+                OpenConnectionFinal(connectionInfo, force, null);
             }
             catch (Exception ex)
             {
@@ -916,53 +909,53 @@ namespace mRemoteNG.App
             }
         }
 
-        private static void OpenConnectionFinal(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force, Form ConForm)
+        private void OpenConnectionFinal(ConnectionInfo connectionInfo, ConnectionInfo.Force force, Form conForm)
         {
             try
             {
-                if (ConnectionInfo.Hostname == "" && ConnectionInfo.Protocol != ProtocolType.IntApp)
+                if (connectionInfo.Hostname == "" && connectionInfo.Protocol != ProtocolType.IntApp)
                 {
                     MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strConnectionOpenFailedNoHostname);
                     return;
                 }
 
-                StartPreConnectionExternalApp(ConnectionInfo);
+                StartPreConnectionExternalApp(connectionInfo);
 
-                if ((Force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
+                if ((force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
                 {
-                    if (SwitchToOpenConnection(ConnectionInfo))
+                    if (SwitchToOpenConnection(connectionInfo))
                     {
                         return;
                     }
                 }
 
-                ProtocolFactory protocolFactory = new ProtocolFactory();
-                ProtocolBase newProtocol = protocolFactory.CreateProtocol(ConnectionInfo);
+                var protocolFactory = new ProtocolFactory(_mainForm);
+                var newProtocol = protocolFactory.CreateProtocol(connectionInfo);
 
-                string connectionPanel = SetConnectionPanel(ConnectionInfo, Force);
-                Form connectionForm = SetConnectionForm(ConForm, connectionPanel);
-                Control connectionContainer = SetConnectionContainer(ConnectionInfo, connectionForm);
+                var connectionPanel = SetConnectionPanel(connectionInfo, force);
+                var connectionForm = SetConnectionForm(conForm, connectionPanel);
+                var connectionContainer = SetConnectionContainer(connectionInfo, connectionForm);
                 SetConnectionFormEventHandlers(newProtocol, connectionForm);
                 SetConnectionEventHandlers(newProtocol);
-                BuildConnectionInterfaceController(ConnectionInfo, newProtocol, connectionContainer);
+                BuildConnectionInterfaceController(connectionInfo, newProtocol, connectionContainer);
 
-                newProtocol.Force = Force;
+                newProtocol.Force = force;
 
-                if (newProtocol.Initialize() == false)
+                if (!newProtocol.Initialize())
                 {
                     newProtocol.Close();
                     return;
                 }
 
-                if (newProtocol.Connect() == false)
+                if (!newProtocol.Connect())
                 {
                     newProtocol.Close();
                     return;
                 }
 
-                ConnectionInfo.OpenConnections.Add(newProtocol);
-                SetTreeNodeImages(ConnectionInfo);
-                frmMain.Default.SelectedConnection = ConnectionInfo;
+                connectionInfo.OpenConnections.Add(newProtocol);
+                SetTreeNodeImages(connectionInfo);
+                _mainForm.SelectedConnection = connectionInfo;
             }
             catch (Exception ex)
             {
@@ -970,9 +963,9 @@ namespace mRemoteNG.App
             }
         }
 
-        private static void BuildConnectionInterfaceController(ConnectionInfo ConnectionInfo, ProtocolBase newProtocol, Control connectionContainer)
+        private static void BuildConnectionInterfaceController(ConnectionInfo connectionInfo, ProtocolBase newProtocol, Control connectionContainer)
         {
-            newProtocol.InterfaceControl = new InterfaceControl(connectionContainer, newProtocol, ConnectionInfo);
+            newProtocol.InterfaceControl = new InterfaceControl(connectionContainer, newProtocol, connectionInfo);
         }
 
         private static void SetConnectionFormEventHandlers(ProtocolBase newProtocol, Form connectionForm)
@@ -980,42 +973,42 @@ namespace mRemoteNG.App
             newProtocol.Closed += ((ConnectionWindow)connectionForm).Prot_Event_Closed;
         }
 
-        private static Control SetConnectionContainer(ConnectionInfo ConnectionInfo, Form connectionForm)
+        private static Control SetConnectionContainer(ConnectionInfo connectionInfo, Form connectionForm)
         {
-            Control connectionContainer = default(Control);
-            connectionContainer = ((ConnectionWindow)connectionForm).AddConnectionTab(ConnectionInfo);
+            var connectionContainer = default(Control);
+            connectionContainer = ((ConnectionWindow)connectionForm).AddConnectionTab(connectionInfo);
 
-            if (ConnectionInfo.Protocol == ProtocolType.IntApp)
+            if (connectionInfo.Protocol == ProtocolType.IntApp)
             {
-                if (GetExtAppByName(ConnectionInfo.ExtApp).Icon != null)
-                    ((TabPage) connectionContainer).Icon = GetExtAppByName(ConnectionInfo.ExtApp).Icon;
+                if (GetExtAppByName(connectionInfo.ExtApp).Icon != null)
+                    ((TabPage) connectionContainer).Icon = GetExtAppByName(connectionInfo.ExtApp).Icon;
             }
             return connectionContainer;
         }
 
-        private static void SetTreeNodeImages(ConnectionInfo ConnectionInfo)
+        private static void SetTreeNodeImages(ConnectionInfo connectionInfo)
         {
-            if (ConnectionInfo.IsQuickConnect == false)
+            if (connectionInfo.IsQuickConnect == false)
             {
-                if (ConnectionInfo.Protocol != ProtocolType.IntApp)
+                if (connectionInfo.Protocol != ProtocolType.IntApp)
                 {
-                    ConnectionTreeNode.SetNodeImage(ConnectionInfo.TreeNode, TreeImageType.ConnectionOpen);
+                    ConnectionTreeNode.SetNodeImage(connectionInfo.TreeNode, TreeImageType.ConnectionOpen);
                 }
                 else
                 {
-                    ExternalTool extApp = GetExtAppByName(ConnectionInfo.ExtApp);
+                    var extApp = GetExtAppByName(connectionInfo.ExtApp);
                     if (extApp != null)
                     {
-                        if (extApp.TryIntegrate && ConnectionInfo.TreeNode != null)
+                        if (extApp.TryIntegrate && connectionInfo.TreeNode != null)
                         {
-                            ConnectionTreeNode.SetNodeImage(ConnectionInfo.TreeNode, TreeImageType.ConnectionOpen);
+                            ConnectionTreeNode.SetNodeImage(connectionInfo.TreeNode, TreeImageType.ConnectionOpen);
                         }
                     }
                 }
             }
         }
 
-        private static void SetConnectionEventHandlers(ProtocolBase newProtocol)
+        private void SetConnectionEventHandlers(ProtocolBase newProtocol)
         {
             newProtocol.Disconnected += Prot_Event_Disconnected;
             newProtocol.Connected += Prot_Event_Connected;
@@ -1023,29 +1016,25 @@ namespace mRemoteNG.App
             newProtocol.ErrorOccured += Prot_Event_ErrorOccured;
         }
 
-        private static Form SetConnectionForm(Form ConForm, string connectionPanel)
+        private Form SetConnectionForm(Form conForm, string connectionPanel)
         {
-            Form connectionForm = default(Form);
-            if (ConForm == null)
-                connectionForm = WindowList.FromString(connectionPanel);
-            else
-                connectionForm = ConForm;
+            var connectionForm = conForm ?? WindowList.FromString(connectionPanel);
 
             if (connectionForm == null)
                 connectionForm = AddPanel(connectionPanel);
             else
-                ((ConnectionWindow)connectionForm).Show(frmMain.Default.pnlDock);
+                ((ConnectionWindow)connectionForm).Show(_mainForm.pnlDock);
 
             connectionForm.Focus();
             return connectionForm;
         }
 
-        private static string SetConnectionPanel(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force)
+        private string SetConnectionPanel(ConnectionInfo connectionInfo, ConnectionInfo.Force force)
         {
-            string connectionPanel = "";
-            if (ConnectionInfo.Panel == "" || (Force & ConnectionInfo.Force.OverridePanel) == ConnectionInfo.Force.OverridePanel | Settings.Default.AlwaysShowPanelSelectionDlg)
+            var connectionPanel = "";
+            if (connectionInfo.Panel == "" || (force & ConnectionInfo.Force.OverridePanel) == ConnectionInfo.Force.OverridePanel | Settings.Default.AlwaysShowPanelSelectionDlg)
             {
-                frmChoosePanel frmPnl = new frmChoosePanel();
+                var frmPnl = new frmChoosePanel(_mainForm);
                 if (frmPnl.ShowDialog() == DialogResult.OK)
                 {
                     connectionPanel = frmPnl.Panel;
@@ -1053,31 +1042,31 @@ namespace mRemoteNG.App
             }
             else
             {
-                connectionPanel = ConnectionInfo.Panel;
+                connectionPanel = connectionInfo.Panel;
             }
             return connectionPanel;
         }
 
-        private static void StartPreConnectionExternalApp(ConnectionInfo ConnectionInfo)
+        private static void StartPreConnectionExternalApp(ConnectionInfo connectionInfo)
         {
-            if (ConnectionInfo.PreExtApp != "")
+            if (connectionInfo.PreExtApp != "")
             {
-                ExternalTool extA = GetExtAppByName(ConnectionInfo.PreExtApp);
+                var extA = GetExtAppByName(connectionInfo.PreExtApp);
                 if (extA != null)
                 {
-                    extA.Start(ConnectionInfo);
+                    extA.Start(connectionInfo);
                 }
             }
         }
 
-        public static bool SwitchToOpenConnection(ConnectionInfo nCi)
+        public bool SwitchToOpenConnection(ConnectionInfo nCi)
         {
-            InterfaceControl IC = FindConnectionContainer(nCi);
-            if (IC != null)
+            var ic = FindConnectionContainer(nCi);
+            if (ic != null)
             {
-                ((ConnectionWindow)IC.FindForm()).Focus();
-                ((ConnectionWindow)IC.FindForm()).Show(frmMain.Default.pnlDock);
-                TabPage tabPage = (TabPage)IC.Parent;
+                ((ConnectionWindow)ic.FindForm()).Focus();
+                ((ConnectionWindow)ic.FindForm()).Show(_mainForm.pnlDock);
+                var tabPage = (TabPage)ic.Parent;
                 tabPage.Selected = true;
                 return true;
             }
@@ -1086,27 +1075,27 @@ namespace mRemoteNG.App
         #endregion
 
         #region Event Handlers
-        public static void Prot_Event_Disconnected(object sender, string DisconnectedMessage)
+        public static void Prot_Event_Disconnected(object sender, string disconnectedMessage)
         {
             try
             {
-                MessageCollector.AddMessage(MessageClass.InformationMsg, string.Format(Language.strProtocolEventDisconnected, DisconnectedMessage), true);
+                MessageCollector.AddMessage(MessageClass.InformationMsg, string.Format(Language.strProtocolEventDisconnected, disconnectedMessage), true);
 
-                ProtocolBase Prot = (ProtocolBase)sender;
-                if (Prot.InterfaceControl.Info.Protocol == ProtocolType.RDP)
+                var prot = (ProtocolBase)sender;
+                if (prot.InterfaceControl.Info.Protocol == ProtocolType.RDP)
                 {
-                    string[] Reason = DisconnectedMessage.Split("\r\n".ToCharArray());
-                    string ReasonCode = Reason[0];
-                    string ReasonDescription = Reason[1];
-                    if (Convert.ToInt32(ReasonCode) > 3)
+                    var reason = disconnectedMessage.Split("\r\n".ToCharArray());
+                    var reasonCode = reason[0];
+                    var reasonDescription = reason[1];
+                    if (Convert.ToInt32(reasonCode) > 3)
                     {
-                        if (!string.IsNullOrEmpty(ReasonDescription))
+                        if (!string.IsNullOrEmpty(reasonDescription))
                         {
-                            MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strRdpDisconnected + Environment.NewLine + ReasonDescription + Environment.NewLine + string.Format(Language.strErrorCode, ReasonCode));
+                            MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strRdpDisconnected + Environment.NewLine + reasonDescription + Environment.NewLine + string.Format(Language.strErrorCode, reasonCode));
                         }
                         else
                         {
-                            MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strRdpDisconnected + Environment.NewLine + string.Format(Language.strErrorCode, ReasonCode));
+                            MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strRdpDisconnected + Environment.NewLine + string.Format(Language.strErrorCode, reasonCode));
                         }
                     }
                 }
@@ -1121,22 +1110,22 @@ namespace mRemoteNG.App
         {
             try
             {
-                ProtocolBase Prot = (ProtocolBase)sender;
+                var prot = (ProtocolBase)sender;
                 MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strConnenctionCloseEvent, true);
-                MessageCollector.AddMessage(MessageClass.ReportMsg, string.Format(Language.strConnenctionClosedByUser, Prot.InterfaceControl.Info.Hostname, Prot.InterfaceControl.Info.Protocol.ToString(), Environment.UserName));
-                Prot.InterfaceControl.Info.OpenConnections.Remove(Prot);
+                MessageCollector.AddMessage(MessageClass.ReportMsg, string.Format(Language.strConnenctionClosedByUser, prot.InterfaceControl.Info.Hostname, prot.InterfaceControl.Info.Protocol.ToString(), Environment.UserName));
+                prot.InterfaceControl.Info.OpenConnections.Remove(prot);
 
-                if (Prot.InterfaceControl.Info.OpenConnections.Count < 1 && Prot.InterfaceControl.Info.IsQuickConnect == false)
+                if (prot.InterfaceControl.Info.OpenConnections.Count < 1 && prot.InterfaceControl.Info.IsQuickConnect == false)
                 {
-                    ConnectionTreeNode.SetNodeImage(Prot.InterfaceControl.Info.TreeNode, TreeImageType.ConnectionClosed);
+                    ConnectionTreeNode.SetNodeImage(prot.InterfaceControl.Info.TreeNode, TreeImageType.ConnectionClosed);
                 }
 
-                if (Prot.InterfaceControl.Info.PostExtApp != "")
+                if (prot.InterfaceControl.Info.PostExtApp != "")
                 {
-                    ExternalTool extA = GetExtAppByName(Prot.InterfaceControl.Info.PostExtApp);
+                    var extA = GetExtAppByName(prot.InterfaceControl.Info.PostExtApp);
                     if (extA != null)
                     {
-                        extA.Start(Prot.InterfaceControl.Info);
+                        extA.Start(prot.InterfaceControl.Info);
                     }
                 }
             }
@@ -1148,23 +1137,23 @@ namespace mRemoteNG.App
 
         public static void Prot_Event_Connected(object sender)
         {
-            ProtocolBase prot = (ProtocolBase)sender;
+            var prot = (ProtocolBase)sender;
             MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strConnectionEventConnected, true);
             MessageCollector.AddMessage(MessageClass.ReportMsg, string.Format(Language.strConnectionEventConnectedDetail, prot.InterfaceControl.Info.Hostname, prot.InterfaceControl.Info.Protocol.ToString(), Environment.UserName, prot.InterfaceControl.Info.Description, prot.InterfaceControl.Info.UserField));
         }
 
-        public static void Prot_Event_ErrorOccured(object sender, string ErrorMessage)
+        public static void Prot_Event_ErrorOccured(object sender, string errorMessage)
         {
             try
             {
                 MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strConnectionEventErrorOccured, true);
-                ProtocolBase Prot = (ProtocolBase)sender;
+                var prot = (ProtocolBase)sender;
 
-                if (Prot.InterfaceControl.Info.Protocol == ProtocolType.RDP)
+                if (prot.InterfaceControl.Info.Protocol == ProtocolType.RDP)
                 {
-                    if (Convert.ToInt32(ErrorMessage) > -1)
+                    if (Convert.ToInt32(errorMessage) > -1)
                     {
-                        MessageCollector.AddMessage(MessageClass.WarningMsg, string.Format(Language.strConnectionRdpErrorDetail, ErrorMessage, ProtocolRDP.FatalErrors.GetError(ErrorMessage)));
+                        MessageCollector.AddMessage(MessageClass.WarningMsg, string.Format(Language.strConnectionRdpErrorDetail, errorMessage, ProtocolRDP.FatalErrors.GetError(errorMessage)));
                     }
                 }
             }
@@ -1176,11 +1165,11 @@ namespace mRemoteNG.App
         #endregion
 
         #region External Apps
-        public static ExternalTool GetExtAppByName(string Name)
+        public static ExternalTool GetExtAppByName(string name)
         {
             foreach (ExternalTool extA in ExternalTools)
             {
-                if (extA.DisplayName == Name)
+                if (extA.DisplayName == name)
                     return extA;
             }
             return null;
@@ -1188,13 +1177,13 @@ namespace mRemoteNG.App
         #endregion
 
         #region Misc
-        public static void GoToURL(string URL)
+        public void GoToUrl(string url)
         {
-            ConnectionInfo connectionInfo = new ConnectionInfo();
+            var connectionInfo = new ConnectionInfo();
 
             connectionInfo.Name = "";
-            connectionInfo.Hostname = URL;
-            if (URL.StartsWith("https:"))
+            connectionInfo.Hostname = url;
+            if (url.StartsWith("https:"))
             {
                 connectionInfo.Protocol = ProtocolType.HTTPS;
             }
@@ -1207,32 +1196,32 @@ namespace mRemoteNG.App
             OpenConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
         }
 
-        public static void GoToWebsite()
+        public void GoToWebsite()
         {
-            GoToURL(GeneralAppInfo.UrlHome);
+            GoToUrl(GeneralAppInfo.UrlHome);
         }
 
-        public static void GoToDonate()
+        public void GoToDonate()
         {
-            GoToURL(GeneralAppInfo.UrlDonate);
+            GoToUrl(GeneralAppInfo.UrlDonate);
         }
 
-        public static void GoToForum()
+        public void GoToForum()
         {
-            GoToURL(GeneralAppInfo.UrlForum);
+            GoToUrl(GeneralAppInfo.UrlForum);
         }
 
-        public static void GoToBugs()
+        public void GoToBugs()
         {
-            GoToURL(GeneralAppInfo.UrlBugs);
+            GoToUrl(GeneralAppInfo.UrlBugs);
         }
 
-        public static void Report(string Text)
+        public void Report(string text)
         {
             try
             {
-                StreamWriter sWr = new StreamWriter(SettingsFileInfo.exePath + "\\Report.log", true);
-                sWr.WriteLine(Text);
+                var sWr = new StreamWriter(SettingsFileInfo.exePath + "\\Report.log", true);
+                sWr.WriteLine(text);
                 sWr.Close();
             }
             catch (Exception)
@@ -1248,7 +1237,7 @@ namespace mRemoteNG.App
             try
             {
                 streamReader = new StreamReader(SettingsFileInfo.exePath + "\\Report.log");
-                string text = streamReader.ReadToEnd();
+                var text = streamReader.ReadToEnd();
                 streamReader.Close();
                 streamWriter = new StreamWriter(GeneralAppInfo.ReportingFilePath, true);
                 streamWriter.Write(text);
@@ -1278,21 +1267,21 @@ namespace mRemoteNG.App
         {
             if (connectionInfo.OpenConnections.Count > 0)
             {
-                for (int i = 0; i <= WindowList.Count - 1; i++)
+                for (var i = 0; i <= WindowList.Count - 1; i++)
                 {
                     if (WindowList[i] is ConnectionWindow)
                     {
-                        ConnectionWindow connectionWindow = (ConnectionWindow)WindowList[i];
+                        var connectionWindow = (ConnectionWindow)WindowList[i];
                         if (connectionWindow.TabController != null)
                         {
                             foreach (TabPage t in connectionWindow.TabController.TabPages)
                             {
                                 if (t.Controls[0] != null && t.Controls[0] is InterfaceControl)
                                 {
-                                    InterfaceControl IC = (InterfaceControl)t.Controls[0];
-                                    if (IC.Info == connectionInfo)
+                                    var ic = (InterfaceControl)t.Controls[0];
+                                    if (ic.Info == connectionInfo)
                                     {
-                                        return IC;
+                                        return ic;
                                     }
                                 }
                             }
@@ -1306,10 +1295,10 @@ namespace mRemoteNG.App
         // Override the font of all controls in a container with the default font based on the OS version
         public static void FontOverride(Control ctlParent)
         {
-            Control ctlChild = default(Control);
-            foreach (Control tempLoopVar_ctlChild in ctlParent.Controls)
+            var ctlChild = default(Control);
+            foreach (Control tempLoopVarCtlChild in ctlParent.Controls)
             {
-                ctlChild = tempLoopVar_ctlChild;
+                ctlChild = tempLoopVarCtlChild;
                 ctlChild.Font = new Font(SystemFonts.MessageBoxFont.Name, ctlChild.Font.Size, ctlChild.Font.Style, ctlChild.Font.Unit, ctlChild.Font.GdiCharSet);
                 if (ctlChild.Controls.Count > 0)
                 {

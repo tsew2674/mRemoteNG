@@ -37,7 +37,7 @@ namespace mRemoteNG.App
             Windows.configForm = new ConfigWindow(Windows.configPanel);
             Windows.configPanel = Windows.configForm;
 
-            Windows.treeForm = new ConnectionTreeWindow(Windows.treePanel);
+            Windows.treeForm = new ConnectionTreeWindow(Windows.treePanel, _mainForm);
             Windows.treePanel = Windows.treeForm;
             ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
@@ -47,7 +47,7 @@ namespace mRemoteNG.App
             Windows.screenshotForm = new ScreenshotManagerWindow(Windows.screenshotPanel);
             Windows.screenshotPanel = Windows.screenshotForm;
 
-            Windows.updateForm = new UpdateWindow(Windows.updatePanel);
+            Windows.updateForm = new UpdateWindow(Windows.updatePanel, _mainForm);
             Windows.updatePanel = Windows.updateForm;
 
             Windows.AnnouncementForm = new AnnouncementWindow(Windows.AnnouncementPanel);
@@ -55,20 +55,20 @@ namespace mRemoteNG.App
         }
         //public static void SetDefaultLayout()
         //{
-            //frmMain.Default.pnlDock.Visible = false;
+            //_mainForm.pnlDock.Visible = false;
 
-            //frmMain.Default.pnlDock.DockLeftPortion = frmMain.Default.pnlDock.Width * 0.2;
-            //frmMain.Default.pnlDock.DockRightPortion = frmMain.Default.pnlDock.Width * 0.2;
-            //frmMain.Default.pnlDock.DockTopPortion = frmMain.Default.pnlDock.Height * 0.25;
-            //frmMain.Default.pnlDock.DockBottomPortion = frmMain.Default.pnlDock.Height * 0.25;
+            //_mainForm.pnlDock.DockLeftPortion = _mainForm.pnlDock.Width * 0.2;
+            //_mainForm.pnlDock.DockRightPortion = _mainForm.pnlDock.Width * 0.2;
+            //_mainForm.pnlDock.DockTopPortion = _mainForm.pnlDock.Height * 0.25;
+            //_mainForm.pnlDock.DockBottomPortion = _mainForm.pnlDock.Height * 0.25;
 
-            //Windows.treePanel.Show(frmMain.Default.pnlDock, DockState.DockLeft);
-            //Windows.configPanel.Show(frmMain.Default.pnlDock);
+            //Windows.treePanel.Show(_mainForm.pnlDock, DockState.DockLeft);
+            //Windows.configPanel.Show(_mainForm.pnlDock);
             //Windows.configPanel.DockTo(Windows.treePanel.Pane, DockStyle.Bottom, -1);
 
             //Windows.screenshotForm.Hide();
 
-            //frmMain.Default.pnlDock.Visible = true;
+            //_mainForm.pnlDock.Visible = true;
         //}
         public static void GetConnectionIcons()
         {
@@ -98,7 +98,7 @@ namespace mRemoteNG.App
                 LogApplicationData();
                 LogCmdLineArgs();
                 LogSystemData();
-                LogCLRData();
+                LogClrData();
                 LogCultureData();
             }
         }
@@ -172,9 +172,9 @@ namespace mRemoteNG.App
         {
             Runtime.Log.InfoFormat("Command Line: {0}", Environment.GetCommandLineArgs());
         }
-        private static void LogCLRData()
+        private static void LogClrData()
         {
-            Runtime.Log.InfoFormat("Microsoft .NET CLR {0}", Environment.Version.ToString());
+            Runtime.Log.InfoFormat("Microsoft .NET CLR {0}", Environment.Version);
         }
         private static void LogCultureData()
         {
@@ -182,39 +182,19 @@ namespace mRemoteNG.App
         }
 
 
-        public static void CreateConnectionsProvider()
+        public void CreateConnectionsProvider()
         {
-            if (Settings.Default.UseSQLServer == true)
+            if (Settings.Default.UseSQLServer)
             {
-                var _sqlConnectionsProvider = new SqlConnectionsProvider();
+                var _sqlConnectionsProvider = new SqlConnectionsProvider(_mainForm);
             }
         }
 
-        public static void CheckForUpdate()
+        private void GetUpdateInfoCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (_appUpdate == null)
+            if (_mainForm.InvokeRequired)
             {
-                _appUpdate = new AppUpdater();
-            }
-            else if (_appUpdate.IsGetUpdateInfoRunning)
-            {
-                return;
-            }
-
-            var nextUpdateCheck = Convert.ToDateTime(Settings.Default.CheckForUpdatesLastCheck.Add(TimeSpan.FromDays(Convert.ToDouble(Settings.Default.CheckForUpdatesFrequencyDays))));
-            if (!Settings.Default.UpdatePending && DateTime.UtcNow < nextUpdateCheck)
-            {
-                return;
-            }
-
-            _appUpdate.GetUpdateInfoCompletedEvent += GetUpdateInfoCompleted;
-            _appUpdate.GetUpdateInfoAsync();
-        }
-        private static void GetUpdateInfoCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            if (Runtime.MainForm.InvokeRequired)
-            {
-                Runtime.MainForm.Invoke(new AsyncCompletedEventHandler(GetUpdateInfoCompleted), new object[] { sender, e });
+                _mainForm.Invoke(new AsyncCompletedEventHandler(GetUpdateInfoCompleted), new object[] {sender, e});
                 return;
             }
 
@@ -233,7 +213,8 @@ namespace mRemoteNG.App
 
                 if (_appUpdate.IsUpdateAvailable())
                 {
-                    Windows.Show(WindowType.Update);
+                    var windows = new Windows(_mainForm);
+                    windows.Show(WindowType.Update, _mainForm.pnlDock);
                 }
             }
             catch (Exception ex)
@@ -243,7 +224,7 @@ namespace mRemoteNG.App
         }
 
 
-        public static void CheckForAnnouncement()
+        public void CheckForAnnouncement()
         {
             if (_appUpdate == null)
                 _appUpdate = new AppUpdater();
@@ -253,11 +234,14 @@ namespace mRemoteNG.App
             _appUpdate.GetAnnouncementInfoCompletedEvent += GetAnnouncementInfoCompleted;
             _appUpdate.GetAnnouncementInfoAsync();
         }
-        private static void GetAnnouncementInfoCompleted(object sender, AsyncCompletedEventArgs e)
+
+
+        private void GetAnnouncementInfoCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (MainForm.InvokeRequired)
+            
+            if (_mainForm.InvokeRequired)
             {
-                Runtime.MainForm.Invoke(new AsyncCompletedEventHandler(GetAnnouncementInfoCompleted), new object[] { sender, e });
+                _mainForm.Invoke(new AsyncCompletedEventHandler(GetAnnouncementInfoCompleted), new object[] { sender, e });
                 return;
             }
 
@@ -276,7 +260,8 @@ namespace mRemoteNG.App
 
                 if (_appUpdate.IsAnnouncementAvailable())
                 {
-                    Windows.Show(WindowType.Announcement);
+                    var windows = new Windows(_mainForm);
+                    windows.Show(WindowType.Announcement, _mainForm.pnlDock);
                 }
             }
             catch (Exception ex)

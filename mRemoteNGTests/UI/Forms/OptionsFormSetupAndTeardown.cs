@@ -20,23 +20,23 @@ namespace mRemoteNGTests.UI.Forms
         [OneTimeSetUp]
         public void OnetimeSetup()
         {
-            Runtime.MessageCollector = new MessageCollector(new ErrorAndInfoWindow(new DockContent()));
-            Runtime.Log = Logger.GetSingletonInstance();
+            //Runtime.MessageCollector = new MessageCollector(new ErrorAndInfoWindow(new DockContent()));
+            //Runtime.Log = Logger.GetSingletonInstance();
         }
 
         [SetUp]
         public void Setup()
         {
-            _optionsForm = new frmOptions();
-            _optionsForm.Show();
+            //_optionsForm = new frmOptions();
+            //_optionsForm.Show();
         }
 
         [TearDown]
         public void Teardown()
         {
-            _optionsForm.Dispose();
-            while (_optionsForm.Disposing) ;
-            _optionsForm = null;
+            //_optionsForm.Dispose();
+            //while (_optionsForm.Disposing) ;
+            //_optionsForm = null;
         }
     }
 }

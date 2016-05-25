@@ -15,9 +15,11 @@ namespace mRemoteNG.Messages
         private Timer _timer;
         private ErrorAndInfoWindow _MCForm;
 
-        public MessageCollector(ErrorAndInfoWindow messageCollectorForm)
+	    private frmMain _mainForm;
+        public MessageCollector(ErrorAndInfoWindow messageCollectorForm, frmMain mainForm)
         {
             _MCForm = messageCollectorForm;
+            _mainForm = mainForm;
             CreateTimer();
         }
 
@@ -112,7 +114,7 @@ namespace mRemoteNG.Messages
 
         private void SwitchToMessage()
         {
-            _MCForm.PreviousActiveForm = (WeifenLuo.WinFormsUI.Docking.DockContent)frmMain.Default.pnlDock.ActiveContent;
+            _MCForm.PreviousActiveForm = (WeifenLuo.WinFormsUI.Docking.DockContent)_mainForm.pnlDock.ActiveContent;
             ShowMCForm();
             _MCForm.lvErrorCollector.Focus();
             _MCForm.lvErrorCollector.SelectedItems.Clear();
@@ -141,14 +143,14 @@ namespace mRemoteNG.Messages
 		private delegate void ShowMCFormCB();
 		private void ShowMCForm()
 		{
-			if (frmMain.Default.pnlDock.InvokeRequired)
+			if (_mainForm.pnlDock.InvokeRequired)
 			{
 				ShowMCFormCB d = new ShowMCFormCB(ShowMCForm);
-				frmMain.Default.pnlDock.Invoke(d);
+				_mainForm.pnlDock.Invoke(d);
 			}
 			else
 			{
-				_MCForm.Show(frmMain.Default.pnlDock);
+				_MCForm.Show(_mainForm.pnlDock);
 			}
 		}
 
