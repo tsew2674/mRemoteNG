@@ -1132,7 +1132,20 @@ namespace mRemoteNG.UI.Forms
                     {
                         if (SysMenSubItems[i] == m.WParam.ToInt32())
                         {
-                            //TODO:Screens.SendFormToScreen(Screen.AllScreens[i]);
+                            bool wasMax = false;
+
+                            if (WindowState == FormWindowState.Maximized)
+                            {
+                                wasMax = true;
+                                WindowState = FormWindowState.Normal;
+                            }
+
+                            //Location = Screen.Bounds.Location;
+
+                            if (wasMax)
+                            {
+                                WindowState = FormWindowState.Maximized;
+                            }
                             break;
                         }
                     }
