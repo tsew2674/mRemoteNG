@@ -279,7 +279,7 @@ namespace mRemoteNG.Config.Connections
 		private delegate void SetSelectedNodeDelegate(TreeNode treeNode);
 		private static void SetSelectedNode(TreeNode treeNode)
 		{
-            if (ConnectionTree.TreeView != null && ConnectionTree.TreeView.InvokeRequired)
+            if (ConnectionTree.Instance.InvokeRequired)
 			{
                 Windows.treeForm.Invoke(new SetSelectedNodeDelegate(SetSelectedNode), new object[] { treeNode });
 				return ;

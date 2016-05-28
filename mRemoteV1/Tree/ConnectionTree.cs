@@ -8,32 +8,26 @@ using System.Windows.Forms;
 
 namespace mRemoteNG.Tree
 {
-    public class ConnectionTree
+    public class ConnectionTree : TreeView
     {
+        private static readonly ConnectionTree _instance = new ConnectionTree();
         private static TreeNode SetNodeToolTip_old_node;
         private static TreeNode treeNodeToBeSelected;
-        private static TreeView _TreeView;
 
-        public static TreeView TreeView
+
+        public static ConnectionTree Instance
         {
-            get { return _TreeView; }
-            set { _TreeView = value; }
+            get { return _instance; }
         }
 
-        public static TreeNode SelectedNode
+        private ConnectionTree()
         {
-            get
-            { 
-                return _TreeView.SelectedNode;
-            }
-            set
-            {
-                treeNodeToBeSelected = value;
-                SelectNode();
-            }
         }
 
-        public static void DeleteSelectedNode()
+        static ConnectionTree()
+        { }
+
+        public void DeleteSelectedNode()
         {
             try
             {
@@ -51,10 +45,10 @@ namespace mRemoteNG.Tree
                     {
                         if (UserConfirmsNonEmptyFolderDeletion())
                         {
-                            TreeView.BeginUpdate();
+                            BeginUpdate();
                             SelectedNode.Nodes.Clear();
                             SelectedNode.Remove();
-                            TreeView.EndUpdate();
+                            EndUpdate();
                         }
                     }
                 }
@@ -74,7 +68,7 @@ namespace mRemoteNG.Tree
             }
         }
 
-        private static bool SelectedNodeIsAValidDeletionTarget()
+        private bool SelectedNodeIsAValidDeletionTarget()
         {
             bool validDeletionTarget = true;
             if (SelectedNode == null)
@@ -87,49 +81,49 @@ namespace mRemoteNG.Tree
             return validDeletionTarget;
         }
 
-        private static bool UserConfirmsEmptyFolderDeletion()
+        private bool UserConfirmsEmptyFolderDeletion()
         {
             string messagePrompt = string.Format(Language.strConfirmDeleteNodeFolder, SelectedNode.Text);
             return PromptUser(messagePrompt);
         }
 
-        private static bool UserConfirmsNonEmptyFolderDeletion()
+        private bool UserConfirmsNonEmptyFolderDeletion()
         {
             string messagePrompt = string.Format(Language.strConfirmDeleteNodeFolderNotEmpty, SelectedNode.Text);
             return PromptUser(messagePrompt);
         }
 
-        private static bool UserConfirmsConnectionDeletion()
+        private bool UserConfirmsConnectionDeletion()
         {
             string messagePrompt = string.Format(Language.strConfirmDeleteNodeConnection, SelectedNode.Text);
             return PromptUser(messagePrompt);
         }
 
-        private static bool PromptUser(string PromptMessage)
+        private bool PromptUser(string PromptMessage)
         {
             DialogResult msgBoxResponse = MessageBox.Show(PromptMessage, Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             return (msgBoxResponse == DialogResult.Yes);
         }
 
-        public static void StartRenameSelectedNode()
+        public void StartRenameSelectedNode()
         {
             SelectedNode?.BeginEdit();
         }
 
-        public static void FinishRenameSelectedNode(string newName)
+        public void FinishRenameSelectedNode(string newName)
         {
             ConnectionInfo connectionInfo = SelectedNode.Tag as ConnectionInfo;
             if (connectionInfo != null)
                 ConnectionTreeNode.RenameNode(connectionInfo, newName);
         }
 
-        public static void SetNodeToolTip(MouseEventArgs e, ToolTip tTip)
+        public void SetNodeToolTip(MouseEventArgs e, ToolTip tTip)
         {
             try
             {
                 if (!Settings.Default.ShowDescriptionTooltipsInTree) return;
                 //Find the node under the mouse.
-                TreeNode new_node = _TreeView.GetNodeAt(e.X, e.Y);
+                TreeNode new_node = GetNodeAt(e.X, e.Y);
                 if (new_node == null || new_node.Equals(SetNodeToolTip_old_node))
                 {
                     return;
@@ -139,14 +133,14 @@ namespace mRemoteNG.Tree
                 //See if we have a node.
                 if (SetNodeToolTip_old_node == null)
                 {
-                    tTip.SetToolTip(_TreeView, "");
+                    tTip.SetToolTip(this, "");
                 }
                 else
                 {
                     //Get this node's object data.
                     if (ConnectionTreeNode.GetNodeType(SetNodeToolTip_old_node) == TreeNodeType.Connection)
                     {
-                        tTip.SetToolTip(_TreeView, ((ConnectionInfo) SetNodeToolTip_old_node.Tag).Description);
+                        tTip.SetToolTip(this, ((ConnectionInfo) SetNodeToolTip_old_node.Tag).Description);
                     }
                 }
             }
@@ -156,37 +150,37 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public static void ExpandAllNodes()
+        public void ExpandAllNodes()
         {
-            TreeView.BeginUpdate();
-            TreeView.ExpandAll();
-            TreeView.EndUpdate();
+            BeginUpdate();
+            ExpandAll();
+            EndUpdate();
         }
 
-        public static void CollapseAllNodes()
+        public void CollapseAllNodes()
         {
-            TreeView.BeginUpdate();
-            foreach (TreeNode treeNode in TreeView.Nodes[0].Nodes)
+            BeginUpdate();
+            foreach (TreeNode treeNode in Nodes[0].Nodes)
             {
                 treeNode.Collapse(false);
             }
-            TreeView.EndUpdate();
+            EndUpdate();
         }
 
-        public static void MoveNodeDown()
+        public void MoveNodeDown()
         {
             try
             {
                 if (SelectedNode?.NextNode == null) return;
-                TreeView.BeginUpdate();
-                TreeView.Sorted = false;
+                BeginUpdate();
+                Sorted = false;
 
                 TreeNode newNode = (TreeNode)SelectedNode.Clone();
                 SelectedNode.Parent.Nodes.Insert(SelectedNode.Index + 2, newNode);
                 SelectedNode.Remove();
                 SelectedNode = newNode;
 
-                TreeView.EndUpdate();
+                EndUpdate();
             }
             catch (Exception ex)
             {
@@ -194,20 +188,20 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public static void MoveNodeUp()
+        public void MoveNodeUp()
         {
             try
             {
                 if (SelectedNode?.PrevNode == null) return;
-                TreeView.BeginUpdate();
-                TreeView.Sorted = false;
+                BeginUpdate();
+                Sorted = false;
 
                 TreeNode newNode = (TreeNode)SelectedNode.Clone();
                 SelectedNode.Parent.Nodes.Insert(SelectedNode.Index - 1, newNode);
                 SelectedNode.Remove();
                 SelectedNode = newNode;
 
-                TreeView.EndUpdate();
+                EndUpdate();
             }
             catch (Exception ex)
             {
@@ -215,17 +209,14 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public static void Sort(TreeNode treeNode, SortOrder sorting)
+        public void Sort(TreeNode treeNode, SortOrder sorting)
         {
-            if (TreeView == null)
-                return;
-
-            TreeView.BeginUpdate();
+            BeginUpdate();
 
             if (treeNode == null)
             {
-                if (TreeView.Nodes.Count > 0)
-                    treeNode = TreeView.Nodes[0];
+                if (Nodes.Count > 0)
+                    treeNode = Nodes[0];
                 else
                     return;
             }
@@ -237,10 +228,10 @@ namespace mRemoteNG.Tree
             }
 
             Sort(treeNode, new TreeNodeSorter(sorting));
-            TreeView.EndUpdate();
+            EndUpdate();
         }
 
-        private static void Sort(TreeNode treeNode, TreeNodeSorter nodeSorter)
+        private void Sort(TreeNode treeNode, TreeNodeSorter nodeSorter)
         {
             // Adapted from http://www.codeproject.com/Tips/252234/ASP-NET-TreeView-Sort
             foreach (TreeNode childNode in treeNode.Nodes)
@@ -280,7 +271,7 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public static TreeNode Find(TreeNode treeNode, string searchFor)
+        public TreeNode Find(TreeNode treeNode, string searchFor)
         {
             
             try
@@ -305,12 +296,12 @@ namespace mRemoteNG.Tree
             return null;
         }
 
-        private static bool IsThisTheNodeWeAreSearchingFor(TreeNode treeNode, string searchFor)
+        private bool IsThisTheNodeWeAreSearchingFor(TreeNode treeNode, string searchFor)
         {
             return ((treeNode.Text.ToLower()).IndexOf(searchFor.ToLower()) + 1 > 0);
         }
 
-        public static TreeNode Find(TreeNode treeNode, ConnectionInfo conInfo)
+        public TreeNode Find(TreeNode treeNode, ConnectionInfo conInfo)
         {
             try
             {
@@ -333,33 +324,33 @@ namespace mRemoteNG.Tree
         }
 
         private delegate void ResetTreeDelegate();
-        public static void ResetTree()
+        public void ResetTree()
         {
-            if (TreeView.InvokeRequired)
+            if (InvokeRequired)
             {
                 ResetTreeDelegate resetTreeDelegate = ResetTree;
                 Windows.treeForm.Invoke(resetTreeDelegate);
             }
             else
             {
-                TreeView.BeginUpdate();
-                TreeView.Nodes.Clear();
-                TreeView.Nodes.Add(Language.strConnections);
-                TreeView.EndUpdate();
+                BeginUpdate();
+                Nodes.Clear();
+                Nodes.Add(Language.strConnections);
+                EndUpdate();
             }
         }
 
         private delegate void SelectNodeCB();
-        private static void SelectNode()
+        private void SelectNode()
         {
-            if (_TreeView.InvokeRequired)
+            if (InvokeRequired)
             {
                 SelectNodeCB d = SelectNode;
-                _TreeView.Invoke(d);
+                Invoke(d);
             }
             else
             {
-                _TreeView.SelectedNode = treeNodeToBeSelected;
+                SelectedNode = treeNodeToBeSelected;
             }
         }
     }

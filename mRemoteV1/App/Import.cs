@@ -111,8 +111,8 @@ namespace mRemoteNG.App
         {
             try
             {
-                var rootTreeNode = ConnectionTree.TreeView.Nodes[0];
-                var selectedTreeNode = ConnectionTree.TreeView.SelectedNode;
+                var rootTreeNode = ConnectionTree.Instance.Nodes[0];
+                var selectedTreeNode = ConnectionTree.Instance.SelectedNode;
 
                 var parentTreeNode = GetParentTreeNode(rootTreeNode, selectedTreeNode);
                 if (parentTreeNode == null)
@@ -142,8 +142,8 @@ namespace mRemoteNG.App
         {
             try
             {
-                var rootTreeNode = ConnectionTree.TreeView.Nodes[0];
-                var selectedTreeNode = ConnectionTree.TreeView.SelectedNode;
+                var rootTreeNode = ConnectionTree.Instance.Nodes[0];
+                var selectedTreeNode = ConnectionTree.Instance.SelectedNode;
 
                 var parentTreeNode = GetParentTreeNode(rootTreeNode, selectedTreeNode);
                 if (parentTreeNode == null)

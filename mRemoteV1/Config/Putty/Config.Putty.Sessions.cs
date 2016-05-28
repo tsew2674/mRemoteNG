@@ -15,14 +15,14 @@ namespace mRemoteNG.Config.Putty
 		private delegate void AddSessionsToTreeDelegate();
 		public static void AddSessionsToTree()
 		{
-            TreeView treeView = ConnectionTree.TreeView;
-			if (treeView == null)
+            TreeView connectionTree = ConnectionTree.Instance;
+			if (connectionTree == null)
 			{
 				return ;
 			}
-			if (treeView.InvokeRequired)
+			if (connectionTree.InvokeRequired)
 			{
-				treeView.Invoke(new AddSessionsToTreeDelegate(AddSessionsToTree));
+				connectionTree.Invoke(new AddSessionsToTreeDelegate(AddSessionsToTree));
 				return ;
 			}
 				
@@ -34,23 +34,23 @@ namespace mRemoteNG.Config.Putty
 				List<ConnectionInfo> savedSessions = new List<ConnectionInfo>(provider.GetSessions());
 				if (!IsProviderEnabled(provider) || savedSessions == null || savedSessions.Count == 0)
 				{
-					if (rootTreeNode != null && treeView.Nodes.Contains(rootTreeNode))
+					if (rootTreeNode != null && connectionTree.Nodes.Contains(rootTreeNode))
 					{
-						treeView.BeginUpdate();
-						treeView.Nodes.Remove(rootTreeNode);
-						treeView.EndUpdate();
+						connectionTree.BeginUpdate();
+						connectionTree.Nodes.Remove(rootTreeNode);
+						connectionTree.EndUpdate();
 					}
 					continue;
 				}
 					
-				if (!treeView.Nodes.Contains(rootTreeNode))
+				if (!connectionTree.Nodes.Contains(rootTreeNode))
 				{
 					if (!inUpdate)
 					{
-						treeView.BeginUpdate();
+						connectionTree.BeginUpdate();
 						inUpdate = true;
 					}
-					treeView.Nodes.Add(rootTreeNode);
+					connectionTree.Nodes.Add(rootTreeNode);
 				}
 					
 				List<TreeNode> newTreeNodes = new List<TreeNode>();
@@ -94,7 +94,7 @@ namespace mRemoteNG.Config.Putty
 					{
 						if (!inUpdate)
 						{
-							treeView.BeginUpdate();
+							connectionTree.BeginUpdate();
 							inUpdate = true;
 						}
 						rootTreeNode.Nodes.Remove(treeNode);
@@ -105,7 +105,7 @@ namespace mRemoteNG.Config.Putty
 				{
 					if (!inUpdate)
 					{
-						treeView.BeginUpdate();
+						connectionTree.BeginUpdate();
 						inUpdate = true;
 					}
 					rootTreeNode.Nodes.AddRange(newTreeNodes.ToArray());
@@ -113,9 +113,9 @@ namespace mRemoteNG.Config.Putty
 					
 				if (inUpdate)
 				{
-                    ConnectionTree.Sort(rootTreeNode, SortOrder.Ascending);
+                    ConnectionTree.Instance.Sort(rootTreeNode, SortOrder.Ascending);
 					rootTreeNode.Expand();
-					treeView.EndUpdate();
+					connectionTree.EndUpdate();
 				}
 			}
 		}

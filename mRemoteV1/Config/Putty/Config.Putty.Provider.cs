@@ -102,14 +102,9 @@ namespace mRemoteNG.Config.Putty
 		private delegate TreeNode  CreateRootTreeNodeDelegate();
 		protected virtual TreeNode CreateRootTreeNode()
 		{
-            TreeView treeView = ConnectionTree.TreeView;
-			if (treeView == null)
+			if (ConnectionTree.Instance.InvokeRequired)
 			{
-				return null;
-			}
-			if (treeView.InvokeRequired)
-			{
-				return (TreeNode)treeView.Invoke(new CreateRootTreeNodeDelegate(CreateRootTreeNode));
+				return (TreeNode)ConnectionTree.Instance.Invoke(new CreateRootTreeNodeDelegate(CreateRootTreeNode));
 			}
 				
 			TreeNode newTreeNode = new TreeNode();

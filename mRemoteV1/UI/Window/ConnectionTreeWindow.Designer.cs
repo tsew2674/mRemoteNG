@@ -1,6 +1,6 @@
+using mRemoteNG.Tree;
+using System.Windows.Forms;
 
-
-using mRemoteNG.My;
 
 namespace mRemoteNG.UI.Window
 {
@@ -43,14 +43,14 @@ namespace mRemoteNG.UI.Window
 		internal System.Windows.Forms.ToolStripMenuItem cMenTreeConnectWithOptionsDontConnectToConsoleSession;
 		internal System.Windows.Forms.ToolStripMenuItem mMenSortAscending;
 		internal System.Windows.Forms.ToolStripMenuItem mMenAddConnection;
-		internal System.Windows.Forms.ToolStripMenuItem mMenAddFolder;
-		public System.Windows.Forms.TreeView tvConnections;
+		internal ToolStripMenuItem mMenAddFolder;
+		public ConnectionTree tvConnections;
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
 			this.Load += new System.EventHandler(Tree_Load);
 			System.Windows.Forms.TreeNode TreeNode1 = new System.Windows.Forms.TreeNode("Connections");
-			this.tvConnections = new System.Windows.Forms.TreeView();
+			this.tvConnections = ConnectionTree.Instance;
 			this.tvConnections.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tvConnections_BeforeLabelEdit);
 			this.tvConnections.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tvConnections_AfterLabelEdit);
 			this.tvConnections.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvConnections_AfterSelect);

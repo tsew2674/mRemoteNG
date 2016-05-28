@@ -139,7 +139,7 @@ namespace mRemoteNG.UI.Window
 			{
 				cMenTreeDelete.ShortcutKeys = Keys.Delete;
 
-                ConnectionTree.FinishRenameSelectedNode(e.Label);
+                ConnectionTree.Instance.FinishRenameSelectedNode(e.Label);
                 Windows.configForm.pGrid_SelectedObjectChanged();
 				ShowHideTreeContextMenuItems(e.Node);
                 Runtime.SaveConnectionsBG();
@@ -212,8 +212,8 @@ namespace mRemoteNG.UI.Window
 				
 		static public void tvConnections_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection |
-                ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+            if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection |
+                ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 			{
                 Runtime.OpenConnection();
 			}
@@ -223,7 +223,7 @@ namespace mRemoteNG.UI.Window
 		{
 			try
 			{
-                ConnectionTree.SetNodeToolTip(e, DescriptionTooltip);
+                ConnectionTree.Instance.SetNodeToolTip(e, DescriptionTooltip);
 			}
 			catch (Exception ex)
 			{
@@ -561,7 +561,7 @@ namespace mRemoteNG.UI.Window
 		public void mMenSortAscending_Click(System.Object sender, EventArgs e)
 		{
 			tvConnections.BeginUpdate();
-            ConnectionTree.Sort(tvConnections.Nodes[0], SortOrder.Ascending);
+            ConnectionTree.Instance.Sort(tvConnections.Nodes[0], SortOrder.Ascending);
 			tvConnections.EndUpdate();
             Runtime.SaveConnectionsBG();
 		}
@@ -569,7 +569,7 @@ namespace mRemoteNG.UI.Window
 		public void cMenTreeToolsSortAscending_Click(System.Object sender, EventArgs e)
 		{
 			tvConnections.BeginUpdate();
-            ConnectionTree.Sort(tvConnections.SelectedNode, SortOrder.Ascending);
+            ConnectionTree.Instance.Sort(tvConnections.SelectedNode, SortOrder.Ascending);
 			tvConnections.EndUpdate();
             Runtime.SaveConnectionsBG();
 		}
@@ -577,7 +577,7 @@ namespace mRemoteNG.UI.Window
 		public void cMenTreeToolsSortDescending_Click(System.Object sender, EventArgs e)
 		{
 			tvConnections.BeginUpdate();
-            ConnectionTree.Sort(tvConnections.SelectedNode, SortOrder.Descending);
+            ConnectionTree.Instance.Sort(tvConnections.SelectedNode, SortOrder.Descending);
 			tvConnections.EndUpdate();
             Runtime.SaveConnectionsBG();
 		}
@@ -600,13 +600,13 @@ namespace mRemoteNG.UI.Window
 				
 		static public void cMenTreeRename_Click(System.Object sender, EventArgs e)
 		{
-            ConnectionTree.StartRenameSelectedNode();
+            ConnectionTree.Instance.StartRenameSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 				
 		static public void cMenTreeDelete_Click(System.Object sender, EventArgs e)
 		{
-            ConnectionTree.DeleteSelectedNode();
+            ConnectionTree.Instance.DeleteSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 				
@@ -631,13 +631,13 @@ namespace mRemoteNG.UI.Window
 		}
 		static public void cMenTreeMoveUp_Click(System.Object sender, EventArgs e)
 		{
-            ConnectionTree.MoveNodeUp();
+            ConnectionTree.Instance.MoveNodeUp();
             Runtime.SaveConnectionsBG();
 		}
 				
 		static public void cMenTreeMoveDown_Click(System.Object sender, EventArgs e)
 		{
-            ConnectionTree.MoveNodeDown();
+            ConnectionTree.Instance.MoveNodeDown();
             Runtime.SaveConnectionsBG();
 		}
         #endregion
@@ -699,7 +699,7 @@ namespace mRemoteNG.UI.Window
 				newNode.Tag = newContainerInfo;
 				newContainerInfo.TreeNode = newNode;
 
-                TreeNode selectedNode = ConnectionTree.SelectedNode;
+                TreeNode selectedNode = ConnectionTree.Instance.SelectedNode;
 				TreeNode parentNode = default(TreeNode);
 				if (selectedNode == null)
 				{
@@ -781,7 +781,7 @@ namespace mRemoteNG.UI.Window
 			{
                 Windows.Show(WindowType.SSHTransfer);
 
-                ConnectionInfo conI = (ConnectionInfo)ConnectionTree.SelectedNode.Tag;
+                ConnectionInfo conI = (ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag;
 
                 Windows.sshtransferForm.Hostname = conI.Hostname;
                 Windows.sshtransferForm.Username = conI.Username;
@@ -832,9 +832,9 @@ namespace mRemoteNG.UI.Window
 		{
 			try
 			{
-                if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+                if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 				{
-                    externalTool.Start((ConnectionInfo)ConnectionTree.SelectedNode.Tag);
+                    externalTool.Start((ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag);
 				}
 			}
 			catch (Exception ex)
@@ -847,7 +847,7 @@ namespace mRemoteNG.UI.Window
         #region Menu
 		static public void mMenViewExpandAllFolders_Click(System.Object sender, EventArgs e)
 		{
-            ConnectionTree.ExpandAllNodes();
+            ConnectionTree.Instance.ExpandAllNodes();
 		}
 				
 		public void mMenViewCollapseAllFolders_Click(System.Object sender, EventArgs e)
@@ -859,7 +859,7 @@ namespace mRemoteNG.UI.Window
 					tvConnections.SelectedNode.EndEdit(false);
 				}
 			}
-            ConnectionTree.CollapseAllNodes();
+            ConnectionTree.Instance.CollapseAllNodes();
 		}
         #endregion
 		
@@ -912,7 +912,7 @@ namespace mRemoteNG.UI.Window
 				
 		public void txtSearch_TextChanged(System.Object sender, EventArgs e)
 		{
-			tvConnections.SelectedNode = ConnectionTree.Find(tvConnections.Nodes[0], txtSearch.Text);
+			tvConnections.SelectedNode = ConnectionTree.Instance.Find(tvConnections.Nodes[0], txtSearch.Text);
 		}
 				
 		public void tvConnections_KeyPress(object sender, KeyPressEventArgs e)

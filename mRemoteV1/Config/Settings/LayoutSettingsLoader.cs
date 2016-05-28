@@ -93,7 +93,7 @@ namespace mRemoteNG.Config.Settings
 
             Windows.treeForm = new ConnectionTreeWindow(Windows.treePanel);
             Windows.treePanel = Windows.treeForm;
-            ConnectionTree.TreeView = Windows.treeForm.tvConnections;
+            //ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
             Windows.errorsForm = new ErrorAndInfoWindow(Windows.errorsPanel);
             Windows.errorsPanel = Windows.errorsForm;

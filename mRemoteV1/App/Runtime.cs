@@ -397,7 +397,7 @@ namespace mRemoteNG.App
 
                 connectionsLoader.ConnectionList = ConnectionList;
                 connectionsLoader.ContainerList = ContainerList;
-                ConnectionTree.ResetTree();
+                ConnectionTree.Instance.ResetTree();
                 connectionsLoader.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
 
                 // Load config
@@ -482,7 +482,7 @@ namespace mRemoteNG.App
                     connectionsLoader.PreviousSelected = LastSelected;
                 }
 
-                ConnectionTree.ResetTree();
+                ConnectionTree.Instance.ResetTree();
 
                 connectionsLoader.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
                 connectionsLoader.UseSQL = Settings.Default.UseSQLServer;
@@ -844,16 +844,16 @@ namespace mRemoteNG.App
                     return;
                 }
 
-                if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+                if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
                 {
                     ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, Force);
                     connectionInitiator.InitiateConnection();
                 }
-                else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
+                else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)
                 {
-                    foreach (TreeNode tNode in ConnectionTree.SelectedNode.Nodes)
+                    foreach (TreeNode tNode in ConnectionTree.Instance.SelectedNode.Nodes)
                     {
-                        if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+                        if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
                         {
                             if (tNode.Tag != null)
                             {

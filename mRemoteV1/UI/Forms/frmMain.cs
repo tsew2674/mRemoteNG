@@ -140,7 +140,7 @@ namespace mRemoteNG.UI.Forms
             Runtime.WindowList = new WindowList();
 
             Windows.treePanel.Focus();
-            ConnectionTree.TreeView = Windows.treeForm.tvConnections;
+            //ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
             if (Settings.Default.FirstStart && !Settings.Default.LoadConsFromCustomLocation && !File.Exists(Runtime.GetStartupConnectionFileName()))
 			{
@@ -417,9 +417,9 @@ namespace mRemoteNG.UI.Forms
 		{
             var extA = (ExternalTool)((Control)sender).Tag;
 
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+            if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 			{
-                extA.Start((ConnectionInfo)ConnectionTree.SelectedNode.Tag);
+                extA.Start((ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag);
 			}
 			else
 			{
@@ -449,7 +449,7 @@ namespace mRemoteNG.UI.Forms
         #region File
         private void mMenFile_DropDownOpening(Object sender, EventArgs e)
 		{
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Root)
+            if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Root)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -460,7 +460,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameFolder;
 				mMenFileDuplicate.Text = Language.strMenuDuplicate;
 			}
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
+            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -471,7 +471,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameFolder;
 				mMenFileDuplicate.Text = Language.strMenuDuplicateFolder;
 			}
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection)
+            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -482,7 +482,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameConnection;
 				mMenFileDuplicate.Text = Language.strMenuDuplicateConnection;
 			}
-            else if ((ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttyRoot) || (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession))
+            else if ((ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttyRoot) || (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession))
 			{
 				mMenFileNewConnection.Enabled = false;
 				mMenFileNewFolder.Enabled = false;
@@ -559,19 +559,19 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileDelete_Click(object sender, EventArgs e)
 		{
-            ConnectionTree.DeleteSelectedNode();
+            ConnectionTree.Instance.DeleteSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 
         private static void mMenFileRename_Click(object sender, EventArgs e)
 		{
-			ConnectionTree.StartRenameSelectedNode();
+			ConnectionTree.Instance.StartRenameSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 
         private static void mMenFileDuplicate_Click(object sender, EventArgs e)
 		{
-            ConnectionTreeNode.CloneNode(ConnectionTree.SelectedNode);
+            ConnectionTreeNode.CloneNode(ConnectionTree.Instance.SelectedNode);
             Runtime.SaveConnectionsBG();
 		}
 

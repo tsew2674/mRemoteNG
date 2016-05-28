@@ -196,7 +196,7 @@ namespace mRemoteNG.Tree
             if (parentNode == null)
             {
                 oldTreeNode.Parent.Nodes.Insert(oldTreeNode.Index + 1, newTreeNode);
-                ConnectionTree.SelectedNode = newTreeNode;
+                ConnectionTree.Instance.SelectedNode = newTreeNode;
             }
             else
             {
@@ -232,7 +232,7 @@ namespace mRemoteNG.Tree
             if (parentNode == null)
             {
                 oldTreeNode.Parent.Nodes.Insert(oldTreeNode.Index + 1, newTreeNode);
-                ConnectionTree.SelectedNode = newTreeNode;
+                ConnectionTree.Instance.SelectedNode = newTreeNode;
             }
             else
             {
