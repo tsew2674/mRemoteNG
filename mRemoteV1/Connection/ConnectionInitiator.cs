@@ -15,55 +15,30 @@ namespace mRemoteNG.Connection
     public class ConnectionInitiator
     {
         private ConnectionInfo _connectionInfo = null;
-        private ConnectionInfo.Force _force = ConnectionInfo.Force.None;
-        private Form _connectionForm = null;
 
         public ConnectionInfo ConnectionInfo
         {
             get
             {
+                if (_connectionInfo == null)
+                    _connectionInfo = (ConnectionInfo)ConnectionTree.SelectedNode.Tag;
                 return _connectionInfo;
             }
-        }
-
-        public ConnectionInfo.Force Force
-        {
-            get
+            set
             {
-                return _force;
+                _connectionInfo = value;
             }
         }
 
-        public Form ConnectionForm
-        {
-            get
-            {
-                return _connectionForm;
-            }
-        }
+        public ConnectionInfo.Force Force { get; set; }
+        public Form ConnectionForm { get; set; }
 
-        public ConnectionInitiator(ConnectionInfo ConnectionInfo)
-        {
-            _connectionInfo = ConnectionInfo;
-        }
 
-        public ConnectionInitiator(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force)
+        public ConnectionInitiator(ConnectionInfo connectionInfo = null, ConnectionInfo.Force force = ConnectionInfo.Force.None, Form connectionForm = null)
         {
-            _connectionInfo = ConnectionInfo;
-            _force = Force;
-        }
-
-        public ConnectionInitiator(ConnectionInfo ConnectionInfo, Form ConnectionForm)
-        {
-            _connectionInfo = ConnectionInfo;
-            _connectionForm = ConnectionForm;
-        }
-
-        public ConnectionInitiator(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force, Form ConnectionForm)
-        {
-            _connectionInfo = ConnectionInfo;
-            _force = Force;
-            _connectionForm = ConnectionForm;
+            _connectionInfo = connectionInfo;
+            Force = force;
+            ConnectionForm = connectionForm;
         }
 
 
@@ -79,7 +54,7 @@ namespace mRemoteNG.Connection
 
                 StartPreConnectionExternalApp(_connectionInfo);
 
-                if ((_force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
+                if ((Force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
                 {
                     if (Runtime.SwitchToOpenConnection(_connectionInfo))
                     {
@@ -90,14 +65,14 @@ namespace mRemoteNG.Connection
                 ProtocolFactory protocolFactory = new ProtocolFactory();
                 ProtocolBase newProtocol = protocolFactory.CreateProtocol(_connectionInfo);
 
-                string connectionPanel = SetConnectionPanel(_connectionInfo, _force);
-                Form connectionForm = SetConnectionForm(_connectionForm, connectionPanel);
+                string connectionPanel = SetConnectionPanel(_connectionInfo, Force);
+                Form connectionForm = SetConnectionForm(ConnectionForm, connectionPanel);
                 Control connectionContainer = SetConnectionContainer(_connectionInfo, connectionForm);
                 SetConnectionFormEventHandlers(newProtocol, connectionForm);
                 SetConnectionEventHandlers(newProtocol);
                 BuildConnectionInterfaceController(_connectionInfo, newProtocol, connectionContainer);
 
-                newProtocol.Force = _force;
+                newProtocol.Force = Force;
 
                 if (newProtocol.Initialize() == false)
                 {
