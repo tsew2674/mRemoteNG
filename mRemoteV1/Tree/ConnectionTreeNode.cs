@@ -270,7 +270,7 @@ namespace mRemoteNG.Tree
                 return;
 
             connectionInfo.Name = newName;
-            if (mRemoteNG.Settings.Default.SetHostnameLikeDisplayName)
+            if (Settings.Default.SetHostnameLikeDisplayName)
                 connectionInfo.Hostname = newName;
         }
         #endregion

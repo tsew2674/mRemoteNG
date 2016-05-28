@@ -154,13 +154,13 @@ namespace mRemoteNG.Connection.Protocol.ICA
 						
 				if (string.IsNullOrEmpty(_user))
 				{
-					if ((string) mRemoteNG.Settings.Default.EmptyCredentials == "windows")
+					if ((string)Settings.Default.EmptyCredentials == "windows")
 					{
 						_ICAClient.Username = Environment.UserName;
 					}
-					else if ((string) mRemoteNG.Settings.Default.EmptyCredentials == "custom")
+					else if ((string)Settings.Default.EmptyCredentials == "custom")
 					{
-						_ICAClient.Username = mRemoteNG.Settings.Default.DefaultUsername;
+						_ICAClient.Username = Settings.Default.DefaultUsername;
 					}
 				}
 				else
@@ -170,11 +170,11 @@ namespace mRemoteNG.Connection.Protocol.ICA
 						
 				if (string.IsNullOrEmpty(_pass))
 				{
-					if ((string) mRemoteNG.Settings.Default.EmptyCredentials == "custom")
+					if ((string)Settings.Default.EmptyCredentials == "custom")
 					{
-						if (mRemoteNG.Settings.Default.DefaultPassword != "")
+						if (Settings.Default.DefaultPassword != "")
 						{
-							_ICAClient.SetProp("ClearPassword", Security.Crypt.Decrypt(Convert.ToString(mRemoteNG.Settings.Default.DefaultPassword), App.Info.GeneralAppInfo.EncryptionKey));
+							_ICAClient.SetProp("ClearPassword", Security.Crypt.Decrypt(Convert.ToString(Settings.Default.DefaultPassword), App.Info.GeneralAppInfo.EncryptionKey));
 						}
 					}
 				}
@@ -185,13 +185,13 @@ namespace mRemoteNG.Connection.Protocol.ICA
 						
 				if (string.IsNullOrEmpty(_dom))
 				{
-					if ((string) mRemoteNG.Settings.Default.EmptyCredentials == "windows")
+					if ((string)Settings.Default.EmptyCredentials == "windows")
 					{
 						_ICAClient.Domain = Environment.UserDomainName;
 					}
-					else if ((string) mRemoteNG.Settings.Default.EmptyCredentials == "custom")
+					else if ((string)Settings.Default.EmptyCredentials == "custom")
 					{
-						_ICAClient.Domain = mRemoteNG.Settings.Default.DefaultDomain;
+						_ICAClient.Domain = Settings.Default.DefaultDomain;
 					}
 				}
 				else
@@ -320,7 +320,7 @@ namespace mRemoteNG.Connection.Protocol.ICA
 		{
 			base.Event_Disconnected(this, e.ToString());
 					
-			if (mRemoteNG.Settings.Default.ReconnectOnDisconnect)
+			if (Settings.Default.ReconnectOnDisconnect)
 			{
 				ReconnectGroup = new ReconnectGroup();
 				//this.Load += ReconnectGroup_Load;

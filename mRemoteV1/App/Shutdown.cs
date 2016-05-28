@@ -54,7 +54,7 @@ namespace mRemoteNG.App
 
         private static void SaveConnections()
         {
-            if (mRemoteNG.Settings.Default.SaveConsOnExit)
+            if (Settings.Default.SaveConsOnExit)
                 Runtime.SaveConnections();
         }
 

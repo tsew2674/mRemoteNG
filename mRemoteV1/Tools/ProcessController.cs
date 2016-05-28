@@ -157,11 +157,11 @@ namespace mRemoteNG.Tools
 				return IntPtr.Zero;
 			}
 			
-			Process.WaitForInputIdle(mRemoteNG.Settings.Default.MaxPuttyWaitTime * 1000);
+			Process.WaitForInputIdle(Settings.Default.MaxPuttyWaitTime * 1000);
 			
 			Handle = IntPtr.Zero;
 			int startTicks = Environment.TickCount;
-            while (Handle == IntPtr.Zero && Environment.TickCount < startTicks + (mRemoteNG.Settings.Default.MaxPuttyWaitTime * 1000))
+            while (Handle == IntPtr.Zero && Environment.TickCount < startTicks + (Settings.Default.MaxPuttyWaitTime * 1000))
 			{
 				Process.Refresh();
 				Handle = Process.MainWindowHandle;

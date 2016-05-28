@@ -46,7 +46,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             base.SaveSettings();
 
             ThemeManager.SaveThemes(_themeList);
-            mRemoteNG.Settings.Default.ThemeName = ThemeManager.ActiveTheme.Name;
+            Settings.Default.ThemeName = ThemeManager.ActiveTheme.Name;
         }
 
         public override void RevertSettings()
