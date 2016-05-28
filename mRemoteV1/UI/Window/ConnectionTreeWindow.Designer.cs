@@ -49,7 +49,6 @@ namespace mRemoteNG.UI.Window
 		{
 			this.components = new System.ComponentModel.Container();
 			this.Load += new System.EventHandler(Tree_Load);
-			System.Windows.Forms.TreeNode TreeNode1 = new System.Windows.Forms.TreeNode("Connections");
 			this.tvConnections = ConnectionTree.Instance;
 			this.tvConnections.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tvConnections_BeforeLabelEdit);
 			this.tvConnections.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tvConnections_AfterLabelEdit);

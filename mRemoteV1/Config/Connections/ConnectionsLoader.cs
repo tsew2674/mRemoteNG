@@ -19,6 +19,7 @@ using mRemoteNG.Images;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.TaskDialog;
+using mRemoteNG.Messages;
 
 namespace mRemoteNG.Config.Connections
 {
@@ -444,7 +445,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strAddNodesFromSqlFailed + Environment.NewLine + ex.Message, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strAddNodesFromSqlFailed + Environment.NewLine + ex.Message, true);
 			}
 		}
 				
@@ -610,7 +611,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strGetConnectionInfoFromSqlFailed + Environment.NewLine + ex.Message, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strGetConnectionInfoFromSqlFailed + Environment.NewLine + ex.Message, true);
 			}
 					
 			return null;
@@ -703,7 +704,7 @@ namespace mRemoteNG.Config.Connections
 				}
 				else
 				{
-					Runtime.MessageCollector.AddMessage(Messages.MessageClass.WarningMsg, Language.strOldConffile);
+					Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strOldConffile);
 				}
 						
 				const double maxSupportedConfVersion = 2.5;
@@ -781,7 +782,7 @@ namespace mRemoteNG.Config.Connections
 						
 				if (import && !isExportFile)
 				{
-					Runtime.MessageCollector.AddMessage(Messages.MessageClass.InformationMsg, Language.strCannotImportNormalSessionFile);
+					Runtime.MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strCannotImportNormalSessionFile);
 					return ;
 				}
 						
@@ -791,7 +792,7 @@ namespace mRemoteNG.Config.Connections
                     RootTreeNode.SelectedImageIndex = (int)TreeImageType.Root;
 				}
 
-                Windows.treeForm.tvConnections.BeginUpdate();
+                ConnectionTree.Instance.BeginUpdate();
 						
 				// SECTION 3. Populate the TreeView with the DOM nodes.
 				AddNodeFromXml(xDom.DocumentElement, RootTreeNode);
@@ -807,7 +808,7 @@ namespace mRemoteNG.Config.Connections
 					}
 				}
 
-                Windows.treeForm.tvConnections.EndUpdate();
+                ConnectionTree.Instance.EndUpdate();
 						
 				//open connections from last mremote session
 				if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)
@@ -834,7 +835,7 @@ namespace mRemoteNG.Config.Connections
 			catch (Exception ex)
 			{
 				Runtime.IsConnectionsFileLoaded = false;
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strLoadFromXmlFailed + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strLoadFromXmlFailed + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace, true);
 				throw;
 			}
 		}
@@ -892,7 +893,7 @@ namespace mRemoteNG.Config.Connections
 								}
 							}
 									
-							ConnectionInfo connectionInfo = default(ConnectionInfo);
+							var connectionInfo = default(ConnectionInfo);
 							if (confVersion >= 0.9)
 							{
 								connectionInfo = GetConnectionInfoFromXml(xmlNode);
@@ -936,7 +937,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strAddNodeFromXmlFailed + Environment.NewLine + ex.Message + ex.StackTrace, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strAddNodeFromXmlFailed + Environment.NewLine + ex.Message + ex.StackTrace, true);
 				throw;
 			}
 		}
@@ -1225,7 +1226,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, string.Format(Language.strGetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message), false);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.strGetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message), false);
 			}
 			return connectionInfo;
 		}

@@ -392,7 +392,7 @@ namespace mRemoteNG.UI.Window
                     return;
 
                 var treeviewThatSentTheEvent = (ConnectionTree)sender;
-                var nodeBeingDragged = (ConnectionTreeNode)(e.Data.GetData("System.Windows.Forms.TreeNode"));
+                var nodeBeingDragged = (ConnectionTreeNode)(e.Data.GetData(typeof(ConnectionTreeNode)));
                 var nodeBeingTargetedByDragOverEvent = treeviewThatSentTheEvent.SelectedNode;
 
                 TreeNodeMover treeNodeMover = new TreeNodeMover(nodeBeingDragged);
