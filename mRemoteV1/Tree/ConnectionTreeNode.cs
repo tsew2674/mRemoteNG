@@ -17,6 +17,14 @@ namespace mRemoteNG.Tree
             get { return (ConnectionTreeNode)base.Parent; }
         }
 
+        public ConnectionInfo ConnectionInfo
+        {
+            get { return (ConnectionInfo)Tag; }
+            set { Tag = value; }
+        }
+
+
+
         public ConnectionTreeNode()
         {
             Name = Language.strNewConnection;

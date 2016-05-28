@@ -840,25 +840,24 @@ namespace mRemoteNG.App
         {
             try
             {
-                if (ConnectionTree.Instance.SelectedNode.Tag == null)
-                {
+                ConnectionTreeNode selectedNode = ConnectionTree.Instance.SelectedNode;
+                if (selectedNode.ConnectionInfo == null)
                     return;
-                }
 
-                if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
+                if (ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.PuttySession)
                 {
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag, Force);
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(selectedNode.ConnectionInfo, Force);
                     connectionInitiator.InitiateConnection();
                 }
-                else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)
+                else if (ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.Container)
                 {
-                    foreach (ConnectionTreeNode tNode in ConnectionTree.Instance.SelectedNode.Nodes)
+                    foreach (ConnectionTreeNode tNode in selectedNode.Nodes)
                     {
-                        if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
+                        if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.PuttySession)
                         {
-                            if (tNode.Tag != null)
+                            if (tNode.ConnectionInfo != null)
                             {
-                                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)tNode.Tag, Force);
+                                ConnectionInitiator connectionInitiator = new ConnectionInitiator(tNode.ConnectionInfo, Force);
                                 connectionInitiator.InitiateConnection();
                             }
                         }
