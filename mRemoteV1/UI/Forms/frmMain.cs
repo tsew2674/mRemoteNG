@@ -957,8 +957,9 @@ namespace mRemoteNG.UI.Forms
 			{
                 if (((Control)sender).Tag is ConnectionInfo)
 				{
-                    Runtime.OpenConnection((ConnectionInfo)((Control)sender).Tag);
-				}
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((Control)sender).Tag);
+                    connectionInitiator.InitiateConnection();
+                }
 			}
 		}
         #endregion

@@ -253,7 +253,8 @@ namespace mRemoteNG.Config.Connections
 					{
 						if (conI.PleaseConnect == true)
 						{
-                            Runtime.OpenConnection(conI);
+                            ConnectionInitiator connectionInitiator = new ConnectionInitiator(conI);
+                            connectionInitiator.InitiateConnection();
 						}
 					}
 				}
@@ -815,8 +816,9 @@ namespace mRemoteNG.Config.Connections
 					{
 						if (conI.PleaseConnect == true)
 						{
-							Runtime.OpenConnection(conI);
-						}
+                            ConnectionInitiator connectionInitiator = new ConnectionInitiator(conI);
+                            connectionInitiator.InitiateConnection();
+                        }
 					}
 				}
 						

@@ -868,18 +868,6 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo)
-        {
-            try
-            {
-                OpenConnection(ConnectionInfo, ConnectionInfo.Force.None);
-            }
-            catch (Exception ex)
-            {
-                MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strConnectionOpenFailed + Environment.NewLine + ex.Message);
-            }
-        }
-
         public static void OpenConnection(ConnectionInfo ConnectionInfo, Form ConnectionForm, ConnectionInfo.Force Force)
         {
             try
