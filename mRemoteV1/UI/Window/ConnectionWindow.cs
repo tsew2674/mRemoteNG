@@ -12,6 +12,7 @@ using mRemoteNG.Connection.Protocol;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.App.Info;
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.UI.Window
 {
@@ -550,7 +551,7 @@ namespace mRemoteNG.UI.Window
 		{
 			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", true))
 			{
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode", true)).Tag, ConnectionInfo.Force.DoNotJump, this);
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((ConnectionTreeNode)e.Data.GetData("System.Windows.Forms.TreeNode", true)).Tag, ConnectionInfo.Force.DoNotJump, this);
                 connectionInitiator.InitiateConnection();
 			}
 		}

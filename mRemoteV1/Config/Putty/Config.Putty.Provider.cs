@@ -19,8 +19,8 @@ namespace mRemoteNG.Config.Putty
 	public abstract class Provider
 	{
         #region Public Methods
-		private TreeNode _rootTreeNode;
-        public TreeNode RootTreeNode
+		private ConnectionTreeNode _rootTreeNode;
+        public ConnectionTreeNode RootTreeNode
 		{
 			get
 			{
@@ -99,15 +99,15 @@ namespace mRemoteNG.Config.Putty
         #endregion
 			
         #region Protected Methods
-		private delegate TreeNode  CreateRootTreeNodeDelegate();
-		protected virtual TreeNode CreateRootTreeNode()
+		private delegate ConnectionTreeNode CreateRootTreeNodeDelegate();
+		protected virtual ConnectionTreeNode CreateRootTreeNode()
 		{
 			if (ConnectionTree.Instance.InvokeRequired)
 			{
-				return (TreeNode)ConnectionTree.Instance.Invoke(new CreateRootTreeNodeDelegate(CreateRootTreeNode));
+				return (ConnectionTreeNode)ConnectionTree.Instance.Invoke(new CreateRootTreeNodeDelegate(CreateRootTreeNode));
 			}
 				
-			TreeNode newTreeNode = new TreeNode();
+			var newTreeNode = new ConnectionTreeNode();
 			RootInfo.TreeNode = newTreeNode;
 				
 			newTreeNode.Name = _rootInfo.Name;

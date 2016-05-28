@@ -20,11 +20,11 @@ namespace mRemoteNG.Config.Import
 {
 	public class ActiveDirectory
 	{
-		public static void Import(string ldapPath, TreeNode parentTreeNode)
+		public static void Import(string ldapPath, ConnectionTreeNode parentTreeNode)
 		{
 			try
 			{
-				TreeNode treeNode = Tree.ConnectionTreeNode.AddNode(TreeNodeType.Container);
+				var treeNode = ConnectionTreeNode.AddNode(TreeNodeType.Container);
 					
 				ContainerInfo containerInfo = new ContainerInfo();
 				containerInfo.TreeNode = treeNode;
@@ -68,7 +68,7 @@ namespace mRemoteNG.Config.Import
 			}
 		}
 			
-		private static void ImportComputers(string ldapPath, TreeNode parentTreeNode)
+		private static void ImportComputers(string ldapPath, ConnectionTreeNode parentTreeNode)
 		{
 			try
 			{
@@ -97,7 +97,7 @@ namespace mRemoteNG.Config.Import
 					strDescription = Convert.ToString(with_2.Properties["Description"].Value);
 					strHostName = Convert.ToString(with_2.Properties["dNSHostName"].Value);
 						
-					TreeNode treeNode = Tree.ConnectionTreeNode.AddNode(TreeNodeType.Connection, strDisplayName);
+					var treeNode = ConnectionTreeNode.AddNode(TreeNodeType.Connection, strDisplayName);
 						
 					ConnectionInfo connectionInfo = new ConnectionInfo();
 					ConnectionInfoInheritance inheritanceInfo = new ConnectionInfoInheritance(connectionInfo, true);

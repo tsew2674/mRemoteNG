@@ -28,7 +28,7 @@ namespace mRemoteNG.Config.Putty
 				
 			foreach (Provider provider in Providers)
 			{
-				TreeNode rootTreeNode = provider.RootTreeNode;
+				var rootTreeNode = provider.RootTreeNode;
 				bool inUpdate = false;
 					
 				List<ConnectionInfo> savedSessions = new List<ConnectionInfo>(provider.GetSessions());
@@ -53,14 +53,14 @@ namespace mRemoteNG.Config.Putty
 					connectionTree.Nodes.Add(rootTreeNode);
 				}
 					
-				List<TreeNode> newTreeNodes = new List<TreeNode>();
+				var newTreeNodes = new List<ConnectionTreeNode>();
 				foreach (PuttySessionInfo sessionInfo in savedSessions)
 				{
-					TreeNode treeNode = default(TreeNode);
+					var treeNode = default(ConnectionTreeNode);
 					bool isNewNode = false;
 					if (rootTreeNode.Nodes.ContainsKey(sessionInfo.Name))
 					{
-						treeNode = rootTreeNode.Nodes[sessionInfo.Name];
+						treeNode = (ConnectionTreeNode)rootTreeNode.Nodes[sessionInfo.Name];
 						isNewNode = false;
 					}
 					else
@@ -88,7 +88,7 @@ namespace mRemoteNG.Config.Putty
 					}
 				}
 					
-				foreach (TreeNode treeNode in rootTreeNode.Nodes)
+				foreach (ConnectionTreeNode treeNode in rootTreeNode.Nodes)
 				{
 					if (!savedSessions.Contains((ConnectionInfo)treeNode.Tag))
 					{
@@ -113,7 +113,7 @@ namespace mRemoteNG.Config.Putty
 					
 				if (inUpdate)
 				{
-                    ConnectionTree.Instance.Sort(rootTreeNode, SortOrder.Ascending);
+                    ConnectionTree.Instance.Sort((ConnectionTreeNode)rootTreeNode, SortOrder.Ascending);
 					rootTreeNode.Expand();
 					connectionTree.EndUpdate();
 				}

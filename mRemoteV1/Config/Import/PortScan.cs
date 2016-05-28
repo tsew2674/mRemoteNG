@@ -12,20 +12,20 @@ using mRemoteNG.App;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Container;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Config.Import
 {
 	public class PortScan
 	{
-		public static void Import(IEnumerable hosts, ProtocolType protocol, TreeNode parentTreeNode)
+		public static void Import(IEnumerable hosts, ProtocolType protocol, ConnectionTreeNode parentTreeNode)
 		{
 			foreach (Tools.PortScan.ScanHost host in hosts)
 			{
 				ProtocolType finalProtocol = default(ProtocolType);
 				bool protocolValid = false;
 					
-				TreeNode treeNode = Tree.ConnectionTreeNode.AddNode(Tree.TreeNodeType.Connection, host.HostNameWithoutDomain);
+				var treeNode = ConnectionTreeNode.AddNode(TreeNodeType.Connection, host.HostNameWithoutDomain);
 					
 				ConnectionInfo connectionInfo = new ConnectionInfo();
 				connectionInfo.Inheritance = new ConnectionInfoInheritance(connectionInfo);

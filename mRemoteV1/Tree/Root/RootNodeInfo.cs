@@ -55,7 +55,7 @@ namespace mRemoteNG.Tree.Root
         public RootNodeType Type {get; set;}
 			
 		[Browsable(false)]
-        public TreeNode TreeNode {get; set;}
+        public ConnectionTreeNode TreeNode {get; set;}
         #endregion
 	}
 }

@@ -6,6 +6,7 @@ using mRemoteNG.App;
 using mRemoteNG.My;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.Connection;
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Tools
 {
@@ -131,7 +132,7 @@ namespace mRemoteNG.Tools
 				{
 					this._cMenCons.DropDownItems.Clear();
 						
-					foreach (TreeNode tNode in App.Windows.treeForm.tvConnections.Nodes)
+					foreach (ConnectionTreeNode tNode in ConnectionTree.Instance.Nodes)
 					{
 						AddNodeToMenu(tNode.Nodes, this._cMenCons);
 					}
@@ -142,13 +143,13 @@ namespace mRemoteNG.Tools
 			{
 				try
 				{
-					foreach (TreeNode tNode in tnc)
+					foreach (ConnectionTreeNode tNode in tnc)
 					{
 						ToolStripMenuItem tMenItem = new ToolStripMenuItem();
 						tMenItem.Text = tNode.Text;
 						tMenItem.Tag = tNode;
 							
-						if (Tree.ConnectionTreeNode.GetNodeType(tNode) == Tree.TreeNodeType.Container)
+						if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Container)
 						{
 							tMenItem.Image = Resources.Folder;
 							tMenItem.Tag = tNode.Tag;
@@ -156,7 +157,7 @@ namespace mRemoteNG.Tools
 							menToolStrip.DropDownItems.Add(tMenItem);
 							AddNodeToMenu(tNode.Nodes, tMenItem);
 						}
-						else if (Tree.ConnectionTreeNode.GetNodeType(tNode) == Tree.TreeNodeType.Connection | Tree.ConnectionTreeNode.GetNodeType(tNode) == Tree.TreeNodeType.PuttySession)
+						else if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.PuttySession)
 						{
 							tMenItem.Image = Windows.treeForm.imgListTree.Images[tNode.ImageIndex];
 							tMenItem.Tag = tNode.Tag;

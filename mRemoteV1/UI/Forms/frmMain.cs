@@ -123,8 +123,6 @@ namespace mRemoteNG.UI.Forms
 
         private void frmMain_Load(object sender, EventArgs e)
 		{
-            
-
             // Create gui config load and save objects
             var settingsLoader = new SettingsLoader(this);
 			settingsLoader.LoadSettings();
@@ -139,7 +137,7 @@ namespace mRemoteNG.UI.Forms
             Runtime.MessageCollector = new MessageCollector(Windows.errorsForm);
             Runtime.WindowList = new WindowList();
 
-            Windows.treePanel.Focus();
+            //Windows.treePanel.Focus();
             //ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
             if (Settings.Default.FirstStart && !Settings.Default.LoadConsFromCustomLocation && !File.Exists(Runtime.GetStartupConnectionFileName()))
@@ -577,7 +575,7 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileImportFromFile_Click(object sender, EventArgs e)
 		{
-            Import.ImportFromFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            Import.ImportFromFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode);
 		}
 
         private static void mMenFileImportFromActiveDirectory_Click(object sender, EventArgs e)
@@ -592,7 +590,7 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileExport_Click(object sender, EventArgs e)
 		{
-            Export.ExportToFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            Export.ExportToFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode);
 		}
 
         private static void mMenFileExit_Click(object sender, EventArgs e)
@@ -911,7 +909,7 @@ namespace mRemoteNG.UI.Forms
         private void btnConnections_DropDownOpening(object sender, EventArgs e)
 		{
 			btnConnections.DropDownItems.Clear();	
-			foreach (TreeNode treeNode in Windows.treeForm.tvConnections.Nodes)
+			foreach (ConnectionTreeNode treeNode in ConnectionTree.Instance.Nodes)
 			{
 				AddNodeToMenu(treeNode.Nodes, btnConnections);
 			}
@@ -921,7 +919,7 @@ namespace mRemoteNG.UI.Forms
 		{
 			try
 			{
-				foreach (TreeNode treeNode in treeNodeCollection)
+				foreach (ConnectionTreeNode treeNode in treeNodeCollection)
 				{
 					var menuItem = new ToolStripMenuItem();
 					menuItem.Text = treeNode.Text;

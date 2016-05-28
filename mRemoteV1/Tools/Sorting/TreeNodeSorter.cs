@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using mRemoteNG.Tree;
+using System.Collections;
 using System.Windows.Forms;
 
 namespace mRemoteNG.Tools.Sorting
@@ -14,8 +15,8 @@ namespace mRemoteNG.Tools.Sorting
 
         public int Compare(object x, object y)
         {
-            TreeNode tx = (TreeNode)x;
-            TreeNode ty = (TreeNode)y;
+            ConnectionTreeNode tx = (ConnectionTreeNode)x;
+            ConnectionTreeNode ty = (ConnectionTreeNode)y;
 
             switch (Sorting)
             {

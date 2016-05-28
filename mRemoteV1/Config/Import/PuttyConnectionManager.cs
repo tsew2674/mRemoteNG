@@ -21,7 +21,7 @@ namespace mRemoteNG.Config.Import
 {
 	public class PuttyConnectionManager
 	{
-		public static void Import(string fileName, TreeNode parentTreeNode)
+		public static void Import(string fileName, ConnectionTreeNode parentTreeNode)
 		{
 			XmlDocument xmlDocument = new XmlDocument();
 			xmlDocument.Load(fileName);
@@ -38,7 +38,7 @@ namespace mRemoteNG.Config.Import
 			}
 		}
 			
-		private static void ImportRootOrContainer(XmlNode xmlNode, TreeNode parentTreeNode)
+		private static void ImportRootOrContainer(XmlNode xmlNode, ConnectionTreeNode parentTreeNode)
 		{
 			string xmlNodeType = xmlNode.Attributes["type"].Value;
 			switch (xmlNode.Name)
@@ -67,7 +67,7 @@ namespace mRemoteNG.Config.Import
 				
 			string name = xmlNode.Attributes["name"].Value;
 				
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 				
 			ContainerInfo containerInfo = new ContainerInfo();
@@ -118,7 +118,7 @@ namespace mRemoteNG.Config.Import
 			Runtime.ContainerList.Add(containerInfo);
 		}
 			
-		private static void ImportConnection(XmlNode connectionNode, TreeNode parentTreeNode)
+		private static void ImportConnection(XmlNode connectionNode, ConnectionTreeNode parentTreeNode)
 		{
 			string connectionNodeType = connectionNode.Attributes["type"].Value;
 			if (!(string.Compare(connectionNodeType, "PuTTY", ignoreCase: true) == 0))
@@ -127,7 +127,7 @@ namespace mRemoteNG.Config.Import
 			}
 				
 			string name = connectionNode.Attributes["name"].Value;
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 
             ConnectionInfo connectionInfo = ConnectionInfoFromXml(connectionNode);

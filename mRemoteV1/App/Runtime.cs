@@ -398,12 +398,13 @@ namespace mRemoteNG.App
                 connectionsLoader.ConnectionList = ConnectionList;
                 connectionsLoader.ContainerList = ContainerList;
                 ConnectionTree.Instance.ResetTree();
-                connectionsLoader.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
+                connectionsLoader.RootTreeNode = (ConnectionTreeNode)ConnectionTree.Instance.Nodes[0];
 
                 // Load config
                 connectionsLoader.ConnectionFileName = filename;
                 connectionsLoader.LoadConnections(false);
-                Windows.treeForm.tvConnections.SelectedNode = connectionsLoader.RootTreeNode;
+                ConnectionTree.Instance.SelectedNode = connectionsLoader.RootTreeNode;
+                //Windows.treeForm.tvConnections.SelectedNode = connectionsLoader.RootTreeNode;
             }
             catch (Exception ex)
             {
@@ -484,7 +485,7 @@ namespace mRemoteNG.App
 
                 ConnectionTree.Instance.ResetTree();
 
-                connectionsLoader.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
+                connectionsLoader.RootTreeNode = ConnectionTree.Instance.RootNode;
                 connectionsLoader.UseSQL = Settings.Default.UseSQLServer;
                 connectionsLoader.SQLHost = Settings.Default.SQLHost;
                 connectionsLoader.SQLDatabaseName = Settings.Default.SQLDatabaseName;
@@ -684,7 +685,7 @@ namespace mRemoteNG.App
                 conS.ContainerList = ContainerList;
                 conS.Export = false;
                 conS.SaveSecurity = new Security.Save(false);
-                conS.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
+                conS.RootTreeNode = ConnectionTree.Instance.RootNode;
 
                 if (Settings.Default.UseSQLServer)
                 {
@@ -750,7 +751,7 @@ namespace mRemoteNG.App
                     connectionsSave.SaveSecurity = new Security.Save();
                     connectionsSave.ConnectionList = ConnectionList;
                     connectionsSave.ContainerList = ContainerList;
-                    connectionsSave.RootTreeNode = Windows.treeForm.tvConnections.Nodes[0];
+                    connectionsSave.RootTreeNode = ConnectionTree.Instance.RootNode;
 
                     connectionsSave.SaveConnections();
 
@@ -851,7 +852,7 @@ namespace mRemoteNG.App
                 }
                 else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)
                 {
-                    foreach (TreeNode tNode in ConnectionTree.Instance.SelectedNode.Nodes)
+                    foreach (ConnectionTreeNode tNode in ConnectionTree.Instance.SelectedNode.Nodes)
                     {
                         if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
                         {

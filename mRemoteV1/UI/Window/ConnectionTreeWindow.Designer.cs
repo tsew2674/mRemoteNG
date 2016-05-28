@@ -156,9 +156,6 @@ namespace mRemoteNG.UI.Window
 			this.tvConnections.LabelEdit = true;
 			this.tvConnections.Location = new System.Drawing.Point(0, 0);
 			this.tvConnections.Name = "tvConnections";
-			TreeNode1.Name = "nodeRoot";
-			TreeNode1.Text = "Connections";
-			this.tvConnections.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {TreeNode1});
 			this.tvConnections.SelectedImageIndex = 0;
 			this.tvConnections.Size = new System.Drawing.Size(192, 410);
 			this.tvConnections.TabIndex = 20;

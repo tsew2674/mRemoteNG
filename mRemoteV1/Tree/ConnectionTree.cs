@@ -3,6 +3,7 @@ using mRemoteNG.Connection;
 using mRemoteNG.Messages;
 using mRemoteNG.Tools.Sorting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -11,8 +12,8 @@ namespace mRemoteNG.Tree
     public class ConnectionTree : TreeView
     {
         private static readonly ConnectionTree _instance = new ConnectionTree();
-        private static TreeNode SetNodeToolTip_old_node;
-        private static TreeNode treeNodeToBeSelected;
+        private static ConnectionTreeNode SetNodeToolTip_old_node;
+        private static ConnectionTreeNode treeNodeToBeSelected;
 
 
         public static ConnectionTree Instance
@@ -20,12 +21,42 @@ namespace mRemoteNG.Tree
             get { return _instance; }
         }
 
+        public new ConnectionTreeNode SelectedNode
+        {
+            get
+            {
+                return (ConnectionTreeNode)base.SelectedNode;
+            }
+
+            set
+            {
+                base.SelectedNode = value;
+            }
+        }
+
+        public ConnectionTreeNode RootNode
+        {
+            get
+            {
+                return (ConnectionTreeNode)Nodes[0];
+            }
+        }
+
         private ConnectionTree()
         {
+            AddRootNode();
         }
 
         static ConnectionTree()
         { }
+
+        private void AddRootNode()
+        {
+            var rootNode = new ConnectionTreeNode();
+            rootNode.Name = "nodeRoot";
+            rootNode.Text = "Connections";
+            Nodes.Add(rootNode);
+        }
 
         public void DeleteSelectedNode()
         {
@@ -36,7 +67,7 @@ namespace mRemoteNG.Tree
 
                 if (ConnectionTreeNode.GetNodeType(SelectedNode) == TreeNodeType.Container)
                 {
-                    if (ConnectionTreeNode.IsEmpty(SelectedNode))
+                    if (SelectedNode.IsEmpty())
                     {
                         if (UserConfirmsEmptyFolderDeletion())
                             SelectedNode.Remove();
@@ -123,7 +154,7 @@ namespace mRemoteNG.Tree
             {
                 if (!Settings.Default.ShowDescriptionTooltipsInTree) return;
                 //Find the node under the mouse.
-                TreeNode new_node = GetNodeAt(e.X, e.Y);
+                var new_node = (ConnectionTreeNode)GetNodeAt(e.X, e.Y);
                 if (new_node == null || new_node.Equals(SetNodeToolTip_old_node))
                 {
                     return;
@@ -160,7 +191,7 @@ namespace mRemoteNG.Tree
         public void CollapseAllNodes()
         {
             BeginUpdate();
-            foreach (TreeNode treeNode in Nodes[0].Nodes)
+            foreach (ConnectionTreeNode treeNode in Nodes[0].Nodes)
             {
                 treeNode.Collapse(false);
             }
@@ -175,7 +206,7 @@ namespace mRemoteNG.Tree
                 BeginUpdate();
                 Sorted = false;
 
-                TreeNode newNode = (TreeNode)SelectedNode.Clone();
+                var newNode = (ConnectionTreeNode)SelectedNode.Clone();
                 SelectedNode.Parent.Nodes.Insert(SelectedNode.Index + 2, newNode);
                 SelectedNode.Remove();
                 SelectedNode = newNode;
@@ -196,7 +227,7 @@ namespace mRemoteNG.Tree
                 BeginUpdate();
                 Sorted = false;
 
-                TreeNode newNode = (TreeNode)SelectedNode.Clone();
+                var newNode = (ConnectionTreeNode)SelectedNode.Clone();
                 SelectedNode.Parent.Nodes.Insert(SelectedNode.Index - 1, newNode);
                 SelectedNode.Remove();
                 SelectedNode = newNode;
@@ -209,43 +240,43 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public void Sort(TreeNode treeNode, SortOrder sorting)
+        public void Sort(ConnectionTreeNode connectionTreeNode, SortOrder sorting)
         {
             BeginUpdate();
 
-            if (treeNode == null)
+            if (connectionTreeNode == null)
             {
                 if (Nodes.Count > 0)
-                    treeNode = Nodes[0];
+                    connectionTreeNode = (ConnectionTreeNode)Nodes[0];
                 else
                     return;
             }
-            else if (ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.Connection)
+            else if (ConnectionTreeNode.GetNodeType(connectionTreeNode) == TreeNodeType.Connection)
             {
-                treeNode = treeNode.Parent;
-                if (treeNode == null)
+                connectionTreeNode = (ConnectionTreeNode)connectionTreeNode.Parent;
+                if (connectionTreeNode == null)
                     return;
             }
 
-            Sort(treeNode, new TreeNodeSorter(sorting));
+            Sort(connectionTreeNode, new TreeNodeSorter(sorting));
             EndUpdate();
         }
 
-        private void Sort(TreeNode treeNode, TreeNodeSorter nodeSorter)
+        private void Sort(ConnectionTreeNode treeNode, TreeNodeSorter nodeSorter)
         {
             // Adapted from http://www.codeproject.com/Tips/252234/ASP-NET-TreeView-Sort
-            foreach (TreeNode childNode in treeNode.Nodes)
+            foreach (ConnectionTreeNode childNode in treeNode.Nodes)
             {
                 Sort(childNode, nodeSorter);
             }
 
             try
             {
-                List<TreeNode> sortedNodes = new List<TreeNode>();
-                TreeNode currentNode = null;
+                var sortedNodes = new List<ConnectionTreeNode>();
+                ConnectionTreeNode currentNode = null;
                 while (treeNode.Nodes.Count > 0)
                 {
-                    foreach (TreeNode childNode in treeNode.Nodes)
+                    foreach (ConnectionTreeNode childNode in treeNode.Nodes)
                     {
                         if (currentNode == null || nodeSorter.Compare(childNode, currentNode) < 0)
                         {
@@ -260,7 +291,7 @@ namespace mRemoteNG.Tree
                     currentNode = null;
                 }
 
-                foreach (TreeNode childNode in sortedNodes)
+                foreach (ConnectionTreeNode childNode in sortedNodes)
                 {
                     treeNode.Nodes.Add(childNode);
                 }
@@ -271,7 +302,7 @@ namespace mRemoteNG.Tree
             }
         }
 
-        public TreeNode Find(TreeNode treeNode, string searchFor)
+        public ConnectionTreeNode Find(ConnectionTreeNode treeNode, string searchFor)
         {
             
             try
@@ -279,9 +310,9 @@ namespace mRemoteNG.Tree
                 if (IsThisTheNodeWeAreSearchingFor(treeNode, searchFor))
                     return treeNode;
 
-                foreach (TreeNode childNode in treeNode.Nodes)
+                foreach (ConnectionTreeNode childNode in treeNode.Nodes)
                 {
-                    TreeNode tmpNode = Find(childNode, searchFor);
+                    var tmpNode = Find(childNode, searchFor);
                     if (tmpNode != null)
                     {
                         return tmpNode;
@@ -296,21 +327,21 @@ namespace mRemoteNG.Tree
             return null;
         }
 
-        private bool IsThisTheNodeWeAreSearchingFor(TreeNode treeNode, string searchFor)
+        private bool IsThisTheNodeWeAreSearchingFor(ConnectionTreeNode treeNode, string searchFor)
         {
             return ((treeNode.Text.ToLower()).IndexOf(searchFor.ToLower()) + 1 > 0);
         }
 
-        public TreeNode Find(TreeNode treeNode, ConnectionInfo conInfo)
+        public ConnectionTreeNode Find(ConnectionTreeNode treeNode, ConnectionInfo conInfo)
         {
             try
             {
                 if (treeNode.Tag == conInfo)
                     return treeNode;
 
-                foreach (TreeNode childNode in treeNode.Nodes)
+                foreach (ConnectionTreeNode childNode in treeNode.Nodes)
                 {
-                    TreeNode tmpNode = Find(childNode, conInfo);
+                    var tmpNode = Find(childNode, conInfo);
                     if (tmpNode != null)
                         return tmpNode;
                 }
@@ -335,7 +366,7 @@ namespace mRemoteNG.Tree
             {
                 BeginUpdate();
                 Nodes.Clear();
-                Nodes.Add(Language.strConnections);
+                Nodes.Add(new ConnectionTreeNode(Language.strConnections));
                 EndUpdate();
             }
         }

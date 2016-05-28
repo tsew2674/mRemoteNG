@@ -3,17 +3,17 @@ using System.Windows.Forms;
 using mRemoteNG.Forms;
 using mRemoteNG.Config.Connections;
 using mRemoteNG.UI.Forms;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.App
 {
 	public class Export
 	{
-		public static void ExportToFile(TreeNode rootTreeNode, TreeNode selectedTreeNode)
+		public static void ExportToFile(ConnectionTreeNode rootTreeNode, ConnectionTreeNode selectedTreeNode)
 		{
 			try
 			{
-				TreeNode exportTreeNode = default(TreeNode);
+				var exportTreeNode = default(ConnectionTreeNode);
 				Security.Save saveSecurity = new Security.Save();
 					
 				using (ExportForm exportForm = new ExportForm())
@@ -64,7 +64,7 @@ namespace mRemoteNG.App
 			}
 		}
 			
-		private static void SaveExportFile(string fileName, ConnectionsSaver.Format saveFormat, TreeNode rootNode, Security.Save saveSecurity)
+		private static void SaveExportFile(string fileName, ConnectionsSaver.Format saveFormat, ConnectionTreeNode rootNode, Security.Save saveSecurity)
 		{
 			try
 			{

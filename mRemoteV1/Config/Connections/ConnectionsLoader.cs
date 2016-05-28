@@ -31,7 +31,7 @@ namespace mRemoteNG.Config.Connections
 		private SqlConnection sqlCon;
 		private SqlCommand sqlQuery;
 		private SqlDataReader sqlRd;
-		private TreeNode _selectedTreeNode;
+		private ConnectionTreeNode _selectedTreeNode;
         private bool _UseSQL;
         private string _SQLHost;
         private string _SQLDatabaseName;
@@ -94,7 +94,7 @@ namespace mRemoteNG.Config.Connections
 			set { _ConnectionFileName = value; }
 		}
 		
-		public TreeNode RootTreeNode {get; set;}
+		public ConnectionTreeNode RootTreeNode {get; set;}
 		
 		public ConnectionList ConnectionList {get; set;}
 		
@@ -276,18 +276,18 @@ namespace mRemoteNG.Config.Connections
 			}
 		}
 				
-		private delegate void SetSelectedNodeDelegate(TreeNode treeNode);
-		private static void SetSelectedNode(TreeNode treeNode)
+		private delegate void SetSelectedNodeDelegate(ConnectionTreeNode treeNode);
+		private static void SetSelectedNode(ConnectionTreeNode treeNode)
 		{
             if (ConnectionTree.Instance.InvokeRequired)
 			{
                 Windows.treeForm.Invoke(new SetSelectedNodeDelegate(SetSelectedNode), new object[] { treeNode });
 				return ;
 			}
-            Windows.treeForm.tvConnections.SelectedNode = treeNode;
+            ConnectionTree.Instance.SelectedNode = treeNode;
 		}
 				
-		private void AddNodesFromSQL(TreeNode baseNode)
+		private void AddNodesFromSQL(ConnectionTreeNode baseNode)
 		{
 			try
 			{
@@ -299,12 +299,12 @@ namespace mRemoteNG.Config.Connections
 				{
 					return;
 				}
-						
-				TreeNode tNode = default(TreeNode);
+
+                var tNode = default(ConnectionTreeNode);
 						
 				while (sqlRd.Read())
 				{
-					tNode = new TreeNode(Convert.ToString(sqlRd["Name"]));
+					tNode = new ConnectionTreeNode(Convert.ToString(sqlRd["Name"]));
 					//baseNode.Nodes.Add(tNode)
 							
 					if (ConnectionTreeNode.GetNodeTypeFromString(Convert.ToString(sqlRd["Type"])) == TreeNodeType.Connection)
@@ -418,7 +418,7 @@ namespace mRemoteNG.Config.Connections
 					}
 					else
 					{
-						TreeNode pNode = ConnectionTreeNode.GetNodeFromConstantID(Convert.ToString(sqlRd["ParentID"]));
+						var pNode = ConnectionTreeNode.GetNodeFromConstantID(Convert.ToString(sqlRd["ParentID"]));
 								
 						if (pNode != null)
 						{
@@ -840,7 +840,7 @@ namespace mRemoteNG.Config.Connections
 		}
 				
 		private ContainerInfo _previousContainer;
-		private void AddNodeFromXml(XmlNode parentXmlNode, TreeNode parentTreeNode)
+		private void AddNodeFromXml(XmlNode parentXmlNode, ConnectionTreeNode parentTreeNode)
 		{
 			try
 			{
@@ -850,7 +850,7 @@ namespace mRemoteNG.Config.Connections
 				{
 					foreach (XmlNode xmlNode in parentXmlNode.ChildNodes)
 					{
-						TreeNode treeNode = new TreeNode(xmlNode.Attributes["Name"].Value);
+						var treeNode = new ConnectionTreeNode(xmlNode.Attributes["Name"].Value);
 						parentTreeNode.Nodes.Add(treeNode);
 								
 						if (ConnectionTreeNode.GetNodeTypeFromString(xmlNode.Attributes["Type"].Value) == TreeNodeType.Connection) //connection info

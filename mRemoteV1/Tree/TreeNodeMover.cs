@@ -7,14 +7,14 @@ namespace mRemoteNG.Tree
 {
     public class TreeNodeMover
     {
-        TreeNode _nodeBeingMoved;
+        ConnectionTreeNode _nodeBeingMoved;
 
-        public TreeNodeMover (TreeNode NodeBeingMoved)
+        public TreeNodeMover (ConnectionTreeNode NodeBeingMoved)
         {
             _nodeBeingMoved = NodeBeingMoved;
         }
 
-        public void MoveNode(TreeNode TargetNode)
+        public void MoveNode(ConnectionTreeNode TargetNode)
         {
             if (WeAreAllowedToMoveThisNode(TargetNode))
             {
@@ -26,7 +26,7 @@ namespace mRemoteNG.Tree
             }
         }
 
-        private bool WeAreAllowedToMoveThisNode(TreeNode targetNode)
+        private bool WeAreAllowedToMoveThisNode(ConnectionTreeNode targetNode)
         {
             bool weShouldMoveThisNode = true;
 
@@ -45,7 +45,7 @@ namespace mRemoteNG.Tree
             _nodeBeingMoved.Remove();
         }
 
-        private void AddNodeToNewLocation(TreeNode targetNode)
+        private void AddNodeToNewLocation(ConnectionTreeNode targetNode)
         {
             //If there is no targetNode add dropNode to the bottom of
             //the TreeView root nodes, otherwise add it to the end of

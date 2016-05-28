@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using mRemoteNG.App;
 using mRemoteNG.My;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Forms
 {
@@ -89,8 +89,8 @@ namespace mRemoteNG.Forms
 			}
 		}
 			
-		private TreeNode _selectedFolder;
-        public TreeNode SelectedFolder
+		private ConnectionTreeNode _selectedFolder;
+        public ConnectionTreeNode SelectedFolder
 		{
 			get
 			{
@@ -111,8 +111,8 @@ namespace mRemoteNG.Forms
 			}
 		}
 			
-		private TreeNode _selectedConnection;
-        public TreeNode SelectedConnection
+		private ConnectionTreeNode _selectedConnection;
+        public ConnectionTreeNode SelectedConnection
 		{
 			get
 			{

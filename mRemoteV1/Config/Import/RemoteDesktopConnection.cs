@@ -14,18 +14,18 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Images;
 using mRemoteNG.Container;
 using mRemoteNG.Connection;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Config.Import
 {
 	public class RemoteDesktopConnection
 	{
-		public static void Import(string fileName, TreeNode parentTreeNode)
+		public static void Import(string fileName, ConnectionTreeNode parentTreeNode)
 		{
 			string[] lines = File.ReadAllLines(fileName);
 				
 			string name = Path.GetFileNameWithoutExtension(fileName);
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 				
 			ConnectionInfo connectionInfo = new ConnectionInfo();

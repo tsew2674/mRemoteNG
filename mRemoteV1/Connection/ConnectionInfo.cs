@@ -16,7 +16,7 @@ using mRemoteNG.Container;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.Messages;
 using mRemoteNG.My;
-
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.Connection
 {
@@ -677,7 +677,7 @@ namespace mRemoteNG.Connection
         }
 
         [Browsable(false)]
-        public TreeNode TreeNode { get; set; }
+        public ConnectionTreeNode TreeNode { get; set; }
 
         [Browsable(false)]
         public bool IsQuickConnect
