@@ -5,26 +5,42 @@ using mRemoteNG.Images;
 using System;
 using System.Windows.Forms;
 using mRemoteNG.Messages;
-using mRemoteNG.My;
 using mRemoteNG.Root.PuttySessions;
 using mRemoteNG.Tree.Root;
 
 namespace mRemoteNG.Tree
 {
-	public class ConnectionTreeNode
+	public class ConnectionTreeNode : TreeNode
     {
+        public new ConnectionTreeNode Parent
+        {
+            get { return (ConnectionTreeNode)base.Parent; }
+        }
+
+        public ConnectionTreeNode()
+        {
+            Name = Language.strNewConnection;
+            Text = Name;
+        }
+
+        public ConnectionTreeNode(string ConnectionName = "")
+        {
+            Name = ConnectionName;
+            Text = Name;
+        }
+
         #region Public Methods
-		public static string GetConstantID(TreeNode node)
+		public string GetConstantID()
 		{
-			if (GetNodeType(node) == TreeNodeType.Connection)
-				return (node.Tag as ConnectionInfo).ConstantID;
-			else if (GetNodeType(node) == TreeNodeType.Container)
-				return (node.Tag as ContainerInfo).ConnectionInfo.ConstantID;
+			if (GetNodeType(this) == TreeNodeType.Connection)
+				return (Tag as ConnectionInfo).ConstantID;
+			else if (GetNodeType(this) == TreeNodeType.Container)
+				return (Tag as ContainerInfo).ConnectionInfo.ConstantID;
 				
 			return null;
 		}
 		
-		public static TreeNode GetNodeFromPositionID(int id)
+		public static ConnectionTreeNode GetNodeFromPositionID(int id)
 		{
 			foreach (ConnectionInfo connection in Runtime.ConnectionList)
 			{
@@ -40,7 +56,7 @@ namespace mRemoteNG.Tree
 			return null;
 		}
 		
-		public static TreeNode GetNodeFromConstantID(string id)
+		public static ConnectionTreeNode GetNodeFromConstantID(string id)
 		{
             foreach (ConnectionInfo connectionInfo in Runtime.ConnectionList)
 			{
@@ -56,7 +72,7 @@ namespace mRemoteNG.Tree
 			return null;
 		}
 		
-		public static TreeNodeType GetNodeType(TreeNode treeNode)
+		public static TreeNodeType GetNodeType(ConnectionTreeNode treeNode)
 		{
 			try
 			{
@@ -104,11 +120,11 @@ namespace mRemoteNG.Tree
 			return TreeNodeType.None;
 		}
 		
-		public static bool IsEmpty(TreeNode treeNode)
+		public bool IsEmpty()
 		{
 			try
 			{
-				if (treeNode.Nodes.Count > 0)
+				if (Nodes.Count > 0)
 					return false;
 			}
 			catch (Exception ex)
@@ -119,11 +135,11 @@ namespace mRemoteNG.Tree
 			return true;
 		}
 		
-		public static TreeNode AddNode(TreeNodeType nodeType, string name = null)
+		public static ConnectionTreeNode AddNode(TreeNodeType nodeType, string name = null)
 		{
 			try
 			{
-				TreeNode treeNode = new TreeNode();
+				var treeNode = new ConnectionTreeNode();
 				string defaultName = "";
 					
 				switch (nodeType)
@@ -162,7 +178,7 @@ namespace mRemoteNG.Tree
 			return null;
 		}
 		
-		public static void CloneNode(TreeNode oldTreeNode, TreeNode parentNode = null)
+		public static void CloneNode(ConnectionTreeNode oldTreeNode, ConnectionTreeNode parentNode = null)
 		{
 			try
 			{
@@ -177,7 +193,7 @@ namespace mRemoteNG.Tree
 			}
 		}
 
-        private static void CloneContainerNode(TreeNode oldTreeNode, TreeNode parentNode)
+        private static void CloneContainerNode(ConnectionTreeNode oldTreeNode, ConnectionTreeNode parentNode)
         {
             ContainerInfo oldContainerInfo = (ContainerInfo) oldTreeNode.Tag;
 
@@ -185,7 +201,7 @@ namespace mRemoteNG.Tree
             ConnectionInfo newConnectionInfo = oldContainerInfo.ConnectionInfo.Copy();
             newContainerInfo.ConnectionInfo = newConnectionInfo;
 
-            TreeNode newTreeNode = new TreeNode(newContainerInfo.Name);
+            var newTreeNode = new ConnectionTreeNode(newContainerInfo.Name);
             newTreeNode.Tag = newContainerInfo;
             newTreeNode.ImageIndex = (int)TreeImageType.Container;
             newTreeNode.SelectedImageIndex = (int)TreeImageType.Container;
@@ -196,14 +212,14 @@ namespace mRemoteNG.Tree
             if (parentNode == null)
             {
                 oldTreeNode.Parent.Nodes.Insert(oldTreeNode.Index + 1, newTreeNode);
-                ConnectionTree.SelectedNode = newTreeNode;
+                ConnectionTree.Instance.SelectedNode = newTreeNode;
             }
             else
             {
                 parentNode.Nodes.Add(newTreeNode);
             }
 
-            foreach (TreeNode childTreeNode in oldTreeNode.Nodes)
+            foreach (ConnectionTreeNode childTreeNode in oldTreeNode.Nodes)
             {
                 CloneNode(childTreeNode, newTreeNode);
             }
@@ -211,7 +227,7 @@ namespace mRemoteNG.Tree
             newTreeNode.Expand();
         }
 
-        private static void CloneConnectionNode(TreeNode oldTreeNode, TreeNode parentNode)
+        private static void CloneConnectionNode(ConnectionTreeNode oldTreeNode, ConnectionTreeNode parentNode)
         {
             ConnectionInfo oldConnectionInfo = (ConnectionInfo)oldTreeNode.Tag;
 
@@ -222,7 +238,7 @@ namespace mRemoteNG.Tree
 
             Runtime.ConnectionList.Add(newConnectionInfo);
 
-            TreeNode newTreeNode = new TreeNode(newConnectionInfo.Name);
+            var newTreeNode = new ConnectionTreeNode(newConnectionInfo.Name);
             newTreeNode.Tag = newConnectionInfo;
             newTreeNode.ImageIndex = (int)TreeImageType.ConnectionClosed;
             newTreeNode.SelectedImageIndex = (int)TreeImageType.ConnectionClosed;
@@ -232,7 +248,7 @@ namespace mRemoteNG.Tree
             if (parentNode == null)
             {
                 oldTreeNode.Parent.Nodes.Insert(oldTreeNode.Index + 1, newTreeNode);
-                ConnectionTree.SelectedNode = newTreeNode;
+                ConnectionTree.Instance.SelectedNode = newTreeNode;
             }
             else
             {
@@ -245,7 +261,7 @@ namespace mRemoteNG.Tree
             }
         }
 		
-		public static void SetNodeImage(TreeNode treeNode, TreeImageType Img)
+		public static void SetNodeImage(ConnectionTreeNode treeNode, TreeImageType Img)
 		{
 			SetNodeImageIndex(treeNode, (int)Img);
 		}
@@ -256,14 +272,14 @@ namespace mRemoteNG.Tree
                 return;
 
             connectionInfo.Name = newName;
-            if (mRemoteNG.Settings.Default.SetHostnameLikeDisplayName)
+            if (Settings.Default.SetHostnameLikeDisplayName)
                 connectionInfo.Hostname = newName;
         }
         #endregion
 
         #region Private Methods
-        private delegate void SetNodeImageIndexDelegate(TreeNode treeNode, int imageIndex);
-        private static void SetNodeImageIndex(TreeNode treeNode, int imageIndex)
+        private delegate void SetNodeImageIndexDelegate(ConnectionTreeNode treeNode, int imageIndex);
+        private static void SetNodeImageIndex(ConnectionTreeNode treeNode, int imageIndex)
         {
             if (treeNode == null || treeNode.TreeView == null)
             {

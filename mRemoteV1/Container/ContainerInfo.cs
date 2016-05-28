@@ -1,5 +1,6 @@
 using mRemoteNG.Connection;
 using mRemoteNG.Tools;
+using mRemoteNG.Tree;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -8,7 +9,7 @@ namespace mRemoteNG.Container
     [DefaultProperty("Name")]
     public class ContainerInfo : Parent,Inheritance
 	{
-        private TreeNode _TreeNode;
+        private ConnectionTreeNode _TreeNode;
         private ContainerInfo _Parent;
         private ConnectionInfo _ConnectionInfo = new ConnectionInfo();
         private bool _IsExpanded;
@@ -34,7 +35,7 @@ namespace mRemoteNG.Container
             Bindable(false), 
             DefaultValue(""), 
             DesignOnly(false)]
-        public TreeNode TreeNode
+        public ConnectionTreeNode TreeNode
 		{
 			get { return _TreeNode; }
 			set { _TreeNode = value; }

@@ -52,43 +52,43 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             base.SaveSettings();
 
             chkSingleClickOnConnectionOpensIt.Checked =
-                Convert.ToBoolean(mRemoteNG.Settings.Default.SingleClickOnConnectionOpensIt);
+                Convert.ToBoolean(Settings.Default.SingleClickOnConnectionOpensIt);
             chkSingleClickOnOpenedConnectionSwitchesToIt.Checked =
-                Convert.ToBoolean(mRemoteNG.Settings.Default.SingleClickSwitchesToOpenConnection);
-            chkHostnameLikeDisplayName.Checked = Convert.ToBoolean(mRemoteNG.Settings.Default.SetHostnameLikeDisplayName);
+                Convert.ToBoolean(Settings.Default.SingleClickSwitchesToOpenConnection);
+            chkHostnameLikeDisplayName.Checked = Convert.ToBoolean(Settings.Default.SetHostnameLikeDisplayName);
 
-            numRdpReconnectionCount.Value = Convert.ToDecimal(mRemoteNG.Settings.Default.RdpReconnectionCount);
+            numRdpReconnectionCount.Value = Convert.ToDecimal(Settings.Default.RdpReconnectionCount);
 
-            numAutoSave.Value = Convert.ToDecimal(mRemoteNG.Settings.Default.AutoSaveEveryMinutes);
+            numAutoSave.Value = Convert.ToDecimal(Settings.Default.AutoSaveEveryMinutes);
 
             // ReSharper disable once StringLiteralTypo
-            if (mRemoteNG.Settings.Default.EmptyCredentials == "noinfo")
+            if (Settings.Default.EmptyCredentials == "noinfo")
             {
                 radCredentialsNoInfo.Checked = true;
             }
-            else if (mRemoteNG.Settings.Default.EmptyCredentials == "windows")
+            else if (Settings.Default.EmptyCredentials == "windows")
             {
                 radCredentialsWindows.Checked = true;
             }
-            else if (mRemoteNG.Settings.Default.EmptyCredentials == "custom")
+            else if (Settings.Default.EmptyCredentials == "custom")
             {
                 radCredentialsCustom.Checked = true;
             }
 
-            txtCredentialsUsername.Text = Convert.ToString(mRemoteNG.Settings.Default.DefaultUsername);
-            txtCredentialsPassword.Text = Crypt.Decrypt(Convert.ToString(mRemoteNG.Settings.Default.DefaultPassword),
+            txtCredentialsUsername.Text = Convert.ToString(Settings.Default.DefaultUsername);
+            txtCredentialsPassword.Text = Crypt.Decrypt(Convert.ToString(Settings.Default.DefaultPassword),
                 GeneralAppInfo.EncryptionKey);
-            txtCredentialsDomain.Text = Convert.ToString(mRemoteNG.Settings.Default.DefaultDomain);
+            txtCredentialsDomain.Text = Convert.ToString(Settings.Default.DefaultDomain);
 
-            if (mRemoteNG.Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Never)
+            if (Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Never)
             {
                 radCloseWarnNever.Checked = true;
             }
-            else if (mRemoteNG.Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Exit)
+            else if (Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Exit)
             {
                 radCloseWarnExit.Checked = true;
             }
-            else if (mRemoteNG.Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Multiple)
+            else if (Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Multiple)
             {
                 radCloseWarnMultiple.Checked = true;
             }
@@ -100,16 +100,16 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         public override void SaveSettings()
         {
-            mRemoteNG.Settings.Default.SingleClickOnConnectionOpensIt = chkSingleClickOnConnectionOpensIt.Checked;
-            mRemoteNG.Settings.Default.SingleClickSwitchesToOpenConnection = chkSingleClickOnOpenedConnectionSwitchesToIt.Checked;
-            mRemoteNG.Settings.Default.SetHostnameLikeDisplayName = chkHostnameLikeDisplayName.Checked;
+            Settings.Default.SingleClickOnConnectionOpensIt = chkSingleClickOnConnectionOpensIt.Checked;
+            Settings.Default.SingleClickSwitchesToOpenConnection = chkSingleClickOnOpenedConnectionSwitchesToIt.Checked;
+            Settings.Default.SetHostnameLikeDisplayName = chkHostnameLikeDisplayName.Checked;
 
-            mRemoteNG.Settings.Default.RdpReconnectionCount = (int) numRdpReconnectionCount.Value;
+            Settings.Default.RdpReconnectionCount = (int) numRdpReconnectionCount.Value;
 
-            mRemoteNG.Settings.Default.AutoSaveEveryMinutes = (int) numAutoSave.Value;
-            if (mRemoteNG.Settings.Default.AutoSaveEveryMinutes > 0)
+            Settings.Default.AutoSaveEveryMinutes = (int) numAutoSave.Value;
+            if (Settings.Default.AutoSaveEveryMinutes > 0)
             {
-                frmMain.Default.tmrAutoSave.Interval = Convert.ToInt32(mRemoteNG.Settings.Default.AutoSaveEveryMinutes*60000);
+                frmMain.Default.tmrAutoSave.Interval = Convert.ToInt32(Settings.Default.AutoSaveEveryMinutes*60000);
                 frmMain.Default.tmrAutoSave.Enabled = true;
             }
             else
@@ -120,36 +120,36 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             if (radCredentialsNoInfo.Checked)
             {
                 // ReSharper disable once StringLiteralTypo
-                mRemoteNG.Settings.Default.EmptyCredentials = "noinfo";
+                Settings.Default.EmptyCredentials = "noinfo";
             }
             else if (radCredentialsWindows.Checked)
             {
-                mRemoteNG.Settings.Default.EmptyCredentials = "windows";
+                Settings.Default.EmptyCredentials = "windows";
             }
             else if (radCredentialsCustom.Checked)
             {
-                mRemoteNG.Settings.Default.EmptyCredentials = "custom";
+                Settings.Default.EmptyCredentials = "custom";
             }
 
-            mRemoteNG.Settings.Default.DefaultUsername = txtCredentialsUsername.Text;
-            mRemoteNG.Settings.Default.DefaultPassword = Crypt.Encrypt(txtCredentialsPassword.Text, GeneralAppInfo.EncryptionKey);
-            mRemoteNG.Settings.Default.DefaultDomain = txtCredentialsDomain.Text;
+            Settings.Default.DefaultUsername = txtCredentialsUsername.Text;
+            Settings.Default.DefaultPassword = Crypt.Encrypt(txtCredentialsPassword.Text, GeneralAppInfo.EncryptionKey);
+            Settings.Default.DefaultDomain = txtCredentialsDomain.Text;
 
             if (radCloseWarnAll.Checked)
             {
-                mRemoteNG.Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.All;
+                Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.All;
             }
             if (radCloseWarnMultiple.Checked)
             {
-                mRemoteNG.Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Multiple;
+                Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Multiple;
             }
             if (radCloseWarnExit.Checked)
             {
-                mRemoteNG.Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Exit;
+                Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Exit;
             }
             if (radCloseWarnNever.Checked)
             {
-                mRemoteNG.Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Never;
+                Settings.Default.ConfirmCloseConnection = (int) ConfirmCloseEnum.Never;
             }
         }
 

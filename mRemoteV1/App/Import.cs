@@ -29,7 +29,7 @@ namespace mRemoteNG.App
 
         #region Public Methods
 
-        public static void ImportFromFile(TreeNode rootTreeNode, TreeNode selectedTreeNode,
+        public static void ImportFromFile(ConnectionTreeNode rootTreeNode, ConnectionTreeNode selectedTreeNode,
             bool alwaysUseSelectedTreeNode = false)
         {
             try
@@ -111,8 +111,8 @@ namespace mRemoteNG.App
         {
             try
             {
-                var rootTreeNode = ConnectionTree.TreeView.Nodes[0];
-                var selectedTreeNode = ConnectionTree.TreeView.SelectedNode;
+                var rootTreeNode = ConnectionTree.Instance.RootNode;
+                var selectedTreeNode = ConnectionTree.Instance.SelectedNode;
 
                 var parentTreeNode = GetParentTreeNode(rootTreeNode, selectedTreeNode);
                 if (parentTreeNode == null)
@@ -142,8 +142,8 @@ namespace mRemoteNG.App
         {
             try
             {
-                var rootTreeNode = ConnectionTree.TreeView.Nodes[0];
-                var selectedTreeNode = ConnectionTree.TreeView.SelectedNode;
+                var rootTreeNode = ConnectionTree.Instance.RootNode;
+                var selectedTreeNode = ConnectionTree.Instance.SelectedNode;
 
                 var parentTreeNode = GetParentTreeNode(rootTreeNode, selectedTreeNode);
                 if (parentTreeNode == null)
@@ -173,10 +173,10 @@ namespace mRemoteNG.App
 
         #region Private Methods
 
-        private static TreeNode GetParentTreeNode(TreeNode rootTreeNode, TreeNode selectedTreeNode,
+        private static ConnectionTreeNode GetParentTreeNode(ConnectionTreeNode rootTreeNode, ConnectionTreeNode selectedTreeNode,
             bool alwaysUseSelectedTreeNode = false)
         {
-            TreeNode parentTreeNode;
+            ConnectionTreeNode parentTreeNode;
 
             selectedTreeNode = GetContainerTreeNode(selectedTreeNode);
             if (selectedTreeNode == null || selectedTreeNode == rootTreeNode)
@@ -213,7 +213,7 @@ namespace mRemoteNG.App
             return parentTreeNode;
         }
 
-        private static TreeNode GetContainerTreeNode(TreeNode treeNode)
+        private static ConnectionTreeNode GetContainerTreeNode(ConnectionTreeNode treeNode)
         {
             if ((ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.Root) ||
                 (ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.Container))

@@ -21,7 +21,7 @@ namespace mRemoteNG.Connection
             get
             {
                 if (_connectionInfo == null)
-                    _connectionInfo = (ConnectionInfo)ConnectionTree.SelectedNode.Tag;
+                    _connectionInfo = (ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag;
                 return _connectionInfo;
             }
             set

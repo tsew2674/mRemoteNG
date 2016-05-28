@@ -19,6 +19,7 @@ using mRemoteNG.Images;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.Tree.Root;
 using mRemoteNG.UI.TaskDialog;
+using mRemoteNG.Messages;
 
 namespace mRemoteNG.Config.Connections
 {
@@ -31,7 +32,7 @@ namespace mRemoteNG.Config.Connections
 		private SqlConnection sqlCon;
 		private SqlCommand sqlQuery;
 		private SqlDataReader sqlRd;
-		private TreeNode _selectedTreeNode;
+		private ConnectionTreeNode _selectedTreeNode;
         private bool _UseSQL;
         private string _SQLHost;
         private string _SQLDatabaseName;
@@ -94,7 +95,7 @@ namespace mRemoteNG.Config.Connections
 			set { _ConnectionFileName = value; }
 		}
 		
-		public TreeNode RootTreeNode {get; set;}
+		public ConnectionTreeNode RootTreeNode {get; set;}
 		
 		public ConnectionList ConnectionList {get; set;}
 		
@@ -144,13 +145,13 @@ namespace mRemoteNG.Config.Connections
 		private delegate void LoadFromSqlDelegate();
 		private void LoadFromSQL()
 		{
-            if (Windows.treeForm == null || Windows.treeForm.tvConnections == null)
+            if (Windows.treeForm == null)
 			{
 				return ;
 			}
-            if (Windows.treeForm.tvConnections.InvokeRequired)
+            if (ConnectionTree.Instance.InvokeRequired)
 			{
-                Windows.treeForm.tvConnections.Invoke(new LoadFromSqlDelegate(LoadFromSQL));
+                ConnectionTree.Instance.Invoke(new LoadFromSqlDelegate(LoadFromSQL));
 				return ;
 			}
 					
@@ -228,7 +229,7 @@ namespace mRemoteNG.Config.Connections
 						
 				sqlRd.Close();
 
-                Windows.treeForm.tvConnections.BeginUpdate();
+                ConnectionTree.Instance.BeginUpdate();
 						
 				// SECTION 3. Populate the TreeView with the DOM nodes.
 				AddNodesFromSQL(RootTreeNode);
@@ -244,7 +245,7 @@ namespace mRemoteNG.Config.Connections
 					}
 				}
 
-                Windows.treeForm.tvConnections.EndUpdate();
+                ConnectionTree.Instance.EndUpdate();
 						
 				//open connections from last mremote session
 				if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)
@@ -276,18 +277,18 @@ namespace mRemoteNG.Config.Connections
 			}
 		}
 				
-		private delegate void SetSelectedNodeDelegate(TreeNode treeNode);
-		private static void SetSelectedNode(TreeNode treeNode)
+		private delegate void SetSelectedNodeDelegate(ConnectionTreeNode treeNode);
+		private static void SetSelectedNode(ConnectionTreeNode treeNode)
 		{
-            if (ConnectionTree.TreeView != null && ConnectionTree.TreeView.InvokeRequired)
+            if (ConnectionTree.Instance.InvokeRequired)
 			{
                 Windows.treeForm.Invoke(new SetSelectedNodeDelegate(SetSelectedNode), new object[] { treeNode });
 				return ;
 			}
-            Windows.treeForm.tvConnections.SelectedNode = treeNode;
+            ConnectionTree.Instance.SelectedNode = treeNode;
 		}
 				
-		private void AddNodesFromSQL(TreeNode baseNode)
+		private void AddNodesFromSQL(ConnectionTreeNode baseNode)
 		{
 			try
 			{
@@ -299,12 +300,12 @@ namespace mRemoteNG.Config.Connections
 				{
 					return;
 				}
-						
-				TreeNode tNode = default(TreeNode);
+
+                var tNode = default(ConnectionTreeNode);
 						
 				while (sqlRd.Read())
 				{
-					tNode = new TreeNode(Convert.ToString(sqlRd["Name"]));
+					tNode = new ConnectionTreeNode(Convert.ToString(sqlRd["Name"]));
 					//baseNode.Nodes.Add(tNode)
 							
 					if (ConnectionTreeNode.GetNodeTypeFromString(Convert.ToString(sqlRd["Type"])) == TreeNodeType.Connection)
@@ -418,7 +419,7 @@ namespace mRemoteNG.Config.Connections
 					}
 					else
 					{
-						TreeNode pNode = ConnectionTreeNode.GetNodeFromConstantID(Convert.ToString(sqlRd["ParentID"]));
+						var pNode = ConnectionTreeNode.GetNodeFromConstantID(Convert.ToString(sqlRd["ParentID"]));
 								
 						if (pNode != null)
 						{
@@ -444,7 +445,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strAddNodesFromSqlFailed + Environment.NewLine + ex.Message, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strAddNodesFromSqlFailed + Environment.NewLine + ex.Message, true);
 			}
 		}
 				
@@ -610,7 +611,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strGetConnectionInfoFromSqlFailed + Environment.NewLine + ex.Message, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strGetConnectionInfoFromSqlFailed + Environment.NewLine + ex.Message, true);
 			}
 					
 			return null;
@@ -703,7 +704,7 @@ namespace mRemoteNG.Config.Connections
 				}
 				else
 				{
-					Runtime.MessageCollector.AddMessage(Messages.MessageClass.WarningMsg, Language.strOldConffile);
+					Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strOldConffile);
 				}
 						
 				const double maxSupportedConfVersion = 2.5;
@@ -781,7 +782,7 @@ namespace mRemoteNG.Config.Connections
 						
 				if (import && !isExportFile)
 				{
-					Runtime.MessageCollector.AddMessage(Messages.MessageClass.InformationMsg, Language.strCannotImportNormalSessionFile);
+					Runtime.MessageCollector.AddMessage(MessageClass.InformationMsg, Language.strCannotImportNormalSessionFile);
 					return ;
 				}
 						
@@ -791,7 +792,7 @@ namespace mRemoteNG.Config.Connections
                     RootTreeNode.SelectedImageIndex = (int)TreeImageType.Root;
 				}
 
-                Windows.treeForm.tvConnections.BeginUpdate();
+                ConnectionTree.Instance.BeginUpdate();
 						
 				// SECTION 3. Populate the TreeView with the DOM nodes.
 				AddNodeFromXml(xDom.DocumentElement, RootTreeNode);
@@ -807,7 +808,7 @@ namespace mRemoteNG.Config.Connections
 					}
 				}
 
-                Windows.treeForm.tvConnections.EndUpdate();
+                ConnectionTree.Instance.EndUpdate();
 						
 				//open connections from last mremote session
 				if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)
@@ -834,13 +835,13 @@ namespace mRemoteNG.Config.Connections
 			catch (Exception ex)
 			{
 				Runtime.IsConnectionsFileLoaded = false;
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strLoadFromXmlFailed + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strLoadFromXmlFailed + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace, true);
 				throw;
 			}
 		}
 				
 		private ContainerInfo _previousContainer;
-		private void AddNodeFromXml(XmlNode parentXmlNode, TreeNode parentTreeNode)
+		private void AddNodeFromXml(XmlNode parentXmlNode, ConnectionTreeNode parentTreeNode)
 		{
 			try
 			{
@@ -850,7 +851,7 @@ namespace mRemoteNG.Config.Connections
 				{
 					foreach (XmlNode xmlNode in parentXmlNode.ChildNodes)
 					{
-						TreeNode treeNode = new TreeNode(xmlNode.Attributes["Name"].Value);
+						var treeNode = new ConnectionTreeNode(xmlNode.Attributes["Name"].Value);
 						parentTreeNode.Nodes.Add(treeNode);
 								
 						if (ConnectionTreeNode.GetNodeTypeFromString(xmlNode.Attributes["Type"].Value) == TreeNodeType.Connection) //connection info
@@ -892,7 +893,7 @@ namespace mRemoteNG.Config.Connections
 								}
 							}
 									
-							ConnectionInfo connectionInfo = default(ConnectionInfo);
+							var connectionInfo = default(ConnectionInfo);
 							if (confVersion >= 0.9)
 							{
 								connectionInfo = GetConnectionInfoFromXml(xmlNode);
@@ -936,7 +937,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, Language.strAddNodeFromXmlFailed + Environment.NewLine + ex.Message + ex.StackTrace, true);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strAddNodeFromXmlFailed + Environment.NewLine + ex.Message + ex.StackTrace, true);
 				throw;
 			}
 		}
@@ -1225,7 +1226,7 @@ namespace mRemoteNG.Config.Connections
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddMessage(Messages.MessageClass.ErrorMsg, string.Format(Language.strGetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message), false);
+				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.strGetConnectionInfoFromXmlFailed, connectionInfo.Name, ConnectionFileName, ex.Message), false);
 			}
 			return connectionInfo;
 		}

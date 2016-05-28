@@ -14,7 +14,7 @@ namespace mRemoteNG.Config.Import
 {
 	public class RemoteDesktopConnectionManager
 	{
-		public static void Import(string fileName, TreeNode parentTreeNode)
+		public static void Import(string fileName, ConnectionTreeNode parentTreeNode)
 		{
 			XmlDocument xmlDocument = new XmlDocument();
 			xmlDocument.Load(fileName);
@@ -37,12 +37,12 @@ namespace mRemoteNG.Config.Import
 			ImportFileOrGroup(fileNode, parentTreeNode);
 		}
 			
-		private static void ImportFileOrGroup(XmlNode xmlNode, TreeNode parentTreeNode)
+		private static void ImportFileOrGroup(XmlNode xmlNode, ConnectionTreeNode parentTreeNode)
 		{
 			XmlNode propertiesNode = xmlNode.SelectSingleNode("./properties");
 			string name = propertiesNode.SelectSingleNode("./name").InnerText;
 				
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 
             ContainerInfo containerInfo = new ContainerInfo();
@@ -91,10 +91,10 @@ namespace mRemoteNG.Config.Import
             Runtime.ContainerList.Add(containerInfo);
 		}
 			
-		private static void ImportServer(XmlNode serverNode, TreeNode parentTreeNode)
+		private static void ImportServer(XmlNode serverNode, ConnectionTreeNode parentTreeNode)
 		{
 			string name = serverNode.SelectSingleNode("./displayName").InnerText;
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 				
 			ConnectionInfo connectionInfo = ConnectionInfoFromXml(serverNode);

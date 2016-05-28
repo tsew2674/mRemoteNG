@@ -12,6 +12,7 @@ using mRemoteNG.Connection.Protocol;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.App.Info;
+using mRemoteNG.Tree;
 
 namespace mRemoteNG.UI.Window
 {
@@ -548,16 +549,16 @@ namespace mRemoteNG.UI.Window
         #region Drag and Drop
 		private void TabController_DragDrop(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", true))
+			if (e.Data.GetDataPresent(typeof(ConnectionTreeNode)))
 			{
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode", true)).Tag, ConnectionInfo.Force.DoNotJump, this);
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((ConnectionTreeNode)e.Data.GetData(typeof(ConnectionTreeNode))).Tag, ConnectionInfo.Force.DoNotJump, this);
                 connectionInitiator.InitiateConnection();
 			}
 		}
 				
 		private void TabController_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", true))
+			if (e.Data.GetDataPresent(typeof(ConnectionTreeNode)))
 			{
 				e.Effect = DragDropEffects.Move;
 			}

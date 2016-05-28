@@ -34,7 +34,7 @@ namespace mRemoteNG.Root.PuttySessions
 				{
 					TreeNode.Text = value;
 				}
-                mRemoteNG.Settings.Default.PuttySavedSessionsName = value;
+                Settings.Default.PuttySavedSessionsName = value;
 			}
 		}
 				
@@ -51,7 +51,7 @@ namespace mRemoteNG.Root.PuttySessions
 					return ;
 				}
 				_panel = value;
-                mRemoteNG.Settings.Default.PuttySavedSessionsPanel = value;
+                Settings.Default.PuttySavedSessionsPanel = value;
 			}
         }
         #endregion

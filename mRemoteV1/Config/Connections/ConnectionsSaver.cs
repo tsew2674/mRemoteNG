@@ -53,7 +53,7 @@ namespace mRemoteNG.Config.Connections
 		public string SQLPassword {get; set;}
 		
 		public string ConnectionFileName {get; set;}
-		public TreeNode RootTreeNode {get; set;}
+		public ConnectionTreeNode RootTreeNode {get; set;}
 		public bool Export {get; set;}
 		public Format SaveFormat {get; set;}
 		public Save SaveSecurity {get; set;}
@@ -184,7 +184,7 @@ namespace mRemoteNG.Config.Connections
 				return ;
 			}
 
-		    var tN = (TreeNode)RootTreeNode.Clone();
+		    var tN = (ConnectionTreeNode)RootTreeNode.Clone();
 					
 			string strProtected;
 			if (tN.Tag != null)
@@ -227,7 +227,7 @@ namespace mRemoteNG.Config.Connections
 				
 		private void SaveNodesSQL(TreeNodeCollection tnc)
 		{
-			foreach (TreeNode node in tnc)
+			foreach (ConnectionTreeNode node in tnc)
 			{
 				_currentNodeIndex++;
 						
@@ -558,15 +558,15 @@ namespace mRemoteNG.Config.Connections
 					return;
 				}
 						
-				TreeNode treeNode = default(TreeNode);
+				var treeNode = default(ConnectionTreeNode);
 						
 				if (ConnectionTreeNode.GetNodeType(RootTreeNode) == TreeNodeType.Root)
 				{
-					treeNode = (TreeNode)RootTreeNode.Clone();
+					treeNode = (ConnectionTreeNode)RootTreeNode.Clone();
 				}
 				else
 				{
-					treeNode = new TreeNode("mR|Export (" + MiscTools.DBDate(DateTime.Now) + ")");
+					treeNode = new ConnectionTreeNode("mR|Export (" + MiscTools.DBDate(DateTime.Now) + ")");
 					treeNode.Nodes.Add(Convert.ToString(RootTreeNode.Clone()));
 				}
 						
@@ -634,7 +634,7 @@ namespace mRemoteNG.Config.Connections
 		{
 			try
 			{
-				foreach (TreeNode node in tNC)
+				foreach (ConnectionTreeNode node in tNC)
 				{
                     ConnectionInfo curConI = default(ConnectionInfo);
 							
@@ -937,8 +937,8 @@ namespace mRemoteNG.Config.Connections
 				return;
 			}
 					
-			TreeNode tN = default(TreeNode);
-			tN = (TreeNode)RootTreeNode.Clone();
+			var tN = default(ConnectionTreeNode);
+			tN = (ConnectionTreeNode)RootTreeNode.Clone();
 					
 			TreeNodeCollection tNC = default(TreeNodeCollection);
 			tNC = tN.Nodes;
@@ -981,7 +981,7 @@ namespace mRemoteNG.Config.Connections
 				
 		private void SaveNodemRCSV(TreeNodeCollection tNC)
 		{
-			foreach (TreeNode node in tNC)
+			foreach (ConnectionTreeNode node in tNC)
 			{
 				if (ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection)
 				{
@@ -1052,8 +1052,8 @@ namespace mRemoteNG.Config.Connections
 				return;
 			}
 					
-			TreeNode tN = default(TreeNode);
-			tN = (TreeNode)RootTreeNode.Clone();
+			var tN = default(ConnectionTreeNode);
+			tN = (ConnectionTreeNode)RootTreeNode.Clone();
 					
 			TreeNodeCollection tNC = default(TreeNodeCollection);
 			tNC = tN.Nodes;
@@ -1067,7 +1067,7 @@ namespace mRemoteNG.Config.Connections
 				
 		private void SaveNodevRDCSV(TreeNodeCollection tNC)
 		{
-			foreach (TreeNode node in tNC)
+			foreach (ConnectionTreeNode node in tNC)
 			{
 				if (ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection)
 				{
@@ -1114,8 +1114,8 @@ namespace mRemoteNG.Config.Connections
 				return;
 			}
 					
-			TreeNode tN = default(TreeNode);
-			tN = (TreeNode)RootTreeNode.Clone();
+			var tN = default(ConnectionTreeNode);
+			tN = (ConnectionTreeNode)RootTreeNode.Clone();
 					
 			TreeNodeCollection tNC = default(TreeNodeCollection);
 			tNC = tN.Nodes;
@@ -1140,7 +1140,7 @@ namespace mRemoteNG.Config.Connections
 				
 		private void SaveNodeVRE(TreeNodeCollection tNC)
 		{
-			foreach (TreeNode node in tNC)
+			foreach (ConnectionTreeNode node in tNC)
 			{
 				if (ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection)
 				{

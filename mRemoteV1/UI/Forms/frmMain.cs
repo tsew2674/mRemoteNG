@@ -123,8 +123,6 @@ namespace mRemoteNG.UI.Forms
 
         private void frmMain_Load(object sender, EventArgs e)
 		{
-            
-
             // Create gui config load and save objects
             var settingsLoader = new SettingsLoader(this);
 			settingsLoader.LoadSettings();
@@ -139,8 +137,8 @@ namespace mRemoteNG.UI.Forms
             Runtime.MessageCollector = new MessageCollector(Windows.errorsForm);
             Runtime.WindowList = new WindowList();
 
-            Windows.treePanel.Focus();
-            ConnectionTree.TreeView = Windows.treeForm.tvConnections;
+            //Windows.treePanel.Focus();
+            //ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
             if (Settings.Default.FirstStart && !Settings.Default.LoadConsFromCustomLocation && !File.Exists(Runtime.GetStartupConnectionFileName()))
 			{
@@ -417,9 +415,9 @@ namespace mRemoteNG.UI.Forms
 		{
             var extA = (ExternalTool)((Control)sender).Tag;
 
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+            if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 			{
-                extA.Start((ConnectionInfo)ConnectionTree.SelectedNode.Tag);
+                extA.Start((ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag);
 			}
 			else
 			{
@@ -449,7 +447,7 @@ namespace mRemoteNG.UI.Forms
         #region File
         private void mMenFile_DropDownOpening(Object sender, EventArgs e)
 		{
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Root)
+            if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Root)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -460,7 +458,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameFolder;
 				mMenFileDuplicate.Text = Language.strMenuDuplicate;
 			}
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
+            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -471,7 +469,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameFolder;
 				mMenFileDuplicate.Text = Language.strMenuDuplicateFolder;
 			}
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection)
+            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -482,7 +480,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileRename.Text = Language.strMenuRenameConnection;
 				mMenFileDuplicate.Text = Language.strMenuDuplicateConnection;
 			}
-            else if ((ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttyRoot) || (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession))
+            else if ((ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttyRoot) || (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession))
 			{
 				mMenFileNewConnection.Enabled = false;
 				mMenFileNewFolder.Enabled = false;
@@ -559,25 +557,25 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileDelete_Click(object sender, EventArgs e)
 		{
-            ConnectionTree.DeleteSelectedNode();
+            ConnectionTree.Instance.DeleteSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 
         private static void mMenFileRename_Click(object sender, EventArgs e)
 		{
-			ConnectionTree.StartRenameSelectedNode();
+			ConnectionTree.Instance.StartRenameSelectedNode();
             Runtime.SaveConnectionsBG();
 		}
 
         private static void mMenFileDuplicate_Click(object sender, EventArgs e)
 		{
-            ConnectionTreeNode.CloneNode(ConnectionTree.SelectedNode);
+            ConnectionTreeNode.CloneNode(ConnectionTree.Instance.SelectedNode);
             Runtime.SaveConnectionsBG();
 		}
 
         private static void mMenFileImportFromFile_Click(object sender, EventArgs e)
 		{
-            Import.ImportFromFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            Import.ImportFromFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode);
 		}
 
         private static void mMenFileImportFromActiveDirectory_Click(object sender, EventArgs e)
@@ -592,7 +590,7 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileExport_Click(object sender, EventArgs e)
 		{
-            Export.ExportToFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            Export.ExportToFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode);
 		}
 
         private static void mMenFileExit_Click(object sender, EventArgs e)
@@ -911,7 +909,7 @@ namespace mRemoteNG.UI.Forms
         private void btnConnections_DropDownOpening(object sender, EventArgs e)
 		{
 			btnConnections.DropDownItems.Clear();	
-			foreach (TreeNode treeNode in Windows.treeForm.tvConnections.Nodes)
+			foreach (ConnectionTreeNode treeNode in ConnectionTree.Instance.Nodes)
 			{
 				AddNodeToMenu(treeNode.Nodes, btnConnections);
 			}
@@ -921,7 +919,7 @@ namespace mRemoteNG.UI.Forms
 		{
 			try
 			{
-				foreach (TreeNode treeNode in treeNodeCollection)
+				foreach (ConnectionTreeNode treeNode in treeNodeCollection)
 				{
 					var menuItem = new ToolStripMenuItem();
 					menuItem.Text = treeNode.Text;

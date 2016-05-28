@@ -21,13 +21,13 @@ namespace mRemoteNG.Config.Import
 	// ReSharper disable once InconsistentNaming
 	public class mRemoteNG
 	{
-		public static void Import(string fileName, TreeNode parentTreeNode)
+		public static void Import(string fileName, ConnectionTreeNode parentTreeNode)
 		{
 			string name = Path.GetFileNameWithoutExtension(fileName);
-			TreeNode treeNode = new TreeNode(name);
+			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 
-		    ContainerInfo containerInfo = new ContainerInfo
+		    var containerInfo = new ContainerInfo
 		    {
 		        TreeNode = treeNode,
 		        Name = name
