@@ -20,11 +20,13 @@ namespace mRemoteNG.Tree
         public ConnectionTreeNode()
         {
             Name = Language.strNewConnection;
+            Text = Name;
         }
 
         public ConnectionTreeNode(string ConnectionName = "")
         {
             Name = ConnectionName;
+            Text = Name;
         }
 
         #region Public Methods
