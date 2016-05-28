@@ -880,18 +880,6 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo ConnectionInfo, Form ConnectionForm)
-        {
-            try
-            {
-                OpenConnectionFinal(ConnectionInfo, ConnectionInfo.Force.None, ConnectionForm);
-            }
-            catch (Exception ex)
-            {
-                MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strConnectionOpenFailed + Environment.NewLine + ex.Message);
-            }
-        }
-
         public static void OpenConnection(ConnectionInfo ConnectionInfo, Form ConnectionForm, ConnectionInfo.Force Force)
         {
             try
@@ -920,49 +908,8 @@ namespace mRemoteNG.App
         {
             try
             {
-                if (ConnectionInfo.Hostname == "" && ConnectionInfo.Protocol != ProtocolType.IntApp)
-                {
-                    MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strConnectionOpenFailedNoHostname);
-                    return;
-                }
-
-                StartPreConnectionExternalApp(ConnectionInfo);
-
-                if ((Force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
-                {
-                    if (SwitchToOpenConnection(ConnectionInfo))
-                    {
-                        return;
-                    }
-                }
-
-                ProtocolFactory protocolFactory = new ProtocolFactory();
-                ProtocolBase newProtocol = protocolFactory.CreateProtocol(ConnectionInfo);
-
-                string connectionPanel = SetConnectionPanel(ConnectionInfo, Force);
-                Form connectionForm = SetConnectionForm(ConForm, connectionPanel);
-                Control connectionContainer = SetConnectionContainer(ConnectionInfo, connectionForm);
-                SetConnectionFormEventHandlers(newProtocol, connectionForm);
-                SetConnectionEventHandlers(newProtocol);
-                BuildConnectionInterfaceController(ConnectionInfo, newProtocol, connectionContainer);
-
-                newProtocol.Force = Force;
-
-                if (newProtocol.Initialize() == false)
-                {
-                    newProtocol.Close();
-                    return;
-                }
-
-                if (newProtocol.Connect() == false)
-                {
-                    newProtocol.Close();
-                    return;
-                }
-
-                ConnectionInfo.OpenConnections.Add(newProtocol);
-                SetTreeNodeImages(ConnectionInfo);
-                frmMain.Default.SelectedConnection = ConnectionInfo;
+                ConnectionInitiator initiator = new ConnectionInitiator(ConnectionInfo, Force, ConForm);
+                initiator.InitiateConnection();
             }
             catch (Exception ex)
             {
