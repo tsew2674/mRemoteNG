@@ -1040,8 +1040,9 @@ namespace mRemoteNG.UI.Window
 				if (TabController.SelectedTab != null && TabController.SelectedTab.Tag is InterfaceControl)
 				{
                     InterfaceControl IC = (InterfaceControl)TabController.SelectedTab.Tag;
-					Runtime.OpenConnection(IC.Info, ConnectionInfo.Force.DoNotJump);
-					_ignoreChangeSelectedTabClick = false;
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(IC.Info, ConnectionInfo.Force.DoNotJump);
+                    connectionInitiator.InitiateConnection();
+                    _ignoreChangeSelectedTabClick = false;
 				}
 			}
 			catch (Exception ex)
@@ -1058,8 +1059,9 @@ namespace mRemoteNG.UI.Window
 				{
                     InterfaceControl IC = (InterfaceControl)TabController.SelectedTab.Tag;
 					IC.Protocol.Close();
-                    Runtime.OpenConnection(IC.Info, ConnectionInfo.Force.DoNotJump);
-				}
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(IC.Info, ConnectionInfo.Force.DoNotJump);
+                    connectionInitiator.InitiateConnection();
+                }
 			}
 			catch (Exception ex)
 			{

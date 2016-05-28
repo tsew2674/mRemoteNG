@@ -846,7 +846,8 @@ namespace mRemoteNG.App
 
                 if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
                 {
-                    OpenConnection((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, Force);
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, Force);
+                    connectionInitiator.InitiateConnection();
                 }
                 else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
                 {
@@ -856,23 +857,12 @@ namespace mRemoteNG.App
                         {
                             if (tNode.Tag != null)
                             {
-                                OpenConnection((ConnectionInfo)tNode.Tag, Force);
+                                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)tNode.Tag, Force);
+                                connectionInitiator.InitiateConnection();
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strConnectionOpenFailed + Environment.NewLine + ex.Message);
-            }
-        }
-
-        public static void OpenConnection(ConnectionInfo ConnectionInfo, ConnectionInfo.Force Force)
-        {
-            try
-            {
-                OpenConnectionFinal(ConnectionInfo, Force, null);
             }
             catch (Exception ex)
             {
@@ -1127,7 +1117,8 @@ namespace mRemoteNG.App
             }
             connectionInfo.SetDefaultPort();
             connectionInfo.IsQuickConnect = true;
-            OpenConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator(connectionInfo, ConnectionInfo.Force.DoNotJump);
+            connectionInitiator.InitiateConnection();
         }
 
         public static void GoToWebsite()

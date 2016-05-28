@@ -836,7 +836,8 @@ namespace mRemoteNG.UI.Forms
 					return ;
 				}
 				cmbQuickConnect.Add(connectionInfo);
-				Runtime.OpenConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator(connectionInfo, ConnectionInfo.Force.DoNotJump);
+                connectionInitiator.InitiateConnection();
 			}
 			catch (Exception ex)
 			{
