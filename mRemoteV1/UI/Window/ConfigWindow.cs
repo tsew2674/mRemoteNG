@@ -5,6 +5,7 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Connection.Protocol.VNC;
 using mRemoteNG.Messages;
 using mRemoteNG.Tools;
+using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
 using System;
 using System.Collections.Generic;
@@ -746,7 +747,7 @@ namespace mRemoteNG.UI.Window
                 }
                 else if (e.ChangedItem.Label == Language.strPropertyNameName)
                 {
-                    Windows.treeForm.tvConnections.SelectedNode.Text = Convert.ToString(((ConnectionInfo)pGrid.SelectedObject).Name);
+                    ConnectionTree.Instance.SelectedNode.Text = Convert.ToString(((ConnectionInfo)pGrid.SelectedObject).Name);
                     if (Settings.Default.SetHostnameLikeDisplayName && pGrid.SelectedObject is ConnectionInfo)
                     {
                         ConnectionInfo connectionInfo = (ConnectionInfo)pGrid.SelectedObject;
@@ -1580,7 +1581,7 @@ namespace mRemoteNG.UI.Window
                     InheritanceVisible = false;
                     DefaultPropertiesVisible = false;
                     DefaultInheritanceVisible = false;
-                    SetPropertyGridObject((RootNodeInfo)Windows.treeForm.tvConnections.SelectedNode.Tag);
+                    SetPropertyGridObject((RootNodeInfo)ConnectionTree.Instance.SelectedNode.Tag);
 				}
 				else
 				{
@@ -1599,7 +1600,7 @@ namespace mRemoteNG.UI.Window
                     InheritanceVisible = false;
                     DefaultPropertiesVisible = false;
                     DefaultInheritanceVisible = false;
-                    SetPropertyGridObject((RootNodeInfo)Windows.treeForm.tvConnections.SelectedNode.Tag);
+                    SetPropertyGridObject((RootNodeInfo)ConnectionTree.Instance.SelectedNode.Tag);
 				}
 			}
 		}

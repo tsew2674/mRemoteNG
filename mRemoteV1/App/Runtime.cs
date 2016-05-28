@@ -840,14 +840,14 @@ namespace mRemoteNG.App
         {
             try
             {
-                if (Windows.treeForm.tvConnections.SelectedNode.Tag == null)
+                if (ConnectionTree.Instance.SelectedNode.Tag == null)
                 {
                     return;
                 }
 
                 if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
                 {
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)Windows.treeForm.tvConnections.SelectedNode.Tag, Force);
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag, Force);
                     connectionInitiator.InitiateConnection();
                 }
                 else if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Container)

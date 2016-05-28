@@ -575,7 +575,7 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileImportFromFile_Click(object sender, EventArgs e)
 		{
-            Import.ImportFromFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode);
+            Import.ImportFromFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode);
 		}
 
         private static void mMenFileImportFromActiveDirectory_Click(object sender, EventArgs e)
@@ -590,7 +590,7 @@ namespace mRemoteNG.UI.Forms
 
         private static void mMenFileExport_Click(object sender, EventArgs e)
 		{
-            Export.ExportToFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode);
+            Export.ExportToFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode);
 		}
 
         private static void mMenFileExit_Click(object sender, EventArgs e)

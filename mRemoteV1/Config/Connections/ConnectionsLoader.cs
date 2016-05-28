@@ -145,13 +145,13 @@ namespace mRemoteNG.Config.Connections
 		private delegate void LoadFromSqlDelegate();
 		private void LoadFromSQL()
 		{
-            if (Windows.treeForm == null || Windows.treeForm.tvConnections == null)
+            if (Windows.treeForm == null)
 			{
 				return ;
 			}
-            if (Windows.treeForm.tvConnections.InvokeRequired)
+            if (ConnectionTree.Instance.InvokeRequired)
 			{
-                Windows.treeForm.tvConnections.Invoke(new LoadFromSqlDelegate(LoadFromSQL));
+                ConnectionTree.Instance.Invoke(new LoadFromSqlDelegate(LoadFromSQL));
 				return ;
 			}
 					
@@ -229,7 +229,7 @@ namespace mRemoteNG.Config.Connections
 						
 				sqlRd.Close();
 
-                Windows.treeForm.tvConnections.BeginUpdate();
+                ConnectionTree.Instance.BeginUpdate();
 						
 				// SECTION 3. Populate the TreeView with the DOM nodes.
 				AddNodesFromSQL(RootTreeNode);
@@ -245,7 +245,7 @@ namespace mRemoteNG.Config.Connections
 					}
 				}
 
-                Windows.treeForm.tvConnections.EndUpdate();
+                ConnectionTree.Instance.EndUpdate();
 						
 				//open connections from last mremote session
 				if (mRemoteNG.Settings.Default.OpenConsFromLastSession && !mRemoteNG.Settings.Default.NoReconnect)

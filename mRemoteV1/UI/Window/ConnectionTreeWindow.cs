@@ -613,7 +613,7 @@ namespace mRemoteNG.UI.Window
 				
 		static public void cMenTreeImportFile_Click(System.Object sender, EventArgs e)
 		{
-            Import.ImportFromFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode, true);
+            Import.ImportFromFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode, true);
 		}
 				
 		static public void cMenTreeImportActiveDirectory_Click(System.Object sender, EventArgs e)
@@ -628,7 +628,7 @@ namespace mRemoteNG.UI.Window
 				
 		static public void cMenTreeExportFile_Click(System.Object sender, EventArgs e)
 		{
-            Export.ExportToFile(ConnectionTree.Instance.RootNode, Windows.treeForm.tvConnections.SelectedNode);
+            Export.ExportToFile(ConnectionTree.Instance.RootNode, ConnectionTree.Instance.SelectedNode);
 		}
 		static public void cMenTreeMoveUp_Click(System.Object sender, EventArgs e)
 		{
