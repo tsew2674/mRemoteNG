@@ -14,7 +14,7 @@ namespace mRemoteNG.Config.Import
 	{
 		public static void Import(string fileName, ConnectionTreeNode parentTreeNode)
 		{
-			string name = Path.GetFileNameWithoutExtension(fileName);
+			var name = Path.GetFileNameWithoutExtension(fileName);
 			var treeNode = new ConnectionTreeNode(name);
 			parentTreeNode.Nodes.Add(treeNode);
 
@@ -42,14 +42,16 @@ namespace mRemoteNG.Config.Import
 			treeNode.Tag = containerInfo;
 			treeNode.ImageIndex = (int)TreeImageType.Container;
 			treeNode.SelectedImageIndex = (int)TreeImageType.Container;
-				
-			ConnectionsLoader connectionsLoad = new ConnectionsLoader();
-			connectionsLoad.ConnectionFileName = fileName;
-			connectionsLoad.RootTreeNode = treeNode;
-            connectionsLoad.ConnectionList = Runtime.ConnectionList;
-            connectionsLoad.ContainerList = Runtime.ContainerList;
-				
-			connectionsLoad.LoadConnections(true);
+
+		    var connectionsLoad = new ConnectionsLoader
+		    {
+		        ConnectionFileName = fileName,
+		        RootTreeNode = treeNode,
+		        ConnectionList = Runtime.ConnectionList,
+		        ContainerList = Runtime.ContainerList
+		    };
+
+		    connectionsLoad.LoadConnections(true);
 				
 			Runtime.ContainerList.Add(containerInfo);
 		}

@@ -14,12 +14,12 @@ namespace mRemoteNG.Config.Import
 		{
 			foreach (Tools.PortScan.ScanHost host in hosts)
 			{
-				ProtocolType finalProtocol = default(ProtocolType);
-				bool protocolValid = false;
+				var finalProtocol = default(ProtocolType);
+				var protocolValid = false;
 					
 				var treeNode = ConnectionTreeNode.AddNode(TreeNodeType.Connection, host.HostNameWithoutDomain);
 					
-				ConnectionInfo connectionInfo = new ConnectionInfo();
+				var connectionInfo = new ConnectionInfo();
 				connectionInfo.Inheritance = new ConnectionInfoInheritance(connectionInfo);
 					
 				connectionInfo.Name = host.HostNameWithoutDomain;
