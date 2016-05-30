@@ -254,8 +254,8 @@ namespace mRemoteNG.Config.Connections
 					{
 						if (conI.PleaseConnect == true)
 						{
-                            ConnectionInitiator connectionInitiator = new ConnectionInitiator(conI);
-                            connectionInitiator.InitiateConnection();
+                            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                            connectionInitiator.InitiateConnection(conI);
 						}
 					}
 				}
@@ -817,8 +817,8 @@ namespace mRemoteNG.Config.Connections
 					{
 						if (conI.PleaseConnect == true)
 						{
-                            ConnectionInitiator connectionInitiator = new ConnectionInitiator(conI);
-                            connectionInitiator.InitiateConnection();
+                            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                            connectionInitiator.InitiateConnection(conI);
                         }
 					}
 				}

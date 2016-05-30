@@ -834,8 +834,8 @@ namespace mRemoteNG.UI.Forms
 					return ;
 				}
 				cmbQuickConnect.Add(connectionInfo);
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator(connectionInfo, ConnectionInfo.Force.DoNotJump);
-                connectionInitiator.InitiateConnection();
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                connectionInitiator.InitiateConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
 			}
 			catch (Exception ex)
 			{
@@ -956,8 +956,8 @@ namespace mRemoteNG.UI.Forms
 			{
                 if (((Control)sender).Tag is ConnectionInfo)
 				{
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((Control)sender).Tag);
-                    connectionInitiator.InitiateConnection();
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                    connectionInitiator.InitiateConnection((ConnectionInfo)((Control)sender).Tag);
                 }
 			}
 		}

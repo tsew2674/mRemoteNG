@@ -551,8 +551,8 @@ namespace mRemoteNG.UI.Window
 		{
 			if (e.Data.GetDataPresent(typeof(ConnectionTreeNode)))
 			{
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator((ConnectionInfo)((ConnectionTreeNode)e.Data.GetData(typeof(ConnectionTreeNode))).Tag, ConnectionInfo.Force.DoNotJump, this);
-                connectionInitiator.InitiateConnection();
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                connectionInitiator.InitiateConnection((ConnectionInfo)((ConnectionTreeNode)e.Data.GetData(typeof(ConnectionTreeNode))).Tag, ConnectionInfo.Force.DoNotJump, this);
 			}
 		}
 				
@@ -1041,8 +1041,8 @@ namespace mRemoteNG.UI.Window
 				if (TabController.SelectedTab != null && TabController.SelectedTab.Tag is InterfaceControl)
 				{
                     InterfaceControl IC = (InterfaceControl)TabController.SelectedTab.Tag;
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(IC.Info, ConnectionInfo.Force.DoNotJump);
-                    connectionInitiator.InitiateConnection();
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                    connectionInitiator.InitiateConnection(IC.Info, ConnectionInfo.Force.DoNotJump);
                     _ignoreChangeSelectedTabClick = false;
 				}
 			}
@@ -1060,8 +1060,8 @@ namespace mRemoteNG.UI.Window
 				{
                     InterfaceControl IC = (InterfaceControl)TabController.SelectedTab.Tag;
 					IC.Protocol.Close();
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(IC.Info, ConnectionInfo.Force.DoNotJump);
-                    connectionInitiator.InitiateConnection();
+                    ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                    connectionInitiator.InitiateConnection(IC.Info, ConnectionInfo.Force.DoNotJump);
                 }
 			}
 			catch (Exception ex)

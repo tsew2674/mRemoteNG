@@ -100,8 +100,8 @@ namespace mRemoteNG.Tools
 			try
 			{
                 ConnectionInfo newConnectionInfo = BuildConnectionInfoForIntegratedApp();
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator(newConnectionInfo);
-                connectionInitiator.InitiateConnection();
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                connectionInitiator.InitiateConnection(newConnectionInfo);
 			}
 			catch (Exception ex)
 			{

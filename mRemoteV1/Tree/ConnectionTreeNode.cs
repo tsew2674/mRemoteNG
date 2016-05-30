@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using mRemoteNG.Messages;
 using mRemoteNG.Root.PuttySessions;
 using mRemoteNG.Tree.Root;
+using System.Collections.Generic;
 
 namespace mRemoteNG.Tree
 {
@@ -54,8 +55,22 @@ namespace mRemoteNG.Tree
 				
 			return null;
 		}
-		
-		public static ConnectionTreeNode GetNodeFromPositionID(int id)
+
+        public List<ConnectionTreeNode> GetChildNodesOfType(TreeNodeType type)
+        {
+            var nodeList = new List<ConnectionTreeNode>();
+            foreach (ConnectionTreeNode node in Nodes)
+            {
+                if (node.GetNodeType() == type)
+                    nodeList.Add(node);
+                if (node.GetNodeType() == TreeNodeType.Container)
+                    nodeList.AddRange(node.GetChildNodesOfType(type));
+            }
+            return nodeList;
+        }
+
+
+        public static ConnectionTreeNode GetNodeFromPositionID(int id)
 		{
 			foreach (ConnectionInfo connection in Runtime.ConnectionList)
 			{
@@ -91,7 +106,6 @@ namespace mRemoteNG.Tree
         {
             return GetNodeType(this);
         }
-
 
         public static TreeNodeType GetNodeType(ConnectionTreeNode treeNode)
 		{

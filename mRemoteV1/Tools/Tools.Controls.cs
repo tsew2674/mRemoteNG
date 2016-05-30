@@ -214,8 +214,8 @@ namespace mRemoteNG.Tools
 						{
 							ShowForm();
 						}
-                        ConnectionInitiator connectionInitiator = new ConnectionInitiator((mRemoteNG.Connection.ConnectionInfo)((System.Windows.Forms.Control)sender).Tag);
-                        connectionInitiator.InitiateConnection();
+                        ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                        connectionInitiator.InitiateConnection((ConnectionInfo)((Control)sender).Tag);
 					}
 				}
 			}

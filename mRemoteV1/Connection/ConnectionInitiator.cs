@@ -7,6 +7,7 @@ using mRemoteNG.Tree;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Window;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TabPage = Crownwood.Magic.Controls.TabPage;
 
@@ -14,63 +15,59 @@ namespace mRemoteNG.Connection
 {
     public class ConnectionInitiator
     {
-        private ConnectionInfo _connectionInfo = null;
-
-        public ConnectionInfo ConnectionInfo
+        public ConnectionInitiator()
         {
-            get
+        }
+
+        public void InitiateConnection(ConnectionTreeNode connectionTreeNode = null, ConnectionInfo.Force Force = ConnectionInfo.Force.None, Form connectionForm = null)
+        {
+            if (connectionTreeNode.GetNodeType() == TreeNodeType.Connection || connectionTreeNode.GetNodeType() == TreeNodeType.PuttySession)
             {
-                if (_connectionInfo == null)
-                    _connectionInfo = (ConnectionInfo)ConnectionTree.Instance.SelectedNode.Tag;
-                return _connectionInfo;
+                InitiateConnection(connectionTreeNode.ConnectionInfo, Force, connectionForm);
             }
-            set
+            else if (connectionTreeNode.GetNodeType() == TreeNodeType.Container)
             {
-                _connectionInfo = value;
+                InitiateConnection(connectionTreeNode.GetChildNodesOfType(TreeNodeType.Connection), Force, connectionForm);
             }
         }
 
-        public ConnectionInfo.Force Force { get; set; }
-        public Form ConnectionForm { get; set; }
-
-
-        public ConnectionInitiator(ConnectionInfo connectionInfo = null, ConnectionInfo.Force force = ConnectionInfo.Force.None, Form connectionForm = null)
+        public void InitiateConnection(List<ConnectionTreeNode> ConnectionTreeNodes = null, ConnectionInfo.Force Force = ConnectionInfo.Force.None, Form ConnectionForm = null)
         {
-            _connectionInfo = connectionInfo;
-            Force = force;
-            ConnectionForm = connectionForm;
+            foreach (ConnectionTreeNode treeNode in ConnectionTreeNodes)
+            {
+                InitiateConnection(treeNode.ConnectionInfo, Force, ConnectionForm);
+            }
         }
 
-
-        public void InitiateConnection()
+        public void InitiateConnection(ConnectionInfo connectionInfo = null, ConnectionInfo.Force Force = ConnectionInfo.Force.None, Form ConnectionForm = null)
         {
             try
             {
-                if (_connectionInfo.Hostname == "" && _connectionInfo.Protocol != ProtocolType.IntApp)
+                if (connectionInfo.Hostname == "" && connectionInfo.Protocol != ProtocolType.IntApp)
                 {
                     Runtime.MessageCollector.AddMessage(MessageClass.WarningMsg, Language.strConnectionOpenFailedNoHostname);
                     return;
                 }
 
-                StartPreConnectionExternalApp(_connectionInfo);
+                StartPreConnectionExternalApp(connectionInfo);
 
                 if ((Force & ConnectionInfo.Force.DoNotJump) != ConnectionInfo.Force.DoNotJump)
                 {
-                    if (Runtime.SwitchToOpenConnection(_connectionInfo))
+                    if (Runtime.SwitchToOpenConnection(connectionInfo))
                     {
                         return;
                     }
                 }
 
                 ProtocolFactory protocolFactory = new ProtocolFactory();
-                ProtocolBase newProtocol = protocolFactory.CreateProtocol(_connectionInfo);
+                ProtocolBase newProtocol = protocolFactory.CreateProtocol(connectionInfo);
 
-                string connectionPanel = SetConnectionPanel(_connectionInfo, Force);
+                string connectionPanel = SetConnectionPanel(connectionInfo, Force);
                 Form connectionForm = SetConnectionForm(ConnectionForm, connectionPanel);
-                Control connectionContainer = SetConnectionContainer(_connectionInfo, connectionForm);
+                Control connectionContainer = SetConnectionContainer(connectionInfo, connectionForm);
                 SetConnectionFormEventHandlers(newProtocol, connectionForm);
                 SetConnectionEventHandlers(newProtocol);
-                BuildConnectionInterfaceController(_connectionInfo, newProtocol, connectionContainer);
+                BuildConnectionInterfaceController(connectionInfo, newProtocol, connectionContainer);
 
                 newProtocol.Force = Force;
 
@@ -86,9 +83,9 @@ namespace mRemoteNG.Connection
                     return;
                 }
 
-                _connectionInfo.OpenConnections.Add(newProtocol);
-                SetTreeNodeImages(_connectionInfo);
-                frmMain.Default.SelectedConnection = _connectionInfo;
+                connectionInfo.OpenConnections.Add(newProtocol);
+                SetTreeNodeImages(connectionInfo);
+                frmMain.Default.SelectedConnection = connectionInfo;
             }
             catch (Exception ex)
             {

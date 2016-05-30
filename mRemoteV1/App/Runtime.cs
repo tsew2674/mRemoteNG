@@ -958,8 +958,8 @@ namespace mRemoteNG.App
             }
             connectionInfo.SetDefaultPort();
             connectionInfo.IsQuickConnect = true;
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(connectionInfo, ConnectionInfo.Force.DoNotJump);
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
         }
 
         public static void GoToWebsite()

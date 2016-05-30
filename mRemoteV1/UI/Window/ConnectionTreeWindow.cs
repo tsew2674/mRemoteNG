@@ -196,8 +196,8 @@ namespace mRemoteNG.UI.Window
 						(ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection |
                         ConnectionTreeNode.GetNodeType(node) == TreeNodeType.PuttySession))
 					{
-                        ConnectionInitiator connectionInitiator = new ConnectionInitiator(tvConnections.SelectedNode.ConnectionInfo);
-                        connectionInitiator.InitiateConnection();
+                        ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                        connectionInitiator.InitiateConnection(tvConnections.SelectedNode.ConnectionInfo);
 					}
 							
 					if (Settings.Default.SingleClickSwitchesToOpenConnection && ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection)
@@ -217,8 +217,8 @@ namespace mRemoteNG.UI.Window
             if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection |
                 ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 			{
-                ConnectionInitiator connectionInitiator = new ConnectionInitiator(((ConnectionTreeNode)e.Node).ConnectionInfo);
-                connectionInitiator.InitiateConnection();
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                connectionInitiator.InitiateConnection(((ConnectionTreeNode)e.Node).ConnectionInfo);
             }
 		}
 				
@@ -521,38 +521,38 @@ namespace mRemoteNG.UI.Window
 				
 		static public void cMenTreeConnect_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, ConnectionInfo.Force.DoNotJump);
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, ConnectionInfo.Force.DoNotJump);
 		}
 				
 		static public void cMenTreeConnectWithOptionsConnectToConsoleSession_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, (ConnectionInfo.Force.UseConsoleSession | ConnectionInfo.Force.DoNotJump));
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, (ConnectionInfo.Force.UseConsoleSession | ConnectionInfo.Force.DoNotJump));
 		}
 				
 		static public void cMenTreeConnectWithOptionsNoCredentials_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, ConnectionInfo.Force.NoCredentials);
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, ConnectionInfo.Force.NoCredentials);
 		}
 				
 		static public void cMenTreeConnectWithOptionsDontConnectToConsoleSession_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, (ConnectionInfo.Force.DontUseConsoleSession | ConnectionInfo.Force.DoNotJump));
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, (ConnectionInfo.Force.DontUseConsoleSession | ConnectionInfo.Force.DoNotJump));
 		}
 				
 		static public void cMenTreeConnectWithOptionsConnectInFullscreen_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, (ConnectionInfo.Force.Fullscreen | ConnectionInfo.Force.DoNotJump));
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, (ConnectionInfo.Force.Fullscreen | ConnectionInfo.Force.DoNotJump));
 		}
 				
 		static public void cMenTreeConnectWithOptionsChoosePanelBeforeConnecting_Click(object sender, EventArgs e)
 		{
-            ConnectionInitiator connectionInitiator = new ConnectionInitiator(ConnectionTree.Instance.SelectedNode.ConnectionInfo, (ConnectionInfo.Force.OverridePanel | ConnectionInfo.Force.DoNotJump));
-            connectionInitiator.InitiateConnection();
+            ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+            connectionInitiator.InitiateConnection(ConnectionTree.Instance.SelectedNode, (ConnectionInfo.Force.OverridePanel | ConnectionInfo.Force.DoNotJump));
 		}
 				
 		public void cMenTreeDisconnect_Click(object sender, EventArgs e)
@@ -945,8 +945,8 @@ namespace mRemoteNG.UI.Window
 					if (tvConnections.SelectedNode.Tag is ConnectionInfo)
 					{
 						e.Handled = true;
-                        ConnectionInitiator connectionInitiator = new ConnectionInitiator(tvConnections.SelectedNode.ConnectionInfo);
-                        connectionInitiator.InitiateConnection();
+                        ConnectionInitiator connectionInitiator = new ConnectionInitiator();
+                        connectionInitiator.InitiateConnection(tvConnections.SelectedNode.ConnectionInfo);
                     }
 					else
 					{
