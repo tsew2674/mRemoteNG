@@ -56,19 +56,18 @@ namespace mRemoteNG.Tree
 			return null;
 		}
 
-        public List<ConnectionTreeNode> GetChildNodesOfType(TreeNodeType type)
+        public List<ConnectionTreeNode> GetChildNodesOfType(TreeNodeType type, bool Recursive = false)
         {
             var nodeList = new List<ConnectionTreeNode>();
             foreach (ConnectionTreeNode node in Nodes)
             {
                 if (node.GetNodeType() == type)
                     nodeList.Add(node);
-                if (node.GetNodeType() == TreeNodeType.Container)
-                    nodeList.AddRange(node.GetChildNodesOfType(type));
+                if (node.GetNodeType() == TreeNodeType.Container && Recursive)
+                    nodeList.AddRange(node.GetChildNodesOfType(type, Recursive));
             }
             return nodeList;
         }
-
 
         public static ConnectionTreeNode GetNodeFromPositionID(int id)
 		{
