@@ -23,7 +23,14 @@ namespace mRemoteNG.Tree
             set { Tag = value; }
         }
 
-
+        public bool IsEditable
+        {
+            get
+            {
+                TreeNodeType nodeType = GetNodeType();
+                return (nodeType == TreeNodeType.Connection || nodeType == TreeNodeType.Container);
+            }
+        }
 
         public ConnectionTreeNode()
         {
@@ -80,7 +87,13 @@ namespace mRemoteNG.Tree
 			return null;
 		}
 		
-		public static TreeNodeType GetNodeType(ConnectionTreeNode treeNode)
+        public TreeNodeType GetNodeType()
+        {
+            return GetNodeType(this);
+        }
+
+
+        public static TreeNodeType GetNodeType(ConnectionTreeNode treeNode)
 		{
 			try
 			{

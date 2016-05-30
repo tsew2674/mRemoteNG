@@ -21,6 +21,7 @@ namespace mRemoteNG.Tree.Root
         #region Public Properties
         [LocalizedAttributes.LocalizedCategory("strCategoryDisplay", 1), 
             Browsable(true),
+            ReadOnly(true),
             LocalizedAttributes.LocalizedDefaultValue("strConnections"),
             LocalizedAttributes.LocalizedDisplayName("strPropertyNameName"),
             LocalizedAttributes.LocalizedDescription("strPropertyDescriptionName")]

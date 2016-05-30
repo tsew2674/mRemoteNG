@@ -45,6 +45,7 @@ namespace mRemoteNG.Tree
         private ConnectionTree()
         {
             AddRootNode();
+            BeforeLabelEdit += tree_BeforeLabelEdit;
         }
 
         static ConnectionTree()
@@ -138,7 +139,8 @@ namespace mRemoteNG.Tree
 
         public void StartRenameSelectedNode()
         {
-            SelectedNode?.BeginEdit();
+            if (ConnectionTreeNode.GetNodeType(SelectedNode) == TreeNodeType.Connection || ConnectionTreeNode.GetNodeType(SelectedNode) == TreeNodeType.Container)
+                SelectedNode?.BeginEdit();
         }
 
         public void FinishRenameSelectedNode(string newName)
@@ -352,6 +354,12 @@ namespace mRemoteNG.Tree
             }
 
             return null;
+        }
+
+        private void tree_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            if (((ConnectionTreeNode)e.Node).IsEditable == false)
+                e.CancelEdit = true;
         }
 
         private delegate void ResetTreeDelegate();
