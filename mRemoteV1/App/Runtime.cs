@@ -824,40 +824,6 @@ namespace mRemoteNG.App
             }
         }
 
-        public static void OpenConnection(ConnectionInfo.Force Force)
-        {
-            try
-            {
-                ConnectionTreeNode selectedNode = ConnectionTree.Instance.SelectedNode;
-                if (selectedNode.ConnectionInfo == null)
-                    return;
-
-                if (ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.PuttySession)
-                {
-                    ConnectionInitiator connectionInitiator = new ConnectionInitiator(selectedNode.ConnectionInfo, Force);
-                    connectionInitiator.InitiateConnection();
-                }
-                else if (ConnectionTreeNode.GetNodeType(selectedNode) == TreeNodeType.Container)
-                {
-                    foreach (ConnectionTreeNode tNode in selectedNode.Nodes)
-                    {
-                        if (ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(tNode) == TreeNodeType.PuttySession)
-                        {
-                            if (tNode.ConnectionInfo != null)
-                            {
-                                ConnectionInitiator connectionInitiator = new ConnectionInitiator(tNode.ConnectionInfo, Force);
-                                connectionInitiator.InitiateConnection();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strConnectionOpenFailed + Environment.NewLine + ex.Message);
-            }
-        }
-
         public static bool SwitchToOpenConnection(ConnectionInfo nCi)
         {
             InterfaceControl IC = FindConnectionContainer(nCi);
