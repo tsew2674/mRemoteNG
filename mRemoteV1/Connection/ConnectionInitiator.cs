@@ -22,13 +22,9 @@ namespace mRemoteNG.Connection
         public void InitiateConnection(ConnectionTreeNode connectionTreeNode = null, ConnectionInfo.Force Force = ConnectionInfo.Force.None, Form connectionForm = null)
         {
             if (connectionTreeNode.GetNodeType() == TreeNodeType.Connection || connectionTreeNode.GetNodeType() == TreeNodeType.PuttySession)
-            {
                 InitiateConnection(connectionTreeNode.ConnectionInfo, Force, connectionForm);
-            }
             else if (connectionTreeNode.GetNodeType() == TreeNodeType.Container)
-            {
                 InitiateConnection(connectionTreeNode.GetChildNodesOfType(TreeNodeType.Connection), Force, connectionForm);
-            }
         }
 
         public void InitiateConnection(List<ConnectionTreeNode> ConnectionTreeNodes = null, ConnectionInfo.Force Force = ConnectionInfo.Force.None, Form ConnectionForm = null)
@@ -98,10 +94,7 @@ namespace mRemoteNG.Connection
             if (ConnectionInfo.PreExtApp != "")
             {
                 ExternalTool extA = Runtime.GetExtAppByName(ConnectionInfo.PreExtApp);
-                if (extA != null)
-                {
-                    extA.Start(ConnectionInfo);
-                }
+                extA?.Start(ConnectionInfo);
             }
         }
 
@@ -112,9 +105,7 @@ namespace mRemoteNG.Connection
             {
                 frmChoosePanel frmPnl = new frmChoosePanel();
                 if (frmPnl.ShowDialog() == DialogResult.OK)
-                {
                     connectionPanel = frmPnl.Panel;
-                }
             }
             else
             {
@@ -180,9 +171,7 @@ namespace mRemoteNG.Connection
                     if (extApp != null)
                     {
                         if (extApp.TryIntegrate && ConnectionInfo.TreeNode != null)
-                        {
                             ConnectionTreeNode.SetNodeImage(ConnectionInfo.TreeNode, TreeImageType.ConnectionOpen);
-                        }
                     }
                 }
             }
