@@ -196,7 +196,8 @@ namespace mRemoteNG.UI.Window
 						(ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection |
                         ConnectionTreeNode.GetNodeType(node) == TreeNodeType.PuttySession))
 					{
-						Runtime.OpenConnection();
+                        ConnectionInitiator connectionInitiator = new ConnectionInitiator(tvConnections.SelectedNode.ConnectionInfo);
+                        connectionInitiator.InitiateConnection();
 					}
 							
 					if (Settings.Default.SingleClickSwitchesToOpenConnection && ConnectionTreeNode.GetNodeType(node) == TreeNodeType.Connection)
@@ -216,8 +217,9 @@ namespace mRemoteNG.UI.Window
             if (ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.Connection |
                 ConnectionTreeNode.GetNodeType(ConnectionTree.Instance.SelectedNode) == TreeNodeType.PuttySession)
 			{
-                Runtime.OpenConnection();
-			}
+                ConnectionInitiator connectionInitiator = new ConnectionInitiator(((ConnectionTreeNode)e.Node).ConnectionInfo);
+                connectionInitiator.InitiateConnection();
+            }
 		}
 				
 		public void tvConnections_MouseMove(object sender, MouseEventArgs e)
@@ -937,8 +939,9 @@ namespace mRemoteNG.UI.Window
 					if (tvConnections.SelectedNode.Tag is ConnectionInfo)
 					{
 						e.Handled = true;
-                        Runtime.OpenConnection();
-					}
+                        ConnectionInitiator connectionInitiator = new ConnectionInitiator(tvConnections.SelectedNode.ConnectionInfo);
+                        connectionInitiator.InitiateConnection();
+                    }
 					else
 					{
 						if (tvConnections.SelectedNode.IsExpanded)
