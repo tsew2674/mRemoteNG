@@ -2,6 +2,7 @@ using System;
 using mRemoteNG.App.Info;
 using mRemoteNG.Config;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 
 namespace mRemoteNG.UI.Forms.OptionsPages
 {
@@ -11,7 +12,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
         public ConnectionsPage()
         {
             InitializeComponent();
-            _cryptographyProvider = new Crypt();
+            _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
         }
 
         public override string PageName
@@ -77,8 +78,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             }
 
             txtCredentialsUsername.Text = Convert.ToString(mRemoteNG.Settings.Default.DefaultUsername);
-            txtCredentialsPassword.Text = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.DefaultPassword),
-                GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+            txtCredentialsPassword.Text = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.DefaultPassword), GeneralAppInfo.EncryptionKey);
             txtCredentialsDomain.Text = Convert.ToString(mRemoteNG.Settings.Default.DefaultDomain);
 
             if (mRemoteNG.Settings.Default.ConfirmCloseConnection == (int) ConfirmCloseEnum.Never)
@@ -133,7 +133,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             }
 
             mRemoteNG.Settings.Default.DefaultUsername = txtCredentialsUsername.Text;
-            mRemoteNG.Settings.Default.DefaultPassword = _cryptographyProvider.Encrypt(txtCredentialsPassword.Text, GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+            mRemoteNG.Settings.Default.DefaultPassword = _cryptographyProvider.Encrypt(txtCredentialsPassword.Text, GeneralAppInfo.EncryptionKey);
             mRemoteNG.Settings.Default.DefaultDomain = txtCredentialsDomain.Text;
 
             if (radCloseWarnAll.Checked)

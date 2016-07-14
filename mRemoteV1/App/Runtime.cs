@@ -18,6 +18,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.UI.Forms;
 using mRemoteNG.UI.Forms.Input;
 using mRemoteNG.UI.TaskDialog;
@@ -31,7 +32,7 @@ namespace mRemoteNG.App
     {
         #region Private Variables
         //private static System.Timers.Timer _timerSqlWatcher;
-        private static ICryptographyProvider _cryptographyProvider = new Crypt();
+        private static ICryptographyProvider _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
         #endregion
 
         #region Public Properties
@@ -487,7 +488,7 @@ namespace mRemoteNG.App
                 connectionsLoader.SQLHost = Settings.Default.SQLHost;
                 connectionsLoader.SQLDatabaseName = Settings.Default.SQLDatabaseName;
                 connectionsLoader.SQLUsername = Settings.Default.SQLUser;
-                connectionsLoader.SQLPassword = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+                connectionsLoader.SQLPassword = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
                 connectionsLoader.SQLUpdate = update;
                 connectionsLoader.LoadConnections(false);
 
@@ -690,7 +691,7 @@ namespace mRemoteNG.App
                     conS.SQLHost = Convert.ToString(Settings.Default.SQLHost);
                     conS.SQLDatabaseName = Convert.ToString(Settings.Default.SQLDatabaseName);
                     conS.SQLUsername = Convert.ToString(Settings.Default.SQLUser);
-                    conS.SQLPassword = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+                    conS.SQLPassword = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.SQLPass), GeneralAppInfo.EncryptionKey);
                 }
 
                 conS.SaveConnections();

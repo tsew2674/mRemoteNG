@@ -8,6 +8,7 @@ using mRemoteNG.App.Info;
 using mRemoteNG.Tools;
 using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.UI.Forms;
 
 
@@ -48,7 +49,7 @@ namespace mRemoteNG.Connection.Protocol.ICA
         #region Private Properties
 		private AxICAClient _ICAClient;
 		private ConnectionInfo _Info;
-	    private ICryptographyProvider _cryptographyProvider = new Crypt();
+	    private ICryptographyProvider _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
         #endregion
 
         #region Public Methods
@@ -175,7 +176,7 @@ namespace mRemoteNG.Connection.Protocol.ICA
 					{
 						if (mRemoteNG.Settings.Default.DefaultPassword != "")
 						{
-							_ICAClient.SetProp("ClearPassword", _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.DefaultPassword), GeneralAppInfo.EncryptionKey.ConvertToSecureString()));
+                            _ICAClient.SetProp("ClearPassword", _cryptographyProvider.Decrypt(Settings.Default.DefaultPassword, GeneralAppInfo.EncryptionKey));
 						}
 					}
 				}

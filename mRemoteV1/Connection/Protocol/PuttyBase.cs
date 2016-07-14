@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using mRemoteNG.App.Info;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 
 
 namespace mRemoteNG.Connection.Protocol
@@ -42,7 +43,7 @@ namespace mRemoteNG.Connection.Protocol
 
         public PuttyBase()
         {
-            _cryptographyProvider = new Crypt();
+            _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
         }
 
         #region Private Events & Handlers
@@ -101,7 +102,7 @@ namespace mRemoteNG.Connection.Protocol
 						{
 							if (Settings.Default.EmptyCredentials == "custom")
 							{
-								password = _cryptographyProvider.Decrypt(Settings.Default.DefaultPassword, GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+                                password = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.DefaultPassword), GeneralAppInfo.EncryptionKey);
 							}
 						}
 								

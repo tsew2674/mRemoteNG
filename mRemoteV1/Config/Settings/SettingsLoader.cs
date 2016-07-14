@@ -9,6 +9,7 @@ using mRemoteNG.Themes;
 using mRemoteNG.Connection.Protocol;
 using mRemoteNG.App.Info;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.UI.Forms;
 
 
@@ -19,7 +20,6 @@ namespace mRemoteNG.Config.Settings
 		private frmMain _MainForm;
         private LayoutSettingsLoader _layoutSettingsLoader;
         private ExternalAppsLoader _externalAppsLoader;
-        private ICryptographyProvider _cryptographyProvider;
 
         public frmMain MainForm
 		{
@@ -33,7 +33,6 @@ namespace mRemoteNG.Config.Settings
             _MainForm = MainForm;
             _layoutSettingsLoader = new LayoutSettingsLoader(_MainForm);
             _externalAppsLoader = new ExternalAppsLoader(_MainForm);
-            _cryptographyProvider = new Crypt();
         }
         
         #region Public Methods
@@ -68,9 +67,10 @@ namespace mRemoteNG.Config.Settings
 			}
 		}
 
-        private void SetConDefaultPassword()
+        private static void SetConDefaultPassword()
         {
-            mRemoteNG.Settings.Default.ConDefaultPassword = _cryptographyProvider.Decrypt(mRemoteNG.Settings.Default.ConDefaultPassword, GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+            var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+            mRemoteNG.Settings.Default.ConDefaultPassword = cryptographyProvider.Decrypt(mRemoteNG.Settings.Default.ConDefaultPassword, GeneralAppInfo.EncryptionKey);
         }
 
         private static void SetAlwaysShowPanelTabs()

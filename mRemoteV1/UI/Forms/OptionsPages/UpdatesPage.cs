@@ -5,6 +5,7 @@ using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.App.Update;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.UI.TaskDialog;
 using mRemoteNG.UI.Window;
@@ -19,7 +20,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
         public UpdatesPage()
         {
             InitializeComponent();
-            _cryptographyProvider = new Crypt();
+            _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
         }
 
         #region Public Methods
@@ -97,8 +98,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             chkUseProxyAuthentication.Checked = Convert.ToBoolean(Settings.Default.UpdateProxyUseAuthentication);
             pnlProxyAuthentication.Enabled = Convert.ToBoolean(Settings.Default.UpdateProxyUseAuthentication);
             txtProxyUsername.Text = Convert.ToString(Settings.Default.UpdateProxyAuthUser);
-            txtProxyPassword.Text = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.UpdateProxyAuthPass),
-                GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+            txtProxyPassword.Text = _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.UpdateProxyAuthPass), GeneralAppInfo.EncryptionKey);
 
             btnTestProxy.Enabled = Convert.ToBoolean(Settings.Default.UpdateUseProxy);
 
@@ -137,7 +137,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
             Settings.Default.UpdateProxyUseAuthentication = chkUseProxyAuthentication.Checked;
             Settings.Default.UpdateProxyAuthUser = txtProxyUsername.Text;
-            Settings.Default.UpdateProxyAuthPass = _cryptographyProvider.Encrypt(txtProxyPassword.Text, GeneralAppInfo.EncryptionKey.ConvertToSecureString());
+            Settings.Default.UpdateProxyAuthPass = _cryptographyProvider.Encrypt(txtProxyPassword.Text, GeneralAppInfo.EncryptionKey);
         }
 
         #endregion

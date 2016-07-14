@@ -7,6 +7,7 @@ using mRemoteNG.Tools;
 using System.Reflection;
 using mRemoteNG.App.Info;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 
 
 namespace mRemoteNG.App.Update
@@ -20,7 +21,7 @@ namespace mRemoteNG.App.Update
         private Thread _getUpdateInfoThread;
         private Thread _getChangeLogThread;
         private Thread _getAnnouncementInfoThread;
-        private ICryptographyProvider _cryptographyProvider = new Crypt();
+        private ICryptographyProvider _cryptographyProvider = new LegacyRijndaelCryptographyProvider();
 
         #region Public Properties
         public UpdateInfo CurrentUpdateInfo
@@ -109,12 +110,14 @@ namespace mRemoteNG.App.Update
 			
 		public void SetProxySettings()
 		{
-			SetProxySettings(Settings.Default.UpdateUseProxy, 
-                Settings.Default.UpdateProxyAddress, 
-                Settings.Default.UpdateProxyPort, 
-                Settings.Default.UpdateProxyUseAuthentication, 
-                Settings.Default.UpdateProxyAuthUser,
-                _cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.UpdateProxyAuthPass), GeneralAppInfo.EncryptionKey.ConvertToSecureString()));
+		    var shouldWeUseProxy = Settings.Default.UpdateUseProxy;
+		    var proxyAddress = Settings.Default.UpdateProxyAddress;
+		    var port = Settings.Default.UpdateProxyPort;
+		    var useAuthentication = Settings.Default.UpdateProxyUseAuthentication;
+		    var username = Settings.Default.UpdateProxyAuthUser;
+		    var password = _cryptographyProvider.Decrypt(Settings.Default.UpdateProxyAuthPass, GeneralAppInfo.EncryptionKey);
+
+            SetProxySettings(shouldWeUseProxy, proxyAddress, port, useAuthentication, username, password);
 		}
 			
 		public void SetProxySettings(bool useProxy, string address, int port, bool useAuthentication, string username, string password)

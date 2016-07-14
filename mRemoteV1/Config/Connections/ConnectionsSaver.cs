@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -14,6 +15,7 @@ using mRemoteNG.Connection.Protocol.RDP;
 using mRemoteNG.Container;
 using mRemoteNG.Messages;
 using mRemoteNG.Security;
+using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.Tree.Root;
@@ -37,18 +39,17 @@ namespace mRemoteNG.Config.Connections
 				
         #region Private Properties
 		private XmlTextWriter _xmlTextWriter;
-		private string _password = "mR3m";
+		private SecureString _password = GeneralAppInfo.EncryptionKey;
 				
 		private SqlConnection _sqlConnection;
 		private SqlCommand _sqlQuery;
 				
 		private int _currentNodeIndex;
 		private string _parentConstantId = Convert.ToString(0);
-        private ICryptographyProvider _cryptographyProvider = new Crypt();
         #endregion
-
+				
         #region Public Properties
-        public string SQLHost {get; set;}
+		public string SQLHost {get; set;}
 		public string SQLDatabaseName {get; set;}
 		public string SQLUsername {get; set;}
 		public string SQLPassword {get; set;}
@@ -176,8 +177,9 @@ namespace mRemoteNG.Config.Connections
 			{
 				_sqlConnection = new SqlConnection("Data Source=" + SQLHost + ";Initial Catalog=" + SQLDatabaseName + ";Integrated Security=True");
 			}
-					
-			_sqlConnection.Open();
+            var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+
+            _sqlConnection.Open();
 					
 			if (!VerifyDatabaseVersion(_sqlConnection))
 			{
@@ -192,17 +194,17 @@ namespace mRemoteNG.Config.Connections
 			{
 				if (((RootNodeInfo) tN.Tag).Password)
 				{
-					_password = Convert.ToString(((RootNodeInfo) tN.Tag).PasswordString);
-					strProtected = _cryptographyProvider.Encrypt("ThisIsProtected", _password.ConvertToSecureString());
+					_password = Convert.ToString(((RootNodeInfo) tN.Tag).PasswordString).ConvertToSecureString();
+					strProtected = cryptographyProvider.Encrypt("ThisIsProtected", _password);
 				}
 				else
 				{
-					strProtected = _cryptographyProvider.Encrypt("ThisIsNotProtected", _password.ConvertToSecureString());
+					strProtected = cryptographyProvider.Encrypt("ThisIsNotProtected", _password);
 				}
 			}
 			else
 			{
-				strProtected = _cryptographyProvider.Encrypt("ThisIsNotProtected", _password.ConvertToSecureString());
+				strProtected = cryptographyProvider.Encrypt("ThisIsNotProtected", _password);
 			}
 					
 			_sqlQuery = new SqlCommand("DELETE FROM tblRoot", _sqlConnection);
@@ -273,7 +275,8 @@ namespace mRemoteNG.Config.Connections
 				
 		private void SaveConnectionFieldsSQL(ConnectionInfo curConI)
 		{
-			ConnectionInfo with_1 = curConI;
+            var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+            ConnectionInfo with_1 = curConI;
             _sqlQuery.CommandText += "\'" + MiscTools.PrepareValueForDB(with_1.Description) + "\',";
             _sqlQuery.CommandText += "\'" + MiscTools.PrepareValueForDB(with_1.Icon) + "\',";
             _sqlQuery.CommandText += "\'" + MiscTools.PrepareValueForDB(with_1.Panel) + "\',";
@@ -298,7 +301,7 @@ namespace mRemoteNG.Config.Connections
 					
 			if (SaveSecurity.Password)
 			{
-                _sqlQuery.CommandText += "\'" + MiscTools.PrepareValueForDB(_cryptographyProvider.Encrypt(with_1.Password, _password.ConvertToSecureString())) + "\',";
+                _sqlQuery.CommandText += "\'" + MiscTools.PrepareValueForDB(cryptographyProvider.Encrypt(with_1.Password, _password)) + "\',";
 			}
 			else
 			{
@@ -351,7 +354,7 @@ namespace mRemoteNG.Config.Connections
 			_sqlQuery.CommandText += "\'" + with_1.VNCProxyIP + "\',";
 			_sqlQuery.CommandText += "\'" + Convert.ToString(with_1.VNCProxyPort) + "\',";
 			_sqlQuery.CommandText += "\'" + with_1.VNCProxyUsername + "\',";
-			_sqlQuery.CommandText += "\'" + _cryptographyProvider.Encrypt(with_1.VNCProxyPassword, _password.ConvertToSecureString()) + "\',";
+			_sqlQuery.CommandText += "\'" + cryptographyProvider.Encrypt(with_1.VNCProxyPassword, _password) + "\',";
 			_sqlQuery.CommandText += "\'" + with_1.VNCColors + "\',";
 			_sqlQuery.CommandText += "\'" + with_1.VNCSmartSizeMode + "\',";
 			_sqlQuery.CommandText += "\'" + Convert.ToString(with_1.VNCViewOnly) + "\',";
@@ -371,7 +374,7 @@ namespace mRemoteNG.Config.Connections
 					
 			if (SaveSecurity.Password)
 			{
-				_sqlQuery.CommandText += "\'" + _cryptographyProvider.Encrypt(with_1.RDGatewayPassword, _password.ConvertToSecureString()) + "\',";
+				_sqlQuery.CommandText += "\'" + cryptographyProvider.Encrypt(with_1.RDGatewayPassword, _password) + "\',";
 			}
 			else
 			{
@@ -537,15 +540,16 @@ namespace mRemoteNG.Config.Connections
 		private void EncryptCompleteFile()
 		{
 			StreamReader streamReader = new StreamReader(ConnectionFileName);
-					
-			string fileContents;
+            var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+
+            string fileContents;
 			fileContents = streamReader.ReadToEnd();
 			streamReader.Close();
 					
 			if (!string.IsNullOrEmpty(fileContents))
 			{
 				StreamWriter streamWriter = new StreamWriter(ConnectionFileName);
-				streamWriter.Write(_cryptographyProvider.Encrypt(fileContents, _password.ConvertToSecureString()));
+				streamWriter.Write(cryptographyProvider.Encrypt(fileContents, _password));
 				streamWriter.Close();
 			}
 		}
@@ -558,8 +562,8 @@ namespace mRemoteNG.Config.Connections
 				{
 					return;
 				}
-						
-				TreeNode treeNode = default(TreeNode);
+                var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+                TreeNode treeNode = default(TreeNode);
 						
 				if (ConnectionTreeNode.GetNodeType(RootTreeNode) == TreeNodeType.Root)
 				{
@@ -585,18 +589,18 @@ namespace mRemoteNG.Config.Connections
 						
 				if (Export)
 				{
-					_xmlTextWriter.WriteAttributeString("Protected", "", _cryptographyProvider.Encrypt("ThisIsNotProtected", _password.ConvertToSecureString()));
+					_xmlTextWriter.WriteAttributeString("Protected", "", cryptographyProvider.Encrypt("ThisIsNotProtected", _password));
 				}
 				else
 				{
 					if (((RootNodeInfo) treeNode.Tag).Password)
 					{
-						_password = Convert.ToString(((RootNodeInfo) treeNode.Tag).PasswordString);
-						_xmlTextWriter.WriteAttributeString("Protected", "", _cryptographyProvider.Encrypt("ThisIsProtected", _password.ConvertToSecureString()));
+						_password = Convert.ToString(((RootNodeInfo) treeNode.Tag).PasswordString).ConvertToSecureString();
+						_xmlTextWriter.WriteAttributeString("Protected", "", cryptographyProvider.Encrypt("ThisIsProtected", _password));
 					}
 					else
 					{
-						_xmlTextWriter.WriteAttributeString("Protected", "", _cryptographyProvider.Encrypt("ThisIsNotProtected", _password.ConvertToSecureString()));
+						_xmlTextWriter.WriteAttributeString("Protected", "", cryptographyProvider.Encrypt("ThisIsNotProtected", _password));
 					}
 				}
 						
@@ -673,7 +677,8 @@ namespace mRemoteNG.Config.Connections
 		{
 			try
 			{
-				_xmlTextWriter.WriteAttributeString("Descr", "", curConI.Description);
+                var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
+                _xmlTextWriter.WriteAttributeString("Descr", "", curConI.Description);
 						
 				_xmlTextWriter.WriteAttributeString("Icon", "", curConI.Icon);
 						
@@ -699,7 +704,7 @@ namespace mRemoteNG.Config.Connections
 						
 				if (SaveSecurity.Password)
 				{
-					_xmlTextWriter.WriteAttributeString("Password", "", _cryptographyProvider.Encrypt(curConI.Password, _password.ConvertToSecureString()));
+					_xmlTextWriter.WriteAttributeString("Password", "", cryptographyProvider.Encrypt(curConI.Password, _password));
 				}
 				else
 				{
@@ -776,7 +781,7 @@ namespace mRemoteNG.Config.Connections
 				_xmlTextWriter.WriteAttributeString("VNCProxyIP", "", curConI.VNCProxyIP);
 				_xmlTextWriter.WriteAttributeString("VNCProxyPort", "", Convert.ToString(curConI.VNCProxyPort));
 				_xmlTextWriter.WriteAttributeString("VNCProxyUsername", "", curConI.VNCProxyUsername);
-				_xmlTextWriter.WriteAttributeString("VNCProxyPassword", "", _cryptographyProvider.Encrypt(curConI.VNCProxyPassword, _password.ConvertToSecureString()));
+				_xmlTextWriter.WriteAttributeString("VNCProxyPassword", "", cryptographyProvider.Encrypt(curConI.VNCProxyPassword, _password));
 				_xmlTextWriter.WriteAttributeString("VNCColors", "", curConI.VNCColors.ToString());
 				_xmlTextWriter.WriteAttributeString("VNCSmartSizeMode", "", curConI.VNCSmartSizeMode.ToString());
 				_xmlTextWriter.WriteAttributeString("VNCViewOnly", "", Convert.ToString(curConI.VNCViewOnly));
@@ -797,7 +802,7 @@ namespace mRemoteNG.Config.Connections
 						
 				if (SaveSecurity.Password)
 				{
-					_xmlTextWriter.WriteAttributeString("RDGatewayPassword", "", _cryptographyProvider.Encrypt(curConI.RDGatewayPassword, _password.ConvertToSecureString()));
+					_xmlTextWriter.WriteAttributeString("RDGatewayPassword", "", cryptographyProvider.Encrypt(curConI.RDGatewayPassword, _password));
 				}
 				else
 				{

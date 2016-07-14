@@ -22,6 +22,11 @@ namespace mRemoteNGTests.UI.Forms
         [TearDown]
         public void Teardown()
         {
+            DisposeCredentialManagerForm();
+        }
+
+        private void DisposeCredentialManagerForm()
+        {
             _credentialManagerForm.Dispose();
             while (_credentialManagerForm.Disposing)
             {
@@ -48,6 +53,7 @@ namespace mRemoteNGTests.UI.Forms
             addCredentialButtonTester.Click();
             var credentialEditorFormTester = new FormTester("FrmCredentialEditor");
             Assert.That(credentialEditorFormTester.Properties.Visible, Is.True);
+            credentialEditorFormTester.Properties.Close();
         }
 
         [Test]
@@ -77,6 +83,7 @@ namespace mRemoteNGTests.UI.Forms
             editButton.Click();
             var credentialEditorFormTester = new FormTester("FrmCredentialEditor");
             Assert.That(credentialEditorFormTester.Properties.Visible, Is.True);
+            credentialEditorFormTester.Properties.Close();
         }
 
         [Test]
