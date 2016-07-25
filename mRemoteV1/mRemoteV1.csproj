@@ -144,6 +144,7 @@
     <Compile Include="Config\Connections\SqlUpdateQueryBuilder.cs" />
     <Compile Include="Config\Connections\SqlUpdateTimer.cs" />
     <Compile Include="Config\Credentials\CredentialLoader.cs" />
+    <Compile Include="Config\Credentials\CredentialConfigConverter.cs" />
     <Compile Include="Config\Credentials\CredentialSaver.cs" />
     <Compile Include="Config\Settings\ExternalAppsLoader.cs" />
     <Compile Include="Config\Settings\LayoutSettingsLoader.cs" />
