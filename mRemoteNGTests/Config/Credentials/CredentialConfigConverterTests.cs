@@ -7,6 +7,7 @@ namespace mRemoteNGTests.Config.Credentials
     public class CredentialConfigConverterTests
     {
         private CredentialConfigConverter _credentialConfigConverter;
+        private readonly string _confConsFilePath = CreateTestConfConsFile();
 
         [SetUp]
         public void Setup()
@@ -20,7 +21,7 @@ namespace mRemoteNGTests.Config.Credentials
             _credentialConfigConverter = null;
         }
 
-        private string CreateTestConfConsFile()
+        private static string CreateTestConfConsFile()
         {
             var consFilePath = Path.GetTempFileName();
             File.WriteAllText(consFilePath, Resources.testConfCons);
@@ -30,8 +31,7 @@ namespace mRemoteNGTests.Config.Credentials
         [Test]
         public void EnsureCreatingATestConfConsFileWorks()
         {
-            var confConsFilePath = CreateTestConfConsFile();
-            Assert.That(File.ReadAllText(confConsFilePath), Is.Not.Null);
+            Assert.That(File.ReadAllText(_confConsFilePath), Is.Not.Null);
         }
     }
 }

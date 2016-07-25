@@ -13,7 +13,7 @@ namespace mRemoteNG.Config.Credentials
             _credentialList = new List<CredentialInfo>();
         }
 
-        public IList<CredentialInfo> BuildCredentialListFromConnectionFile()
+        public IList<CredentialInfo> BuildCredentialListFromConnectionFile(string connectionsFilePath)
         {
             GetUniqueCredentialsFromConnectionsFile();
             return _credentialList;
@@ -21,7 +21,7 @@ namespace mRemoteNG.Config.Credentials
 
         private void GetUniqueCredentialsFromConnectionsFile()
         {
-            
+            var connectionList = new CredentialList();
         }
     }
 }
