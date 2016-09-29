@@ -27,6 +27,8 @@
     <SignManifests>false</SignManifests>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,8 +44,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
@@ -1166,25 +1166,29 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>powershell sleep 2
+    <PostBuildEvent>powershell -noprofile -command "sleep 2"
+
 call "$(DevEnvDir)..\tools\vsvars32.bat"
 set /p buildenv=&lt;buildenv.tmp
 
 echo Copy PUTTYNG to correct directory
 copy /Y "$(SolutionDir)mRemoteV1\Resources\PuTTYNG.exe" .\
 
-REM Move Help files to correct directory
+echo Move Help files to correct directory
 move /Y Resources\Help .\
+powershell -noprofile -command "sleep 2"
+echo Remove empty Resources directory
 rmdir /s /q Resources
 
-REM Set LargeAddressAware on binary
-editbin /largeaddressaware mRemoteNG.exe
+echo Set LargeAddressAware on binary
+IF "$(PlatformName)" == "x86" ( editbin /largeaddressaware mRemoteNG.exe )
 
 REM Sign binaries
 IF EXIST C:\mRemoteNG_code_signing_cert.pfx (
@@ -1193,7 +1197,7 @@ IF EXIST C:\mRemoteNG_code_signing_cert.pfx (
     )
 )
 
-REM Remove unnecessary files from Release versions
+echo Remove unnecessary files from Release versions
 IF %25buildenv: Portable=%25==Release (
     rmdir /s /q app.publish
     del /q *.pdb *.publish *.xml *.backup *.log *vshost* *.tmp
@@ -1243,6 +1247,46 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <NoWarn>1591,660,661</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <NoWarn>1591,660,661</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Portable|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release Portable\</OutputPath>
+    <DefineConstants>PORTABLE</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Portable|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug Portable\</OutputPath>
+    <DefineConstants>DEBUG;PORTABLE</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
