@@ -50,13 +50,13 @@
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Geckofx-Core, Version=45.0.21.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=AMD64">
+    <Reference Include="Geckofx-Core, Version=45.0.21.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geckofx45.45.0.20\lib\net40\Geckofx-Core.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geckofx-geckofx-45.0-502b487ba8bf\Geckofx-Winforms\bin\Release\Geckofx-Core.dll</HintPath>
     </Reference>
     <Reference Include="Geckofx-Winforms, Version=45.0.21.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geckofx-geckofx-45.0-502b487ba8bf\Geckofx-Winforms\bin\Release\Geckofx-Winforms.dll</HintPath>
+      <HintPath>..\packages\Geckofx45.45.0.20\lib\net40\Geckofx-Winforms.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="ADTree, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -1227,7 +1227,7 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <DebugType>none</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Portable|x86'">
     <DebugSymbols>false</DebugSymbols>
@@ -1253,6 +1253,50 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Release\</OutputPath>
+    <NoWarn>1591,660,661</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Portable|AnyCPU'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Release Portable\</OutputPath>
+    <DefineConstants>PORTABLE</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Portable|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug Portable\</OutputPath>
+    <DefineConstants>DEBUG;PORTABLE</DefineConstants>
+    <NoWarn>1591,660,661</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
