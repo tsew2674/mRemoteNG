@@ -1,6 +1,5 @@
 using System;
 using mRemoteNG.App;
-using mRemoteNG.App.Info;
 using mRemoteNG.Config.Connections;
 using mRemoteNG.Security.SymmetricEncryption;
 
@@ -42,7 +41,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             txtSQLDatabaseName.Text = Settings.Default.SQLDatabaseName;
             txtSQLUsername.Text = Settings.Default.SQLUser;
             var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
-            txtSQLPassword.Text = cryptographyProvider.Decrypt(Settings.Default.SQLPass, GeneralAppInfo.EncryptionKey);
+            txtSQLPassword.Text = cryptographyProvider.Decrypt(Settings.Default.SQLPass, Runtime.EncryptionKey);
         }
 
         public override void SaveSettings()
@@ -54,7 +53,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             Settings.Default.SQLDatabaseName = txtSQLDatabaseName.Text;
             Settings.Default.SQLUser = txtSQLUsername.Text;
             var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
-            Settings.Default.SQLPass = cryptographyProvider.Encrypt(txtSQLPassword.Text, GeneralAppInfo.EncryptionKey);
+            Settings.Default.SQLPass = cryptographyProvider.Encrypt(txtSQLPassword.Text, Runtime.EncryptionKey);
             ReinitializeSqlUpdater();
 
             Settings.Default.Save();
@@ -62,15 +61,18 @@ namespace mRemoteNG.UI.Forms.OptionsPages
 
         private static void ReinitializeSqlUpdater()
         {
-            if (Runtime.SQLConnProvider != null)
+            Runtime.RemoteConnectionsSyncronizer?.Dispose();
+            frmMain.Default.AreWeUsingSqlServerForSavingConnections = Settings.Default.UseSQLServer;
+
+            if (Settings.Default.UseSQLServer)
             {
-                Runtime.SQLConnProvider.Dispose();
-                frmMain.Default.AreWeUsingSqlServerForSavingConnections = Settings.Default.UseSQLServer;
-                if (Settings.Default.UseSQLServer)
-                {
-                    Runtime.SQLConnProvider = new SqlConnectionsProvider();
-                    Runtime.SQLConnProvider.Enable();
-                }
+                Runtime.RemoteConnectionsSyncronizer = new RemoteConnectionsSyncronizer(new SqlConnectionsUpdateChecker());
+                Runtime.RemoteConnectionsSyncronizer.Enable();
+            }
+            else
+            {
+                Runtime.RemoteConnectionsSyncronizer?.Dispose();
+                Runtime.RemoteConnectionsSyncronizer = null;
             }
         }
 

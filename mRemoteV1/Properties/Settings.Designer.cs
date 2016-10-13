@@ -1693,18 +1693,6 @@ namespace mRemoteNG {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastAnnouncement {
-            get {
-                return ((string)(this["LastAnnouncement"]));
-            }
-            set {
-                this["LastAnnouncement"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool CheckForUpdatesAsked {
             get {
@@ -2181,15 +2169,6 @@ namespace mRemoteNG {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://update.mremoteng.org/announcement.txt")]
-        public string AnnouncementAddress {
-            get {
-                return ((string)(this["AnnouncementAddress"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://update.mremoteng.org/")]
         public string UpdateAddress {
             get {
@@ -2305,6 +2284,30 @@ namespace mRemoteNG {
             }
             set {
                 this["ConRDPOverallConnectionTimeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AES")]
+        public global::mRemoteNG.Security.BlockCipherEngines EncryptionEngine {
+            get {
+                return ((global::mRemoteNG.Security.BlockCipherEngines)(this["EncryptionEngine"]));
+            }
+            set {
+                this["EncryptionEngine"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GCM")]
+        public global::mRemoteNG.Security.BlockCipherModes EncryptionBlockCipherMode {
+            get {
+                return ((global::mRemoteNG.Security.BlockCipherModes)(this["EncryptionBlockCipherMode"]));
+            }
+            set {
+                this["EncryptionBlockCipherMode"] = value;
             }
         }
     }

@@ -381,7 +381,7 @@ VncSharp Control Version {0}</value>
     <value>Check Again</value>
   </data>
   <data name="strCheckForUpdatesOnStartup" xml:space="preserve">
-    <value>Check for updates and announcements at startup</value>
+    <value>Check for updates at startup</value>
   </data>
   <data name="strCheckNow" xml:space="preserve">
     <value>Check now</value>
@@ -1023,9 +1023,6 @@ See the Microsoft Support article at http://support.microsoft.com/kb/811833 for 
   </data>
   <data name="strMenuAddConnectionPanel" xml:space="preserve">
     <value>Add Connection Panel</value>
-  </data>
-  <data name="strMenuAnnouncements" xml:space="preserve">
-    <value>Announcements</value>
   </data>
   <data name="strMenuCheckForUpdates" xml:space="preserve">
     <value>Check for Updates</value>
@@ -2262,7 +2259,7 @@ Message:
     <value>mRemoteNG requires an update</value>
   </data>
   <data name="strUpdateCheck" xml:space="preserve">
-    <value>mRemoteNG can periodically connect to the mRemoteNG website to check for updates and product announcements.</value>
+    <value>mRemoteNG can periodically connect to the mRemoteNG website to check for updates.</value>
   </data>
   <data name="strUpdateCheckCompleteFailed" xml:space="preserve">
     <value>The update information could not be downloaded.</value>
@@ -2298,9 +2295,6 @@ mRemoteNG will now quit and begin with the installation.</value>
   <data name="strUpdateFrequencyWeekly" xml:space="preserve">
     <value>Weekly</value>
   </data>
-  <data name="strUpdateGetAnnouncementInfoFailed" xml:space="preserve">
-    <value>The announcement information could not be downloaded.</value>
-  </data>
   <data name="strUpdateGetChangeLogFailed" xml:space="preserve">
     <value>The change log could not be downloaded.</value>
   </data>
@@ -2324,9 +2318,6 @@ mRemoteNG will now quit and begin with the installation.</value>
   </data>
   <data name="strVersion" xml:space="preserve">
     <value>Version</value>
-  </data>
-  <data name="strVisionAppRemoteDesktopCsv" xml:space="preserve">
-    <value>visionapp Remote Desktop 2008 CSV</value>
   </data>
   <data name="strVnc" xml:space="preserve">
     <value>VNC</value>
@@ -2384,5 +2375,26 @@ mRemoteNG will now quit and begin with the installation.</value>
   </data>
   <data name="strRDPOverallConnectionTimeout" xml:space="preserve">
     <value>RDP Connection Timeout</value>
+  </data>
+  <data name="strNodeAlreadyInFolder" xml:space="preserve">
+    <value>This node is already in this folder.</value>
+  </data>
+  <data name="strNodeCannotDragOnSelf" xml:space="preserve">
+    <value>Cannot drag node onto itself.</value>
+  </data>
+  <data name="strNodeCannotDragParentOnChild" xml:space="preserve">
+    <value>Cannot drag parent node onto child.</value>
+  </data>
+  <data name="strNodeNotDraggable" xml:space="preserve">
+    <value>This node is not draggable.</value>
+  </data>
+  <data name="strEncryptionBlockCipherMode" xml:space="preserve">
+    <value>Block Cipher Mode</value>
+  </data>
+  <data name="strEncryptionEngine" xml:space="preserve">
+    <value>Encryption Engine</value>
+  </data>
+  <data name="strTabSecurity" xml:space="preserve">
+    <value>Security</value>
   </data>
 </root>

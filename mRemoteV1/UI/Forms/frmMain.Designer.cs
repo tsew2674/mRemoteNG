@@ -88,7 +88,6 @@ namespace mRemoteNG.UI.Forms
             this.mMenInfoForum = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenInfoBugReport = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.mMenInfoAnnouncements = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.mMenInfoSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.mMenInfoAbout = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +96,7 @@ namespace mRemoteNG.UI.Forms
             this.cmbQuickConnect = new mRemoteNG.UI.Controls.QuickConnectComboBox();
             this.tsContainer = new System.Windows.Forms.ToolStripContainer();
             this.tsQuickConnect = new System.Windows.Forms.ToolStrip();
-            this.btnQuickConnect = new ToolStripSplitButton();
+            this.btnQuickConnect = new mRemoteNG.UI.Controls.ToolStripSplitButton();
             this.mnuQuickConnectProtocol = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnConnections = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuConnections = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -573,7 +572,6 @@ namespace mRemoteNG.UI.Forms
             this.mMenInfoForum,
             this.mMenInfoBugReport,
             this.ToolStripSeparator2,
-            this.mMenInfoAnnouncements,
             this.mMenToolsUpdate,
             this.mMenInfoSep2,
             this.mMenInfoAbout});
@@ -632,14 +630,6 @@ namespace mRemoteNG.UI.Forms
             // 
             this.ToolStripSeparator2.Name = "ToolStripSeparator2";
             this.ToolStripSeparator2.Size = new System.Drawing.Size(187, 6);
-            // 
-            // mMenInfoAnnouncements
-            // 
-            this.mMenInfoAnnouncements.Image = global::mRemoteNG.Resources.News;
-            this.mMenInfoAnnouncements.Name = "mMenInfoAnnouncements";
-            this.mMenInfoAnnouncements.Size = new System.Drawing.Size(190, 22);
-            this.mMenInfoAnnouncements.Text = "Announcements";
-            this.mMenInfoAnnouncements.Click += new System.EventHandler(this.mMenInfoAnnouncements_Click);
             // 
             // mMenToolsUpdate
             // 
@@ -700,9 +690,9 @@ namespace mRemoteNG.UI.Forms
             // 
             // tsContainer.TopToolStripPanel
             // 
-            this.tsContainer.TopToolStripPanel.Controls.Add(this.msMain);
             this.tsContainer.TopToolStripPanel.Controls.Add(this.tsQuickConnect);
             this.tsContainer.TopToolStripPanel.Controls.Add(this.tsExternalTools);
+            this.tsContainer.TopToolStripPanel.Controls.Add(this.msMain);
             this.tsContainer.TopToolStripPanel.Controls.Add(this.ToolStrip1);
             // 
             // tsQuickConnect
@@ -933,7 +923,6 @@ namespace mRemoteNG.UI.Forms
 		internal System.Windows.Forms.ToolStripSeparator ToolStripSeparator1;
 		internal System.Windows.Forms.ToolStripMenuItem mMenToolsUVNCSC;
 		internal System.Windows.Forms.ToolStripMenuItem mMenToolsComponentsCheck;
-		internal System.Windows.Forms.ToolStripMenuItem mMenInfoAnnouncements;
 		internal System.Windows.Forms.ToolStripSeparator mMenInfoSep2;
 		internal System.Windows.Forms.ToolStripMenuItem mMenInfoBugReport;
 		internal System.Windows.Forms.ToolStripSeparator ToolStripSeparator2;

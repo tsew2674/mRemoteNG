@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -25,7 +25,7 @@
     <ManifestKeyFile>mRemoteV1_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -50,13 +50,13 @@
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Geckofx-Core, Version=45.0.21.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=MSIL">
-      <HintPath>..\packages\Geckofx45.45.0.20\lib\net40\Geckofx-Core.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Geckofx-Core, Version=45.0.22.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=x86">
+      <HintPath>..\packages\Geckofx45.45.0.22\lib\net40\Geckofx-Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Geckofx-Winforms, Version=45.0.21.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=AMD64">
-      <HintPath>..\packages\Geckofx45.45.0.20\lib\net40\Geckofx-Winforms.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+    <Reference Include="Geckofx-Winforms, Version=45.0.22.0, Culture=neutral, PublicKeyToken=3209ac31600d1857, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geckofx45.45.0.22\lib\net40\Geckofx-Winforms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="ADTree, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -72,6 +72,10 @@
       <HintPath>References\MagicLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ObjectListView, Version=2.9.1.1072, Culture=neutral, PublicKeyToken=b1c5bf581481bcd4, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectListView.Official.2.9.1\lib\net20\ObjectListView.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Renci.SshNet, Version=2016.0.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2016.0.0\lib\net40\Renci.SshNet.dll</HintPath>
       <Private>True</Private>
@@ -81,6 +85,7 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -111,7 +116,6 @@
     <Compile Include="App\Shutdown.cs" />
     <Compile Include="App\Startup.cs" />
     <Compile Include="App\SupportedCultures.cs" />
-    <Compile Include="App\Update\AnnouncementInfo.cs" />
     <Compile Include="App\Update\AppUpdater.cs" />
     <Compile Include="App\Export.cs" />
     <Compile Include="App\Import.cs" />
@@ -122,15 +126,33 @@
     <Compile Include="App\Update\UpdateFile.cs" />
     <Compile Include="App\Update\UpdateInfo.cs" />
     <Compile Include="App\Windows.cs" />
+    <Compile Include="Config\Connections\Multiuser\ConnectionsUpdateCheckFinishedEventArgs.cs" />
+    <Compile Include="Config\Connections\Multiuser\IConnectionsUpdateChecker.cs" />
+    <Compile Include="Config\Connections\Multiuser\ConnectionsUpdateAvailableEventArgs.cs" />
+    <Compile Include="Config\Connections\Multiuser\RemoteConnectionsSyncronizer.cs" />
+    <Compile Include="Config\Serializers\ActiveDirectoryDeserializer.cs" />
+    <Compile Include="Config\Serializers\CsvConnectionsSerializerMremotengFormat.cs" />
+    <Compile Include="Config\Serializers\DataTableDeserializer.cs" />
+    <Compile Include="Config\Serializers\DataTableSerializer.cs" />
+    <Compile Include="Config\Serializers\PortScanDeserializer.cs" />
+    <Compile Include="Config\Serializers\PuttyConnectionManagerDeserializer.cs" />
+    <Compile Include="Config\Serializers\RemoteDesktopConnectionDeserializer.cs" />
+    <Compile Include="Config\Serializers\RemoteDesktopConnectionManagerDeserializer.cs" />
+    <Compile Include="Config\DataProviders\FileDataProviderWithBackup.cs" />
+    <Compile Include="Config\Connections\ConnectionsDecryptor.cs" />
     <Compile Include="Config\Connections\ConnectionsLoader.cs" />
     <Compile Include="Config\Connections\ConnectionsSaver.cs" />
-    <Compile Include="Config\Connections\SqlCommandBuilder.cs" />
-    <Compile Include="Config\Connections\SqlConnectionsLoader.cs" />
-    <Compile Include="Config\Connections\SqlConnectionsUpdateChecker.cs" />
-    <Compile Include="Config\Connections\SqlConnectionsProvider.cs" />
-    <Compile Include="Config\Connections\SqlUpdateQueryBuilder.cs" />
-    <Compile Include="Config\Connections\SqlUpdateTimer.cs" />
-    <Compile Include="Config\Connections\XmlConnectionsLoader.cs" />
+    <Compile Include="Config\DataProviders\FileDataProviderWithRollingBackup.cs" />
+    <Compile Include="Config\DataProviders\SqlDataProvider.cs" />
+    <Compile Include="Config\Serializers\IDeserializer.cs" />
+    <Compile Include="Config\Import\IConnectionImporter.cs" />
+    <Compile Include="Config\Serializers\ISerializer.cs" />
+    <Compile Include="Config\Serializers\XmlConnectionsSerializer.cs" />
+    <Compile Include="Config\DataProviders\FileDataProvider.cs" />
+    <Compile Include="Config\DataProviders\IDataProvider.cs" />
+    <Compile Include="Config\Connections\Multiuser\SqlConnectionsUpdateChecker.cs" />
+    <Compile Include="Config\Serializers\XmlConnectionsDeserializer.cs" />
+    <Compile Include="Config\Putty\PuttySessionChangedEventArgs.cs" />
     <Compile Include="Config\Settings\ExternalAppsLoader.cs" />
     <Compile Include="Config\Settings\LayoutSettingsLoader.cs" />
     <Compile Include="Config\Settings\Providers\AppSettingsProvider.cs" />
@@ -139,25 +161,28 @@
     <Compile Include="Config\Settings\Providers\PortableSettingsProvider.cs" />
     <Compile Include="Config\Settings\SettingsSaver.cs" />
     <Compile Include="Config\ConfirmCloseEnum.cs" />
-    <Compile Include="Config\Import\ActiveDirectory.cs" />
+    <Compile Include="Config\Import\ActiveDirectoryImporter.cs" />
     <Compile Include="Config\Import\mRemoteNGImporter.cs" />
-    <Compile Include="Config\Import\PortScan.cs" />
-    <Compile Include="Config\Import\PuttyConnectionManager.cs" />
-    <Compile Include="Config\Import\RemoteDesktopConnection.cs" />
-    <Compile Include="Config\Import\RemoteDesktopConnectionManager.cs" />
-    <Compile Include="Config\Putty\Config.Putty.RegistryProvider.cs" />
-    <Compile Include="Config\Putty\Config.Putty.XmingProvider.cs" />
-    <Compile Include="Config\Putty\Config.Putty.Sessions.cs" />
-    <Compile Include="Config\Putty\Config.Putty.Provider.cs" />
-    <Compile Include="Config\SqlConnector.cs" />
-    <Compile Include="Config\SqlConnectorImp.cs" />
+    <Compile Include="Config\Import\PortScanImporter.cs" />
+    <Compile Include="Config\Import\PuttyConnectionManagerImporter.cs" />
+    <Compile Include="Config\Import\RemoteDesktopConnectionImporter.cs" />
+    <Compile Include="Config\Import\RemoteDesktopConnectionManagerImporter.cs" />
+    <Compile Include="Config\Putty\PuttySessionsRegistryProvider.cs" />
+    <Compile Include="Config\Putty\PuttySessionsXmingProvider.cs" />
+    <Compile Include="Config\Putty\PuttySessionsManager.cs" />
+    <Compile Include="Config\Putty\AbstractPuttySessionsProvider.cs" />
+    <Compile Include="Config\DatabaseConnectors\IDatabaseConnector.cs" />
+    <Compile Include="Config\DatabaseConnectors\SqlDatabaseConnector.cs" />
+    <Compile Include="Connection\AbstractConnectionInfoData.cs" />
+    <Compile Include="Connection\ConnectionInfoComparer.cs" />
     <Compile Include="Connection\ConnectionInfoInheritance.cs" />
     <Compile Include="App\ProgramRoot.cs" />
+    <Compile Include="Connection\ConnectionInitiator.cs" />
     <Compile Include="Connection\Converter.cs" />
     <Compile Include="Connection\DefaultConnectionInfo.cs" />
     <Compile Include="Connection\DefaultConnectionInheritance.cs" />
     <Compile Include="Connection\IInheritable.cs" />
-    <Compile Include="Connection\IParent.cs" />
+    <Compile Include="Connection\IHasParent.cs" />
     <Compile Include="Connection\Protocol\ProtocolFactory.cs" />
     <Compile Include="Connection\Protocol\VNC\VNCEnum.cs" />
     <Compile Include="Messages\MessageClassEnum.cs" />
@@ -169,15 +194,21 @@
     <Compile Include="Security\ICryptographyProvider.cs" />
     <Compile Include="Security\SecureStringExtensions.cs" />
     <Compile Include="Security\CryptographyProviderFactory.cs" />
-    <Compile Include="Tools\ArgumentParser.cs" />
+    <Compile Include="Tools\ExternalToolArgumentParser.cs" />
     <Compile Include="Tools\CmdArgumentsInterpreter.cs" />
+    <Compile Include="Tools\ConnectionsTreeToMenuItemsConverter.cs" />
     <Compile Include="Tools\ExternalToolsTypeConverter.cs" />
+    <Compile Include="Tools\ScanHost.cs" />
     <Compile Include="Tools\SecureTransfer.cs" />
-    <Compile Include="Tools\Sorting\TreeNodeSorter.cs" />
-    <Compile Include="Tree\ConnectionTree.cs" />
+    <Compile Include="Tree\ConnectionTreeDragAndDropHandler.cs" />
+    <Compile Include="Tree\ConnectionTreeModel.cs" />
+    <Compile Include="Tree\NodeSearcher.cs" />
     <Compile Include="Tree\NodeType.cs" />
+    <Compile Include="Tree\ObjectListViewExtensions.cs" />
     <Compile Include="Tree\Root\RootNodeTypeEnum.cs" />
-    <Compile Include="Tree\TreeNodeMover.cs" />
+    <Compile Include="UI\Controls\ConnectionContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Controls\FilteredPropertyGrid\FilteredPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -225,6 +256,12 @@
     <Compile Include="UI\Forms\OptionsPages\OptionsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\Forms\OptionsPages\SecurityPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\OptionsPages\SecurityPage.Designer.cs">
+      <DependentUpon>SecurityPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Forms\OptionsPages\SqlServerPage.Designer.cs">
       <DependentUpon>SqlServerPage.cs</DependentUpon>
     </Compile>
@@ -261,7 +298,7 @@
     <Compile Include="Tools\EnvironmentInfo.cs" />
     <Compile Include="Tools\PropertyGridCommandSite.cs" />
     <Compile Include="Connection\PuttySessionInfo.cs" />
-    <Compile Include="Tree\Root\PuttySessionsNodeInfo.cs" />
+    <Compile Include="Tree\Root\RootPuttySessionsNodeInfo.cs" />
     <Compile Include="Themes\ThemeManager.cs" />
     <Compile Include="Themes\ThemeSerializer.cs" />
     <Compile Include="Connection\ConnectionIcon.cs" />
@@ -272,7 +309,6 @@
     <Compile Include="Connection\InterfaceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Connection\ConnectionList.cs" />
     <Compile Include="Connection\Protocol\ProtocolBase.cs" />
     <Compile Include="Connection\Protocol\Http\Connection.Protocol.HTTP.cs" />
     <Compile Include="Connection\Protocol\Http\Connection.Protocol.HTTPBase.cs" />
@@ -293,7 +329,6 @@
     <Compile Include="Themes\ThemeInfo.cs" />
     <Compile Include="Tools\CommandLineArguments.cs" />
     <Compile Include="Container\ContainerInfo.cs" />
-    <Compile Include="Container\ContainerList.cs" />
     <Compile Include="Credential\CredentialInfo.cs" />
     <Compile Include="Credential\CredentialList.cs" />
     <Compile Include="UI\Forms\frmChoosePanel.Designer.cs">
@@ -314,7 +349,6 @@
     <Compile Include="UI\Forms\PasswordForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tree\TreeImageType.cs" />
     <Compile Include="Resources\Language\Language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -339,7 +373,7 @@
     </Compile>
     <Compile Include="Tree\Root\RootNodeInfo.cs" />
     <Compile Include="Security\Security.Impersonator.cs" />
-    <Compile Include="Security\Security.Save.cs" />
+    <Compile Include="Security\SaveFilter.cs" />
     <Compile Include="Tools\IeBrowserEmulation.cs" />
     <Compile Include="Tools\ProcessController.cs" />
     <Compile Include="Tools\PuttyTypeDetector.cs" />
@@ -358,7 +392,6 @@
     <Compile Include="Tools\Tools.PortScan.cs" />
     <Compile Include="Tools\Tools.SystemMenu.cs" />
     <Compile Include="Tools\Tools.WindowPlacement.cs" />
-    <Compile Include="Tree\ConnectionTreeNode.cs" />
     <Compile Include="UI\Forms\TextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -384,12 +417,6 @@
     <Compile Include="UI\Window\ActiveDirectoryImportWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Window\AnnouncementWindow.Designer.cs">
-      <DependentUpon>AnnouncementWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Window\AnnouncementWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="UI\Window\BaseWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -401,6 +428,9 @@
     </Compile>
     <Compile Include="UI\Window\ConnectionWindow.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Window\ConnectionWindow.Designer.cs">
+      <DependentUpon>ConnectionWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Window\ErrorAndInfoWindow.cs">
       <SubType>Form</SubType>
@@ -467,6 +497,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\frmOptions.resx">
       <DependentUpon>frmOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\OptionsPages\OptionsPage.resx">
+      <DependentUpon>OptionsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\OptionsPages\SecurityPage.resx">
+      <DependentUpon>SecurityPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
@@ -570,10 +606,6 @@
       <DependentUpon>ActiveDirectoryImportWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Window\AnnouncementWindow.resx">
-      <DependentUpon>AnnouncementWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Window\ComponentsCheckWindow.resx">
       <DependentUpon>ComponentsCheckWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -634,6 +666,12 @@
     <None Include="Properties\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Schemas\mremoteng_confcons_v2_5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\mremoteng_confcons_v2_6.xsd">
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -822,6 +860,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Icons\RDCMan_Icon.ico" />
+    <None Include="Resources\Icons_FamFamFam\shield.ico" />
     <Content Include="Resources\Images_FamFamFam\Config.png" />
     <Content Include="Resources\Images_FamFamFam\database.png" />
     <Content Include="Resources\Images_FamFamFam\Link.png" />
@@ -942,7 +981,6 @@
     <None Include="Resources\Icons\ComponentsCheck_Icon.ico" />
     <None Include="Resources\Icons_FamFamFam\News_Icon.ico" />
     <None Include="Resources\Images_FamFamFam\News.png" />
-    <None Include="Resources\Announcement\mRemote_Announcement.txt" />
     <None Include="Resources\Update\mRemote_Update.txt" />
     <Content Include="Resources\Help\Main.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1171,9 +1209,6 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>powershell -noprofile -command "sleep 2"
 call "$(DevEnvDir)..\tools\vsvars32.bat"
@@ -1182,29 +1217,37 @@ set /p buildenv=&lt;buildenv.tmp
 echo Copy PUTTYNG to correct directory
 copy /Y "$(SolutionDir)mRemoteV1\Resources\PuTTYNG.exe" .\
 
-REM Move Help files to correct directory
+echo Move Help files to correct directory
+IF EXIST Help (
+   del /s /q Help &gt;NUL
+   rmdir /s /q Help &gt;NUL
+)
 move /Y Resources\Help .\
-powershell -noprofile -command "sleep 2"
-rmdir /s /q Resources
 
-REM Set LargeAddressAware on binary
+powershell -noprofile -command "sleep 2"
+rmdir /s /q Resources &gt;NUL
+
+echo Set LargeAddressAware on binary
 editbin /largeaddressaware mRemoteNG.exe
 
-REM Sign binaries
+
 IF EXIST C:\mRemoteNG_code_signing_cert.pfx (
+    echo Signing binaries
     IF %25buildenv: Portable=%25==Release (
         powershell "&amp;""$(SolutionDir)Tools\signfiles.ps1""" '%25cd%25'
     )
 )
 
-REM Remove unnecessary files from Release versions
 IF %25buildenv: Portable=%25==Release (
+    echo Remove unnecessary files from Release versions
     rmdir /s /q app.publish
     del /q *.pdb *.publish *.xml *.backup *.log *vshost* *.tmp
 )
 
-REM Package ZIP if building Release Portable
-IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")</PostBuildEvent>
+IF %25buildenv: =%25==ReleasePortable (
+  echo Package ZIP Release Portable
+  "$(SolutionDir)Tools\build-relport.cmd"
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -1214,10 +1257,9 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <DefineConstants>DEBUG</DefineConstants>
     <NoWarn>1591,660,661</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DebugSymbols>false</DebugSymbols>
@@ -1225,9 +1267,10 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <OutputPath>bin\Release\</OutputPath>
     <NoWarn>1591,660,661</NoWarn>
     <DebugType>none</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <WarningLevel>1</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Portable|x86'">
     <DebugSymbols>false</DebugSymbols>
@@ -1236,10 +1279,9 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <DefineConstants>PORTABLE</DefineConstants>
     <NoWarn>1591,660,661</NoWarn>
     <DebugType>none</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Portable|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -1249,52 +1291,7 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
     <DefineConstants>DEBUG;PORTABLE</DefineConstants>
     <NoWarn>1591,660,661</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <NoWarn>1591,660,661</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Release\</OutputPath>
-    <NoWarn>1591,660,661</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Portable|AnyCPU'">
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Release Portable\</OutputPath>
-    <DefineConstants>PORTABLE</DefineConstants>
-    <NoWarn>1591,660,661</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Portable|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug Portable\</OutputPath>
-    <DefineConstants>DEBUG;PORTABLE</DefineConstants>
-    <NoWarn>1591,660,661</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -1309,11 +1306,11 @@ IF %25buildenv: =%25==ReleasePortable ("$(SolutionDir)Tools\build-relport.cmd")<
   <PropertyGroup>
     <PreBuildEvent>echo $(ConfigurationName) &gt; buildenv.tmp</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Geckofx45.45.0.20\build\Geckofx45.targets" Condition="Exists('..\packages\Geckofx45.45.0.20\build\Geckofx45.targets')" />
+  <Import Project="..\packages\Geckofx45.45.0.22\build\Geckofx45.targets" Condition="Exists('..\packages\Geckofx45.45.0.22\build\Geckofx45.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Geckofx45.45.0.20\build\Geckofx45.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Geckofx45.45.0.20\build\Geckofx45.targets'))" />
+    <Error Condition="!Exists('..\packages\Geckofx45.45.0.22\build\Geckofx45.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Geckofx45.45.0.22\build\Geckofx45.targets'))" />
   </Target>
 </Project>

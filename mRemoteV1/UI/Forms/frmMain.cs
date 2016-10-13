@@ -7,11 +7,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
 using mRemoteNG.App;
+using mRemoteNG.App.Info;
 using mRemoteNG.Config;
+using mRemoteNG.Config.Putty;
 using mRemoteNG.Config.Settings;
 using mRemoteNG.Connection;
 using mRemoteNG.Connection.Protocol;
+using mRemoteNG.Container;
 using mRemoteNG.Messages;
 using mRemoteNG.Themes;
 using mRemoteNG.Tools;
@@ -39,6 +43,7 @@ namespace mRemoteNG.UI.Forms
         private ConnectionInfo _selectedConnection;
         private SystemMenu _systemMenu;
         private MiscTools.Fullscreen _fullscreen;
+        private ConnectionTreeWindow ConnectionTreeWindow { get; set; }
 
 
 
@@ -123,11 +128,8 @@ namespace mRemoteNG.UI.Forms
         #endregion
 		
         #region Startup & Shutdown
-
         private void frmMain_Load(object sender, EventArgs e)
 		{
-            
-
             // Create gui config load and save objects
             var settingsLoader = new SettingsLoader(this);
 			settingsLoader.LoadSettings();
@@ -139,11 +141,8 @@ namespace mRemoteNG.UI.Forms
 
 			fpChainedWindowHandle = NativeMethods.SetClipboardViewer(Handle);
 
-            Runtime.MessageCollector = new MessageCollector(Windows.errorsForm);
+            Runtime.MessageCollector = new MessageCollector(Windows.ErrorsForm);
             Runtime.WindowList = new WindowList();
-
-            Windows.treePanel.Focus();
-            ConnectionTree.TreeView = Windows.treeForm.tvConnections;
 
             if (Settings.Default.FirstStart && !Settings.Default.LoadConsFromCustomLocation && !File.Exists(Runtime.GetStartupConnectionFileName()))
 			{
@@ -153,10 +152,13 @@ namespace mRemoteNG.UI.Forms
             Runtime.LoadConnections();
             if (!Runtime.IsConnectionsFileLoaded)
 			{
-				Application.Exit();
-				return ;
+				//Application.Exit();
+				//return ;
 			}
-			Config.Putty.Sessions.StartWatcher();
+
+            Windows.TreePanel.Focus();
+
+            PuttySessionsManager.Instance.StartWatcher();
 			if (Settings.Default.StartupComponentsCheck)
 			{
                 Windows.Show(WindowType.ComponentsCheck);
@@ -168,12 +170,13 @@ namespace mRemoteNG.UI.Forms
 			AddSysMenuItems();
 			Microsoft.Win32.SystemEvents.DisplaySettingsChanged += DisplayChanged;
             Opacity = 1;
-		}
+
+            ConnectionTreeWindow = Windows.TreeForm;
+        }
 
         private void ApplySpecialSettingsForPortableVersion()
         {
             #if PORTABLE
-            mMenInfoAnnouncements.Visible = false;
             mMenToolsUpdate.Visible = false;
             mMenInfoSep2.Visible = false;
             #endif
@@ -225,7 +228,6 @@ namespace mRemoteNG.UI.Forms
 			mMenInfoDonate.Text = Language.strMenuDonate;
 			mMenInfoWebsite.Text = Language.strMenuWebsite;
 			mMenInfoAbout.Text = Language.strMenuAbout;
-			mMenInfoAnnouncements.Text = Language.strMenuAnnouncements;
 			
 			lblQuickConnect.Text = Language.strLabelConnect;
 			btnQuickConnect.Text = Language.strMenuConnect;
@@ -282,42 +284,46 @@ namespace mRemoteNG.UI.Forms
 		}
 
         private void frmMain_Shown(object sender, EventArgs e)
-		{
-            #if PORTABLE
-		    // ReSharper disable once RedundantJumpStatement
-			return ;
-            #endif
-//			if (!mRemoteNG.Settings.Default.CheckForUpdatesAsked)
-//			{
-//				string[] commandButtons = new string[] {Language.strAskUpdatesCommandRecommended, Language.strAskUpdatesCommandCustom, Language.strAskUpdatesCommandAskLater};
-//				cTaskDialog.ShowTaskDialogBox(this, GeneralAppInfo.ProdName, Language.strAskUpdatesMainInstruction, string.Format(Language.strAskUpdatesContent, GeneralAppInfo.ProdName, "", "", "", "", string.Join("|", commandButtons), eTaskDialogButtons.None, eSysIcons.Question, eSysIcons.Question);
-//				if (cTaskDialog.CommandButtonResult == 0 | cTaskDialog.CommandButtonResult == 1)
-//				{
-//					mRemoteNG.Settings.Default.CheckForUpdatesAsked = true;
-//					}
-//					if (cTaskDialog.CommandButtonResult == 1)
-//					{
-//						Windows.ShowUpdatesTab();
-//						}
-//						return ;
-//						}
-						
-//						if (!mRemoteNG.Settings.Default.CheckForUpdatesOnStartup)
-//						{
-//							return ;
-//							}
-							
-//							DateTime nextUpdateCheck = System.Convert.ToDateTime(mRemoteNG.Settings.Default.CheckForUpdatesLastCheck.Add(TimeSpan.FromDays(System.Convert.ToDouble(mRemoteNG.Settings.Default.CheckForUpdatesFrequencyDays))));
-//							if (mRemoteNG.Settings.Default.UpdatePending || DateTime.UtcNow > nextUpdateCheck)
-//							{
-//								if (!IsHandleCreated)
-//								{
-//									CreateHandle(); // Make sure the handle is created so that InvokeRequired returns the correct result
-//									}
-//									Startup.CheckForUpdate();
-//									Startup.CheckForAnnouncement();
-//									}
-		}
+        {
+#if !PORTABLE
+            if (!Settings.Default.CheckForUpdatesAsked)
+            {
+                string[] commandButtons = 
+                {
+                    Language.strAskUpdatesCommandRecommended, Language.strAskUpdatesCommandCustom,
+                    Language.strAskUpdatesCommandAskLater
+                };
+
+                CTaskDialog.ShowTaskDialogBox(this, GeneralAppInfo.ProductName, Language.strAskUpdatesMainInstruction, string.Format(Language.strAskUpdatesContent, GeneralAppInfo.ProductName),
+                    "", "", "", "", string.Join(" | ", commandButtons), ETaskDialogButtons.None, ESysIcons.Question, ESysIcons.Question);
+
+                if (CTaskDialog.CommandButtonResult == 0 | CTaskDialog.CommandButtonResult == 1)
+                {
+                    Settings.Default.CheckForUpdatesAsked = true;
+                }
+
+                if (CTaskDialog.CommandButtonResult != 1) return;
+
+                using (var optionsForm = new frmOptions(Language.strTabUpdates))
+                {
+                    optionsForm.ShowDialog(this);
+                }
+
+                return;
+            }
+
+            if (!Settings.Default.CheckForUpdatesOnStartup) return;
+
+            DateTime nextUpdateCheck = Convert.ToDateTime(
+                    Settings.Default.CheckForUpdatesLastCheck.Add(
+                        TimeSpan.FromDays(Convert.ToDouble(Settings.Default.CheckForUpdatesFrequencyDays))));
+
+            if (!Settings.Default.UpdatePending && DateTime.UtcNow <= nextUpdateCheck) return;
+            if (!IsHandleCreated) CreateHandle(); // Make sure the handle is created so that InvokeRequired returns the correct result
+
+            Startup.Instance.CheckForUpdate();
+#endif
+        }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -421,9 +427,10 @@ namespace mRemoteNG.UI.Forms
 		{
             var extA = (ExternalTool)((ToolStripButton)sender).Tag;
 
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession)
+		    var selectedTreeNode = Windows.TreeForm.SelectedNode;
+            if (selectedTreeNode.GetTreeNodeType() == TreeNodeType.Connection | selectedTreeNode.GetTreeNodeType() == TreeNodeType.PuttySession)
 			{
-                extA.Start((ConnectionInfo)ConnectionTree.SelectedNode.Tag);
+                extA.Start(selectedTreeNode);
 			}
 			else
 			{
@@ -452,8 +459,9 @@ namespace mRemoteNG.UI.Forms
         #region Menu
         #region File
         private void mMenFile_DropDownOpening(Object sender, EventArgs e)
-		{
-            if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Root)
+        {
+            var selectedNodeType = ConnectionTreeWindow.SelectedNode?.GetTreeNodeType();
+            if (selectedNodeType == TreeNodeType.Root)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -466,7 +474,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileDuplicate.Text = Language.strMenuDuplicate;
                 mMenReconnectAll.Text = Language.strMenuReconnectAll;
             }
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Container)
+            else if (selectedNodeType == TreeNodeType.Container)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -480,7 +488,7 @@ namespace mRemoteNG.UI.Forms
                 mMenReconnectAll.Text = Language.strMenuReconnectAll;
 
             }
-            else if (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.Connection)
+            else if (selectedNodeType == TreeNodeType.Connection)
 			{
 				mMenFileNewConnection.Enabled = true;
 				mMenFileNewFolder.Enabled = true;
@@ -493,7 +501,7 @@ namespace mRemoteNG.UI.Forms
 				mMenFileDuplicate.Text = Language.strMenuDuplicateConnection;
                 mMenReconnectAll.Text = Language.strMenuReconnectAll;
             }
-            else if ((ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttyRoot) || (ConnectionTreeNode.GetNodeType(ConnectionTree.SelectedNode) == TreeNodeType.PuttySession))
+            else if (selectedNodeType == TreeNodeType.PuttyRoot || selectedNodeType == TreeNodeType.PuttySession)
 			{
 				mMenFileNewConnection.Enabled = false;
 				mMenFileNewFolder.Enabled = false;
@@ -523,14 +531,14 @@ namespace mRemoteNG.UI.Forms
 
         private void mMenFileNewConnection_Click(object sender, EventArgs e)
 		{
-			Windows.treeForm.AddConnection();
-            Runtime.SaveConnectionsBG();
+            ConnectionTreeWindow.AddConnection();
+            Runtime.SaveConnectionsAsync();
 		}
 
         private void mMenFileNewFolder_Click(object sender, EventArgs e)
 		{
-            Windows.treeForm.AddFolder();
-            Runtime.SaveConnectionsBG();
+            ConnectionTreeWindow.AddFolder();
+            Runtime.SaveConnectionsAsync();
 		}
 
         private void mMenFileNew_Click(object sender, EventArgs e)
@@ -574,20 +582,20 @@ namespace mRemoteNG.UI.Forms
 
         private void mMenFileDelete_Click(object sender, EventArgs e)
 		{
-            ConnectionTree.DeleteSelectedNode();
-            Runtime.SaveConnectionsBG();
+            ConnectionTreeWindow.DeleteSelectedNode();
+            Runtime.SaveConnectionsAsync();
 		}
 
         private void mMenFileRename_Click(object sender, EventArgs e)
 		{
-			ConnectionTree.StartRenameSelectedNode();
-            Runtime.SaveConnectionsBG();
+            ConnectionTreeWindow.RenameSelectedNode();
+            Runtime.SaveConnectionsAsync();
 		}
 
         private void mMenFileDuplicate_Click(object sender, EventArgs e)
 		{
-            ConnectionTreeNode.CloneNode(ConnectionTree.SelectedNode);
-            Runtime.SaveConnectionsBG();
+            ConnectionTreeWindow.DuplicateSelectedNode();
+            Runtime.SaveConnectionsAsync();
 		}
 
         private void mMenReconnectAll_Click(object sender, EventArgs e)
@@ -612,7 +620,7 @@ namespace mRemoteNG.UI.Forms
                 foreach (var i in ICList)
                 {
                     i.Protocol.Close();
-                    Runtime.OpenConnection(i.Info, ConnectionInfo.Force.DoNotJump);
+                    ConnectionInitiator.OpenConnection(i.Info, ConnectionInfo.Force.DoNotJump);
                 }
 
                 // throw it on the garbage collector
@@ -622,8 +630,14 @@ namespace mRemoteNG.UI.Forms
         }
 
         private void mMenFileImportFromFile_Click(object sender, EventArgs e)
-		{
-            Import.ImportFromFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+        {
+            var selectedNode = ConnectionTreeWindow.SelectedNode;
+            ContainerInfo importDestination;
+            if (selectedNode == null)
+                importDestination = Runtime.ConnectionTreeModel.RootNodes.First();
+            else
+                importDestination = selectedNode as ContainerInfo ?? selectedNode.Parent;
+            Import.ImportFromFile(importDestination);
 		}
 
         private void mMenFileImportFromActiveDirectory_Click(object sender, EventArgs e)
@@ -638,7 +652,7 @@ namespace mRemoteNG.UI.Forms
 
         private void mMenFileExport_Click(object sender, EventArgs e)
 		{
-            Export.ExportToFile(Windows.treeForm.tvConnections.Nodes[0], Windows.treeForm.tvConnections.SelectedNode);
+            Export.ExportToFile(Windows.TreeForm.SelectedNode, Runtime.ConnectionTreeModel);
 		}
 
         private void mMenFileExit_Click(object sender, EventArgs e)
@@ -650,10 +664,10 @@ namespace mRemoteNG.UI.Forms
         #region View
         private void mMenView_DropDownOpening(object sender, EventArgs e)
 		{
-            mMenViewConnections.Checked = !Windows.treeForm.IsHidden;
-            mMenViewConfig.Checked = !Windows.configForm.IsHidden;
-            mMenViewErrorsAndInfos.Checked = !Windows.errorsForm.IsHidden;
-            mMenViewScreenshotManager.Checked = !Windows.screenshotForm.IsHidden;
+            mMenViewConnections.Checked = !Windows.TreeForm.IsHidden;
+            mMenViewConfig.Checked = !Windows.ConfigForm.IsHidden;
+            mMenViewErrorsAndInfos.Checked = !Windows.ErrorsForm.IsHidden;
+            mMenViewScreenshotManager.Checked = !Windows.ScreenshotForm.IsHidden;
 
             mMenViewExtAppsToolbar.Checked = tsExternalTools.Visible;
             mMenViewQuickConnectToolbar.Checked = tsQuickConnect.Visible;
@@ -680,12 +694,12 @@ namespace mRemoteNG.UI.Forms
 		{
 			if (mMenViewConnections.Checked == false)
 			{
-                Windows.treePanel.Show(pnlDock);
+                Windows.TreePanel.Show(pnlDock);
                 mMenViewConnections.Checked = true;
 			}
 			else
 			{
-                Windows.treePanel.Hide();
+                Windows.TreePanel.Hide();
                 mMenViewConnections.Checked = false;
 			}
 		}
@@ -694,12 +708,12 @@ namespace mRemoteNG.UI.Forms
 		{
 			if (mMenViewConfig.Checked == false)
 			{
-                Windows.configPanel.Show(pnlDock);
+                Windows.ConfigPanel.Show(pnlDock);
                 mMenViewConfig.Checked = true;
 			}
 			else
 			{
-                Windows.configPanel.Hide();
+                Windows.ConfigPanel.Hide();
                 mMenViewConfig.Checked = false;
 			}
 		}
@@ -708,12 +722,12 @@ namespace mRemoteNG.UI.Forms
 		{
 			if (mMenViewErrorsAndInfos.Checked == false)
 			{
-                Windows.errorsPanel.Show(pnlDock);
+                Windows.ErrorsPanel.Show(pnlDock);
                 mMenViewErrorsAndInfos.Checked = true;
 			}
 			else
 			{
-                Windows.errorsPanel.Hide();
+                Windows.ErrorsPanel.Hide();
                 mMenViewErrorsAndInfos.Checked = false;
 			}
 		}
@@ -722,31 +736,31 @@ namespace mRemoteNG.UI.Forms
 		{
 			if (mMenViewScreenshotManager.Checked == false)
 			{
-                Windows.screenshotPanel.Show(pnlDock);
+                Windows.ScreenshotPanel.Show(pnlDock);
                 mMenViewScreenshotManager.Checked = true;
 			}
 			else
 			{
-                Windows.screenshotPanel.Hide();
+                Windows.ScreenshotPanel.Hide();
                 mMenViewScreenshotManager.Checked = false;
 			}
 		}
 
         private void mMenViewJumpToConnectionsConfig_Click(object sender, EventArgs e)
 		{
-            if (pnlDock.ActiveContent == Windows.treePanel)
+            if (pnlDock.ActiveContent == Windows.TreePanel)
 			{
-                Windows.configForm.Activate();
+                Windows.ConfigForm.Activate();
 			}
 			else
 			{
-                Windows.treeForm.Activate();
+                Windows.TreeForm.Activate();
 			}
 		}
 
         private void mMenViewJumpToErrorsInfos_Click(object sender, EventArgs e)
 		{
-            Windows.errorsForm.Activate();
+            Windows.ErrorsForm.Activate();
 		}
 
         private void mMenViewResetLayout_Click(object sender, EventArgs e)
@@ -883,7 +897,7 @@ namespace mRemoteNG.UI.Forms
 					return ;
 				}
 				cmbQuickConnect.Add(connectionInfo);
-				Runtime.OpenConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
+                ConnectionInitiator.OpenConnection(connectionInfo, ConnectionInfo.Force.DoNotJump);
 			}
 			catch (Exception ex)
 			{
@@ -941,11 +955,6 @@ namespace mRemoteNG.UI.Forms
 			Runtime.GoToDonate();
 		}
 
-        private void mMenInfoAnnouncements_Click(object sender, EventArgs e)
-		{
-			Windows.Show(WindowType.Announcement);
-		}
-
         private void mMenInfoAbout_Click(object sender, EventArgs e)
 		{
 			Windows.Show(WindowType.About);
@@ -956,58 +965,25 @@ namespace mRemoteNG.UI.Forms
         #region Connections DropDown
         private void btnConnections_DropDownOpening(object sender, EventArgs e)
 		{
-			btnConnections.DropDownItems.Clear();	
-			foreach (TreeNode treeNode in Windows.treeForm.tvConnections.Nodes)
-			{
-				AddNodeToMenu(treeNode.Nodes, btnConnections);
-			}
+            btnConnections.DropDownItems.Clear();
+            var menuItemsConverter = new ConnectionsTreeToMenuItemsConverter
+            {
+                MouseUpEventHandler = ConnectionsMenuItem_MouseUp
+            };
+
+		    // ReSharper disable once CoVariantArrayConversion
+            ToolStripItem[] rootMenuItems = menuItemsConverter.CreateToolStripDropDownItems(Runtime.ConnectionTreeModel).ToArray();
+            btnConnections.DropDownItems.AddRange(rootMenuItems);
 		}
-								
-		private static void AddNodeToMenu(TreeNodeCollection treeNodeCollection, ToolStripDropDownItem toolStripMenuItem)
-		{
-			try
-			{
-				foreach (TreeNode treeNode in treeNodeCollection)
-				{
-					var menuItem = new ToolStripMenuItem();
-					menuItem.Text = treeNode.Text;
-					menuItem.Tag = treeNode;
-											
-					if (ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.Container)
-					{
-						menuItem.Image = Resources.Folder;
-						menuItem.Tag = treeNode.Tag;
-												
-						toolStripMenuItem.DropDownItems.Add(menuItem);
-						AddNodeToMenu(treeNode.Nodes, menuItem);
-					}
-					else if (ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.Connection | ConnectionTreeNode.GetNodeType(treeNode) == TreeNodeType.PuttySession)
-					{
-						menuItem.Image = Windows.treeForm.imgListTree.Images[treeNode.ImageIndex];
-						menuItem.Tag = treeNode.Tag;
-												
-						toolStripMenuItem.DropDownItems.Add(menuItem);
-					}
-											
-					menuItem.MouseUp += ConnectionsMenuItem_MouseUp;
-				}
-			}
-			catch (Exception ex)
-			{
-				Runtime.MessageCollector.AddExceptionMessage("frmMain.AddNodeToMenu() failed", ex, MessageClass.ErrorMsg, true);
-			}
-		}
-								
+										
 		private static void ConnectionsMenuItem_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
-			{
-			    var tag = ((ToolStripMenuItem)sender).Tag as ConnectionInfo;
-			    if (tag != null)
-				{
-                    Runtime.OpenConnection(tag);
-				}
-			}
+		    if (e.Button != MouseButtons.Left) return;
+		    var tag = ((ToolStripMenuItem)sender).Tag as ConnectionInfo;
+		    if (tag != null)
+		    {
+		        ConnectionInitiator.OpenConnection(tag);
+		    }
 		}
         #endregion
 
@@ -1141,7 +1117,7 @@ namespace mRemoteNG.UI.Forms
 		    var tab = w.TabController.SelectedTab;
 		    var ifc = (InterfaceControl)tab.Tag;
 		    ifc.Protocol.Focus();
-		    ((ConnectionWindow) ifc.FindForm())?.RefreshIC();
+		    ((ConnectionWindow) ifc.FindForm())?.RefreshInterfaceController();
 		}
 
         private void pnlDock_ActiveDocumentChanged(object sender, EventArgs e)
@@ -1255,9 +1231,9 @@ namespace mRemoteNG.UI.Forms
 			tabController.SelectedIndex = newIndex;
 		}
 #endif
-#endregion
+        #endregion
 		
-#region Screen Stuff
+        #region Screen Stuff
 		private void DisplayChanged(object sender, EventArgs e)
 		{
 			ResetSysMenuItems();
@@ -1283,9 +1259,9 @@ namespace mRemoteNG.UI.Forms
             _systemMenu.InsertMenuItem(_systemMenu.SystemMenuHandle, 0, SystemMenu.Flags.MF_POPUP | SystemMenu.Flags.MF_BYPOSITION, popMen, Language.strSendTo);
             _systemMenu.InsertMenuItem(_systemMenu.SystemMenuHandle, 1, SystemMenu.Flags.MF_BYPOSITION | SystemMenu.Flags.MF_SEPARATOR, IntPtr.Zero, null);
 		}
-#endregion
+        #endregion
 
-#region Events
+        #region Events
         public delegate void clipboardchangeEventHandler();
         public static event clipboardchangeEventHandler clipboardchange
         {
@@ -1298,6 +1274,6 @@ namespace mRemoteNG.UI.Forms
                 clipboardchangeEvent = (clipboardchangeEventHandler)Delegate.Remove(clipboardchangeEvent, value);
             }
         }
-#endregion
+        #endregion
 	}					
 }
