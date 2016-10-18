@@ -116,6 +116,9 @@
     <Compile Include="Connection\AbstractConnectionInfoDataTests.cs" />
     <Compile Include="Connection\ConnectionInfoComparerTests.cs" />
     <Compile Include="Connection\Protocol\ProtocolListTests.cs" />
+    <Compile Include="Security\Authentication\PasswordAuthenticatorTests.cs" />
+    <Compile Include="Security\KeyDerivation\Pkcs5S2KeyGeneratorTests.cs" />
+    <Compile Include="Security\SecureStringExtensionsTests.cs" />
     <Compile Include="Tools\ExternalToolsArgumentParserTests.cs" />
     <Compile Include="Tree\ConnectionTreeDragAndDropHandlerTests.cs" />
     <Compile Include="Tree\ConnectionTreeModelTests.cs" />
@@ -126,7 +129,6 @@
     <Compile Include="Container\ContainerInfoTests.cs" />
     <Compile Include="IntegrationTests\ConnectionInheritanceIntegrationTests.cs" />
     <Compile Include="ListViewTester.cs" />
-    <Compile Include="Config\Connections\SqlConnectionUpdateCheckerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -137,7 +139,7 @@
     <Compile Include="Security\CryptographyProviderFactoryTests.cs" />
     <Compile Include="Security\EncryptedSecureStringTests.cs" />
     <Compile Include="Security\LegacyRijndaelCryptographyProviderTests.cs" />
-    <Compile Include="UI\Controls\CustomListViewTests.cs" />
+    <Compile Include="Tree\NodeSearcherTests.cs" />
     <Compile Include="UI\Controls\TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,8 +169,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\legacyrijndael_ciphertext.txt" />
-    <Content Include="Resources\TestConfCons.xml" />
+    <None Include="Resources\confCons_v2_5.xml" />
     <None Include="Resources\test_puttyConnectionManager_database.dat" />
     <None Include="Resources\test_rdcman_badVersionNumber.rdg" />
     <None Include="Resources\test_rdcman_noversion.rdg" />
@@ -177,7 +178,21 @@
     <None Include="Resources\test_RDCMan_v2_7_schema3.rdg" />
     <None Include="Resources\test_remotedesktopconnection.rdp" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\confCons_v2_6.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\confCons_v2_6_fullencryption.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\confCons_v2_6_passwordis_Password.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\confCons_v2_6_passwordis_Password_fullencryption.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\confCons_v2_6_5k-iterations.xml" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

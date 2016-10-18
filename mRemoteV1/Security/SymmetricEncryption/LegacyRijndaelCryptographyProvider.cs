@@ -6,6 +6,7 @@ using System.Text;
 using mRemoteNG.App;
 using mRemoteNG.Messages;
 
+
 namespace mRemoteNG.Security.SymmetricEncryption
 {
 	public class LegacyRijndaelCryptographyProvider : ICryptographyProvider
@@ -100,14 +101,9 @@ namespace mRemoteNG.Security.SymmetricEncryption
             }
 			catch (Exception ex)
 			{
-				// Ignore CryptographicException "Padding is invalid and cannot be removed." when password is incorrect.
-				if (!(ex is CryptographicException))
-				{
-					Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.strErrorDecryptionFailed, ex.Message));
-				}
+				//Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, string.Format(Language.strErrorDecryptionFailed, ex.Message));
+                throw new EncryptionException(Language.strErrorDecryptionFailed, ex);
 			}
-				
-			return ciphertextBase64;
 		}
 	}
 }
