@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using System.Security;
-using mRemoteNG.App;
 using mRemoteNG.Config.DatabaseConnectors;
 using mRemoteNG.Config.DataProviders;
 using mRemoteNG.Config.Putty;
 using mRemoteNG.Config.Serializers;
+using mRemoteNG.Credential;
 using mRemoteNG.Tools;
 using mRemoteNG.Tree;
 using mRemoteNG.UI.Forms;
@@ -17,7 +18,7 @@ namespace mRemoteNG.Config.Connections
 	    public string ConnectionFileName { get; set; }
 		
 
-		public ConnectionTreeModel LoadConnections(bool import)
+		public ConnectionTreeModel LoadConnections(IEnumerable<ICredentialRecord> credentialRecords, bool import)
 		{
 		    IDeserializer deserializer;
 			if (UseDatabase)
@@ -31,16 +32,13 @@ namespace mRemoteNG.Config.Connections
 			{
 			    var dataProvider = new FileDataProvider(ConnectionFileName);
 			    var xmlString = dataProvider.Load();
-			    deserializer = new XmlConnectionsDeserializer(xmlString)
-			    {
-			        AuthenticationRequestor = PromptForPassword
-			    };
+			    deserializer = new XmlConnectionsDeserializer(xmlString, credentialRecords, PromptForPassword);
 			}
 
             var connectionTreeModel = deserializer.Deserialize();
 
             if (connectionTreeModel != null)
-			    frmMain.Default.ConnectionsFileName = ConnectionFileName;
+			    FrmMain.Default.ConnectionsFileName = ConnectionFileName;
             else
                 connectionTreeModel = new ConnectionTreeModel();
 

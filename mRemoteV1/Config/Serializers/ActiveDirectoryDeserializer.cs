@@ -66,7 +66,7 @@ namespace mRemoteNG.Config.Serializers
                                 // check/continue here so we don't create empty connection objects
                                 if(!_importSubOU) continue;
 
-                                ActiveDirectoryImporter.Import(ldapResult.Path, parentContainer);
+                                ActiveDirectoryImporter.Import(ldapResult.Path, parentContainer, _importSubOU);
                                 continue;
                             }
 
@@ -77,7 +77,7 @@ namespace mRemoteNG.Config.Serializers
             }
             catch (Exception ex)
             {
-                Runtime.MessageCollector.AddExceptionMessage("Config.Import.ActiveDirectory.ImportComputers() failed.", ex, logOnly: true);
+                Runtime.MessageCollector.AddExceptionMessage("Config.Import.ActiveDirectory.ImportComputers() failed.", ex);
             }
         }
 

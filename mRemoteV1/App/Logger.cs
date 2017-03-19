@@ -1,7 +1,6 @@
 ﻿using log4net;
 using log4net.Appender;
 using log4net.Config;
-using log4net.Repository;
 #if !PORTABLE
 using System;
 #endif
@@ -12,47 +11,51 @@ namespace mRemoteNG.App
 {
     public class Logger
     {
-        private static readonly Logger _loggerInstance = new Logger();
-        private ILog _log;
+        public static readonly Logger Instance = new Logger();
 
-        public static ILog Instance => _loggerInstance._log;
+        public ILog Log { get; private set; }
+
+        public static string DefaultLogPath => BuildLogFilePath();
 
         private Logger()
         {
             Initialize();
         }
 
-        static Logger()
-        {
-        }
-
         private void Initialize()
         {
             XmlConfigurator.Configure();
-            string logFile = BuildLogFilePath();
+            if (string.IsNullOrEmpty(Settings.Default.LogFilePath))
+                Settings.Default.LogFilePath = BuildLogFilePath();
 
-            ILoggerRepository repository = LogManager.GetRepository();
-            IAppender[] appenders = repository.GetAppenders();
+            SetLogPath(Settings.Default.LogToApplicationDirectory ? DefaultLogPath : Settings.Default.LogFilePath);
+        }
 
-            foreach (IAppender appender in appenders)
+        public void SetLogPath(string path)
+        {
+            var repository = LogManager.GetRepository();
+            var appenders = repository.GetAppenders();
+
+            foreach (var appender in appenders)
             {
                 var fileAppender = (RollingFileAppender)appender;
                 if (fileAppender == null || fileAppender.Name != "LogFileAppender") continue;
-                fileAppender.File = logFile;
+                fileAppender.File = path;
                 fileAppender.ActivateOptions();
             }
-            _log = LogManager.GetLogger("Logger");
+            Log = LogManager.GetLogger("Logger");
         }
 
         private static string BuildLogFilePath()
         {
 #if !PORTABLE
-			string logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.ProductName);
+			var logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.ProductName);
 #else
-            string logFilePath = Application.StartupPath;
+            var logFilePath = Application.StartupPath;
 #endif
-            string logFileName = Path.ChangeExtension(Application.ProductName, ".log");
-            string logFile = Path.Combine(logFilePath, logFileName);
+            var logFileName = Path.ChangeExtension(Application.ProductName, ".log");
+            if (logFileName == null) return "mRemoteNG.log";
+            var logFile = Path.Combine(logFilePath, logFileName);
             return logFile;
         }
     }

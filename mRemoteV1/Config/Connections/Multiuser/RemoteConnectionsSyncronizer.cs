@@ -2,8 +2,7 @@
 using System.Timers;
 using mRemoteNG.App;
 
-
-namespace mRemoteNG.Config.Connections
+namespace mRemoteNG.Config.Connections.Multiuser
 {
     public class RemoteConnectionsSyncronizer : IConnectionsUpdateChecker
     {
@@ -34,7 +33,7 @@ namespace mRemoteNG.Config.Connections
 
         public void Load()
         {
-            Runtime.ConnectionTreeModel = _connectionsLoader.LoadConnections(false);
+            Runtime.ConnectionTreeModel = _connectionsLoader.LoadConnections(Runtime.CredentialManager.GetCredentialRecords(), false);
         }
 
         private void Load(object sender, ConnectionsUpdateAvailableEventArgs args)

@@ -2,57 +2,58 @@ using System.Collections.Generic;
 using System;
 using System.Windows.Forms;
 using mRemoteNG.App;
+using mRemoteNG.Tools;
 using WeifenLuo.WinFormsUI.Docking;
 using mRemoteNG.UI.Forms;
 
 
 namespace mRemoteNG.UI.Window
 {
-	public partial class ExternalToolsWindow : BaseWindow
+	public partial class ExternalToolsWindow
 	{
         #region Constructors
-		public ExternalToolsWindow(DockContent panel)
+		public ExternalToolsWindow()
 		{
 			InitializeComponent();
 					
 			WindowType = WindowType.ExternalApps;
-			DockPnl = panel;
+			DockPnl = new DockContent();
 		}
         #endregion
 				
         #region Private Fields
-		private Tools.ExternalTool _selectedTool;
+		private ExternalTool _selectedTool;
         #endregion
 				
         #region Private Methods
         #region Event Handlers
-		public void ExternalTools_Load(object sender, EventArgs e)
+		private void ExternalTools_Load(object sender, EventArgs e)
 		{
 			ApplyLanguage();
 			UpdateToolsListView();
 		}
-				
-		static public void ExternalTools_FormClosed(object sender, FormClosedEventArgs e)
+
+        private static void ExternalTools_FormClosed(object sender, FormClosedEventArgs e)
 		{
             Config.Settings.SettingsSaver.SaveExternalAppsToXML();
 		}
-				
-		public void NewTool_Click(object sender, EventArgs e)
+
+        private void NewTool_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				Tools.ExternalTool externalTool = new Tools.ExternalTool(Language.strExternalToolDefaultName);
+				var externalTool = new ExternalTool(Language.strExternalToolDefaultName);
 				Runtime.ExternalTools.Add(externalTool);
 				UpdateToolsListView(externalTool);
 				DisplayNameTextBox.Focus();
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.NewTool_Click() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.NewTool_Click() failed.", ex);
 			}
 		}
-				
-		public void DeleteTool_Click(object sender, EventArgs e)
+
+        private void DeleteTool_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -67,48 +68,44 @@ namespace mRemoteNG.UI.Window
 				}
 				else
 				{
-					return ;
+					return;
 				}
 				
-				if (MessageBox.Show(frmMain.Default, message, "Question?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+				if (MessageBox.Show(FrmMain.Default, message, "Question?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
 				{
-					return ;
+					return;
 				}
 						
 				foreach (ListViewItem listViewItem in ToolsListView.SelectedItems)
 				{
-					Tools.ExternalTool externalTool = listViewItem.Tag as Tools.ExternalTool;
-					if (externalTool == null)
-					{
-						continue;
-					}
-							
-					Runtime.ExternalTools.Remove(listViewItem.Tag);
+					var externalTool = listViewItem.Tag as ExternalTool;
+					if (externalTool == null) continue;							
+					Runtime.ExternalTools.Remove(externalTool);
 					listViewItem.Remove();
 				}
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.DeleteTool_Click() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.DeleteTool_Click() failed.", ex);
 			}
 		}
-				
-		public void LaunchTool_Click(object sender, EventArgs e)
+
+        private void LaunchTool_Click(object sender, EventArgs e)
 		{
 			LaunchTool();
 		}
-				
-		public void ToolsListView_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void ToolsListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			try
 			{
 				if (ToolsListView.SelectedItems.Count == 1)
 				{
 					PropertiesGroupBox.Enabled = true;
-					_selectedTool = ToolsListView.SelectedItems[0].Tag as Tools.ExternalTool;
+					_selectedTool = ToolsListView.SelectedItems[0].Tag as ExternalTool;
 					if (_selectedTool == null)
 					{
-						return ;
+						return;
 					}
 							
 					DisplayNameTextBox.Text = _selectedTool.DisplayName;
@@ -124,23 +121,23 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.ToolsListView_SelectedIndexChanged() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.ToolsListView_SelectedIndexChanged() failed.", ex);
 			}
 		}
-				
-		public void ToolsListView_DoubleClick(object sender, EventArgs e)
+
+        private void ToolsListView_DoubleClick(object sender, EventArgs e)
 		{
 			if (ToolsListView.SelectedItems.Count > 0)
 			{
 				LaunchTool();
 			}
 		}
-				
-		public void PropertyControl_ChangedOrLostFocus(object sender, EventArgs e)
+
+        private void PropertyControl_ChangedOrLostFocus(object sender, EventArgs e)
 		{
 			if (_selectedTool == null)
 			{
-				return ;
+				return;
 			}
 					
 			try
@@ -155,15 +152,15 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.PropertyControl_ChangedOrLostFocus() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.PropertyControl_ChangedOrLostFocus() failed.", ex);
 			}
 		}
-				
-		public void BrowseButton_Click(object sender, EventArgs e)
+
+        private void BrowseButton_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				using (OpenFileDialog browseDialog = new OpenFileDialog())
+				using (var browseDialog = new OpenFileDialog())
 				{
 					browseDialog.Filter = string.Join("|", new string[] {Language.strFilterApplication, "*.exe", Language.strFilterAll, "*.*"});
 					if (browseDialog.ShowDialog() == DialogResult.OK)
@@ -175,11 +172,11 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.BrowseButton_Click() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.BrowseButton_Click() failed.", ex);
 			}
 		}
-				
-		public void TryToIntegrateCheckBox_CheckedChanged(object sender, EventArgs e)
+
+        private void TryToIntegrateCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (TryToIntegrateCheckBox.Checked)
 			{
@@ -222,16 +219,16 @@ namespace mRemoteNG.UI.Window
 			LaunchToolMenuItem.Text = Language.strMenuLaunchExternalTool;
 		}
 				
-		private void UpdateToolsListView(Tools.ExternalTool selectTool = null)
+		private void UpdateToolsListView(ExternalTool selectTool = null)
 		{
 			try
 			{
-				List<Tools.ExternalTool> selectedTools = new List<Tools.ExternalTool>();
+				var selectedTools = new List<ExternalTool>();
 				if (selectTool == null)
 				{
 					foreach (ListViewItem listViewItem in ToolsListView.SelectedItems)
 					{
-						Tools.ExternalTool externalTool = listViewItem.Tag as Tools.ExternalTool;
+						var externalTool = listViewItem.Tag as ExternalTool;
 						if (externalTool != null)
 						{
 							selectedTools.Add(externalTool);
@@ -246,11 +243,10 @@ namespace mRemoteNG.UI.Window
 				ToolsListView.BeginUpdate();
 				ToolsListView.Items.Clear();
 						
-				foreach (Tools.ExternalTool externalTool in Runtime.ExternalTools)
+				foreach (var externalTool in Runtime.ExternalTools)
 				{
-					ListViewItem listViewItem = new ListViewItem();
-					listViewItem.Text = externalTool.DisplayName;
-					listViewItem.SubItems.Add(externalTool.FileName);
+				    var listViewItem = new ListViewItem {Text = externalTool.DisplayName};
+				    listViewItem.SubItems.Add(externalTool.FileName);
 					listViewItem.SubItems.Add(externalTool.Arguments);
 					listViewItem.SubItems.Add(externalTool.WaitForExit.ToString());
 					listViewItem.SubItems.Add(externalTool.TryIntegrate.ToString());
@@ -265,12 +261,10 @@ namespace mRemoteNG.UI.Window
 				}
 						
 				ToolsListView.EndUpdate();
-						
-				frmMain.Default.AddExternalToolsToToolBar();
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.PopulateToolsListView()", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.PopulateToolsListView()", ex);
 			}
 		}
 				
@@ -280,18 +274,14 @@ namespace mRemoteNG.UI.Window
 			{
 				foreach (ListViewItem listViewItem in ToolsListView.SelectedItems)
 				{
-					Tools.ExternalTool externalTool = listViewItem.Tag as Tools.ExternalTool;
-					if (externalTool == null)
-					{
-						continue;
-					}
-							
-					externalTool.Start();
+					var externalTool = listViewItem.Tag as ExternalTool;
+
+				    externalTool?.Start();
 				}
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(message: "UI.Window.ExternalTools.LaunchTool() failed.", ex: ex, logOnly: true);
+				Runtime.MessageCollector.AddExceptionMessage("UI.Window.ExternalTools.LaunchTool() failed.", ex);
 			}
 		}
         #endregion

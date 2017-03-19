@@ -3,59 +3,25 @@ using System;
 
 namespace mRemoteNG.Messages
 {
-	public class Message
+	public class Message : IMessage
 	{
-		private MessageClass _MsgClass;
-        private string _MsgText;
-        private DateTime _MsgDate;
-
-        public MessageClass MsgClass
-		{
-			get
-			{
-				return _MsgClass;
-			}
-			set
-			{
-				_MsgClass = value;
-			}
-		}
-		
-        public string MsgText
-		{
-			get
-			{
-				return _MsgText;
-			}
-			set
-			{
-				_MsgText = value;
-			}
-		}
-		
-        public DateTime MsgDate
-		{
-			get
-			{
-				return _MsgDate;
-			}
-			set
-			{
-				_MsgDate = value;
-			}
-		}
+	    public MessageClass Class { get; set; }
+	    public string Text { get; set; }
+	    public DateTime Date { get; set; }
+	    public bool OnlyLog { get; set; }
 
 
-        public Message()
-            : this(MessageClass.InformationMsg, "", DateTime.Now)
+	    public Message()
+            : this(MessageClass.InformationMsg, "")
         {
         }
 
-        public Message(MessageClass messageClass, string messageText, DateTime messageDate)
+        public Message(MessageClass messageClass, string messageText, bool onlyLog = false)
         {
-            _MsgClass = messageClass;
-            _MsgText = messageText;
-            _MsgDate = messageDate;
+            Class = messageClass;
+            Text = messageText;
+            Date = DateTime.Now;
+            OnlyLog = onlyLog;
         }
 	}
 }

@@ -39,23 +39,35 @@ namespace mRemoteNG.Connection
 		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool Panel {get; set;}
         #endregion
         #region Connection
-		[LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3), 
-		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameUsername"), 
-		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionUsername"), 
-		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool Username {get; set;}
-				
-		[LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3), 
-		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNamePassword"), 
-		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionPassword"), 
-		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool Password {get; set;}
-				
-		[LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3), 
-		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameDomain"), 
-		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionDomain"), 
-		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool Domain {get; set;}
+        [LocalizedAttributes.LocalizedCategory(nameof(Language.strCategoryConnection), 3),
+        LocalizedAttributes.LocalizedDisplayNameInherit(nameof(Language.strCategoryCredentials)),
+        LocalizedAttributes.LocalizedDescriptionInherit(nameof(Language.strPropertyDescriptionCredential)),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+        public bool CredentialRecord { get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3),
+        LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameUsername"),
+        LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionUsername"),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+        [Browsable(false)]
+        public bool Username { get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3),
+        LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNamePassword"),
+        LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionPassword"),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+        [Browsable(false)]
+        public bool Password { get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryConnection", 3),
+        LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameDomain"),
+        LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionDomain"),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))]
+        [Browsable(false)]
+        public bool Domain { get; set; }
         #endregion
         #region Protocol
-		[LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4), 
+        [LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4), 
 		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameProtocol"), 
 		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionProtocol"), 
 		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool Protocol {get; set;}
@@ -83,9 +95,19 @@ namespace mRemoteNG.Connection
 		[LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4), 
 		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameAuthenticationLevel"), 
 		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionAuthenticationLevel"), 
-		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool RDPAuthenticationLevel {get; set;}
-				
-		[LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4), 
+		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool RDPAuthenticationLevel {get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4),
+        LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameRDPMinutesToIdleTimeout"),
+        LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionRDPMinutesToIdleTimeout"),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool RDPMinutesToIdleTimeout { get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4),
+        LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameRDPAlertIdleTimeout"),
+        LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionRDPAlertIdleTimeout"),
+        TypeConverter(typeof(MiscTools.YesNoTypeConverter))] public bool RDPAlertIdleTimeout { get; set; }
+
+        [LocalizedAttributes.LocalizedCategory("strCategoryProtocol", 4), 
 		LocalizedAttributes.LocalizedDisplayNameInheritAttribute("strPropertyNameLoadBalanceInfo"), 
 		LocalizedAttributes.LocalizedDescriptionInheritAttribute("strPropertyDescriptionLoadBalanceInfo"), 
 		TypeConverter(typeof(MiscTools.YesNoTypeConverter))]public bool LoadBalanceInfo {get; set;}

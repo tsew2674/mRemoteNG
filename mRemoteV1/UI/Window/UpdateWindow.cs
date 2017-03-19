@@ -6,6 +6,7 @@ using System.Net;
 using System.Windows.Forms;
 using mRemoteNG.App;
 using mRemoteNG.App.Update;
+using mRemoteNG.Messages;
 using WeifenLuo.WinFormsUI.Docking;
 
 #if !PORTABLE
@@ -17,7 +18,14 @@ namespace mRemoteNG.UI.Window
 {
 	public partial class UpdateWindow : BaseWindow
 	{
-#region Public Methods
+        private AppUpdater _appUpdate;
+        private bool _isUpdateDownloadHandlerDeclared;
+
+        #region Public Methods
+        public UpdateWindow() : this(new DockContent())
+	    {
+	    }
+
 		public UpdateWindow(DockContent panel)
 		{
 			WindowType = WindowType.Update;
@@ -25,9 +33,9 @@ namespace mRemoteNG.UI.Window
 			InitializeComponent();
 			Runtime.FontOverride(this);
 		}
-#endregion
+        #endregion
 		
-#region Form Stuff
+        #region Form Stuff
 
 	    private void Update_Load(object sender, EventArgs e)
 		{
@@ -71,14 +79,9 @@ namespace mRemoteNG.UI.Window
 			}
 			Process.Start(linkUri.ToString());
 		}
-#endregion
+        #endregion
 		
-#region Private Fields
-		private AppUpdater _appUpdate;
-		private bool _isUpdateDownloadHandlerDeclared;
-#endregion
-		
-#region Private Methods
+        #region Private Methods
 		private void CheckForUpdate()
 		{
 			if (_appUpdate == null)
@@ -163,17 +166,13 @@ namespace mRemoteNG.UI.Window
 				{
 					lblStatus.Text = Language.strNoUpdateAvailable;
 					lblStatus.ForeColor = Color.ForestGreen;
-							
-					if (_appUpdate.CurrentUpdateInfo != null)
-					{
-						var updateInfo = _appUpdate.CurrentUpdateInfo;
-						if (updateInfo.IsValid && updateInfo.Version != null)
-						{
-							lblLatestVersion.Text = updateInfo.Version.ToString();
-							lblLatestVersionLabel.Visible = true;
-							lblLatestVersion.Visible = true;
-						}
-					}
+
+				    if (_appUpdate.CurrentUpdateInfo == null) return;
+				    var updateInfo = _appUpdate.CurrentUpdateInfo;
+				    if (!updateInfo.IsValid || updateInfo.Version == null) return;
+				    lblLatestVersion.Text = updateInfo.Version.ToString();
+				    lblLatestVersionLabel.Visible = true;
+				    lblLatestVersion.Visible = true;
 				}
 			}
 			catch (Exception ex)
@@ -181,7 +180,7 @@ namespace mRemoteNG.UI.Window
 				lblStatus.Text = Language.strUpdateCheckFailedLabel;
 				lblStatus.ForeColor = Color.OrangeRed;
 						
-				Runtime.MessageCollector.AddExceptionMessage(Language.strUpdateCheckCompleteFailed, ex);
+				Runtime.MessageCollector.AddExceptionStackTrace(Language.strUpdateCheckCompleteFailed, ex);
 			}
 		}
 				
@@ -207,7 +206,7 @@ namespace mRemoteNG.UI.Window
             }
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(Language.strUpdateGetChangeLogFailed, ex);
+				Runtime.MessageCollector.AddExceptionStackTrace(Language.strUpdateGetChangeLogFailed, ex);
 			}
 		}
 				
@@ -230,12 +229,12 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(Language.strUpdateDownloadFailed, ex);
+				Runtime.MessageCollector.AddExceptionStackTrace(Language.strUpdateDownloadFailed, ex);
 			}
 		}
-#endregion
+        #endregion
 		
-#region Events
+        #region Events
 		private void DownloadUpdateProgressChanged(object sender, DownloadProgressChangedEventArgs e)
 		{
 			prgbDownload.Value = e.ProgressPercentage;
@@ -267,9 +266,10 @@ namespace mRemoteNG.UI.Window
 			}
 			catch (Exception ex)
 			{
-				Runtime.MessageCollector.AddExceptionMessage(Language.strUpdateDownloadCompleteFailed, ex);
-			}
+                Runtime.MessageCollector.AddExceptionStackTrace(Language.strUpdateDownloadCompleteFailed, ex);
+                Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, ex.Message);
+            }
 		}
-#endregion
+        #endregion
 	}
 }

@@ -1,48 +1,76 @@
-﻿using mRemoteNG.App;
+﻿using System;
+using mRemoteNG.App;
 using mRemoteNG.App.Info;
 using mRemoteNG.UI.Forms;
-using System;
 using System.IO;
 using System.Xml;
+using mRemoteNG.Messages;
+using mRemoteNG.Tools;
+using mRemoteNG.UI.Controls;
 
 namespace mRemoteNG.Config.Settings
 {
     public class ExternalAppsLoader
     {
-        private frmMain _MainForm;
+        private readonly FrmMain _mainForm;
+        private readonly MessageCollector _messageCollector;
+        private readonly ExternalToolsToolStrip _externalToolsToolStrip;
 
-        public ExternalAppsLoader(frmMain MainForm)
+        public ExternalAppsLoader(FrmMain mainForm, MessageCollector messageCollector, ExternalToolsToolStrip externalToolsToolStrip)
         {
-            _MainForm = MainForm;
+            if (mainForm == null)
+                throw new ArgumentNullException(nameof(mainForm));
+            if (messageCollector == null)
+                throw new ArgumentNullException(nameof(messageCollector));
+            if (externalToolsToolStrip == null)
+                throw new ArgumentNullException(nameof(externalToolsToolStrip));
+
+            _mainForm = mainForm;
+            _messageCollector = messageCollector;
+            _externalToolsToolStrip = externalToolsToolStrip;
         }
 
 
         public void LoadExternalAppsFromXML()
         {
-            string oldPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + GeneralAppInfo.ProductName + "\\" + SettingsFileInfo.ExtAppsFilesName;
-            string newPath = SettingsFileInfo.SettingsPath + "\\" + SettingsFileInfo.ExtAppsFilesName;
-            XmlDocument xDom = new XmlDocument();
+#if !PORTABLE
+            var oldPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GeneralAppInfo.ProductName, SettingsFileInfo.ExtAppsFilesName);
+#endif
+            var newPath = Path.Combine(SettingsFileInfo.SettingsPath, SettingsFileInfo.ExtAppsFilesName);
+            var xDom = new XmlDocument();
             if (File.Exists(newPath))
             {
+                _messageCollector.AddMessage(MessageClass.InformationMsg, $"Loading External Apps from: {newPath}", true);
                 xDom.Load(newPath);
+            }
 #if !PORTABLE
-			}
 			else if (File.Exists(oldPath))
 			{
-				xDom.Load(oldPath);
+                _messageCollector.AddMessage(MessageClass.InformationMsg, $"Loading External Apps from: {oldPath}", true);
+                xDom.Load(oldPath);
+
+			}
 #endif
-            }
             else
             {
+                _messageCollector.AddMessage(MessageClass.WarningMsg, "Loading External Apps failed: Could not FIND file!");
+                return;
+            }
+
+            if (xDom.DocumentElement == null)
+            {
+                _messageCollector.AddMessage(MessageClass.WarningMsg, "Loading External Apps failed: Could not LOAD file!");
                 return;
             }
 
             foreach (XmlElement xEl in xDom.DocumentElement.ChildNodes)
             {
-                Tools.ExternalTool extA = new Tools.ExternalTool();
-                extA.DisplayName = xEl.Attributes["DisplayName"].Value;
-                extA.FileName = xEl.Attributes["FileName"].Value;
-                extA.Arguments = xEl.Attributes["Arguments"].Value;
+                var extA = new ExternalTool
+                {
+                    DisplayName = xEl.Attributes["DisplayName"].Value,
+                    FileName = xEl.Attributes["FileName"].Value,
+                    Arguments = xEl.Attributes["Arguments"].Value
+                };
 
                 if (xEl.HasAttribute("WaitForExit"))
                 {
@@ -54,14 +82,12 @@ namespace mRemoteNG.Config.Settings
                     extA.TryIntegrate = bool.Parse(xEl.Attributes["TryToIntegrate"].Value);
                 }
 
+                _messageCollector.AddMessage(MessageClass.InformationMsg, $"Adding External App: {extA.DisplayName} {extA.FileName} {extA.Arguments}", true);
                 Runtime.ExternalTools.Add(extA);
             }
 
-            _MainForm.SwitchToolBarText(Convert.ToBoolean(mRemoteNG.Settings.Default.ExtAppsTBShowText));
-
-            xDom = null;
-
-            frmMain.Default.AddExternalToolsToToolBar();
+            _externalToolsToolStrip.SwitchToolBarText(mRemoteNG.Settings.Default.ExtAppsTBShowText);
+            _externalToolsToolStrip.AddExternalToolsToToolBar();
         }
     }
 }

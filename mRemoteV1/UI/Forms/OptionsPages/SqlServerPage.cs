@@ -1,6 +1,7 @@
 using System;
 using mRemoteNG.App;
 using mRemoteNG.Config.Connections;
+using mRemoteNG.Config.Connections.Multiuser;
 using mRemoteNG.Security.SymmetricEncryption;
 
 namespace mRemoteNG.UI.Forms.OptionsPages
@@ -62,7 +63,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
         private static void ReinitializeSqlUpdater()
         {
             Runtime.RemoteConnectionsSyncronizer?.Dispose();
-            frmMain.Default.AreWeUsingSqlServerForSavingConnections = Settings.Default.UseSQLServer;
+            FrmMain.Default.AreWeUsingSqlServerForSavingConnections = Settings.Default.UseSQLServer;
 
             if (Settings.Default.UseSQLServer)
             {

@@ -21,7 +21,7 @@ using mRemoteNG.Tree;
 namespace mRemoteNG.Connection
 {
 	[DefaultProperty("Name")]
-    public class ConnectionInfo : AbstractConnectionInfoData, IHasParent, IInheritable
+    public class ConnectionInfo : AbstractConnectionRecord, IHasParent, IInheritable
     {        
         #region Public Properties
         [Browsable(false)]
@@ -83,15 +83,19 @@ namespace mRemoteNG.Connection
 			return newConnectionInfo;
 		}
 
-	    public void CopyFrom(AbstractConnectionInfoData sourceConnectionInfo)
+	    public void CopyFrom(ConnectionInfo sourceConnectionInfo)
 	    {
-	        var properties = typeof(AbstractConnectionInfoData).GetProperties();
+	        var properties = GetType().BaseType?.GetProperties();
+	        if (properties == null) return;
 	        foreach (var property in properties)
 	        {
 	            var remotePropertyValue = property.GetValue(sourceConnectionInfo, null);
                 property.SetValue(this, remotePropertyValue, null);
 	        }
-	    }
+            var clonedInheritance = sourceConnectionInfo.Inheritance.Clone();
+            clonedInheritance.Parent = this;
+            Inheritance = clonedInheritance;
+        }
 
 	    public virtual TreeNodeType GetTreeNodeType()
 	    {
@@ -133,6 +137,12 @@ namespace mRemoteNG.Connection
         {
             Parent?.RemoveChild(this);
         }
+
+	    public ConnectionInfo GetRootParent()
+	    {
+	        return Parent != null ? Parent.GetRootParent() : this;
+	    }
+
 	    #endregion
 
         #region Public Enumerations
@@ -231,9 +241,6 @@ namespace mRemoteNG.Connection
         private void SetConnectionDefaults()
         {
             Hostname = string.Empty;
-            Username = Settings.Default.ConDefaultUsername;
-            Password = Settings.Default.ConDefaultPassword;
-            Domain = Settings.Default.ConDefaultDomain;
         }
 
         private void SetProtocolDefaults()
@@ -245,6 +252,8 @@ namespace mRemoteNG.Connection
             ICAEncryptionStrength = (ProtocolICA.EncryptionStrength) Enum.Parse(typeof(ProtocolICA.EncryptionStrength), Settings.Default.ConDefaultICAEncryptionStrength);
             UseConsoleSession = Settings.Default.ConDefaultUseConsoleSession;
             RDPAuthenticationLevel = (ProtocolRDP.AuthenticationLevel) Enum.Parse(typeof(ProtocolRDP.AuthenticationLevel), Settings.Default.ConDefaultRDPAuthenticationLevel);
+            RDPMinutesToIdleTimeout = Settings.Default.ConDefaultRDPMinutesToIdleTimeout;
+            RDPAlertIdleTimeout = Settings.Default.ConDefaultRDPAlertIdleTimeout;
             LoadBalanceInfo = Settings.Default.ConDefaultLoadBalanceInfo;
             RenderingEngine = (HTTPBase.RenderingEngine) Enum.Parse(typeof(HTTPBase.RenderingEngine), Settings.Default.ConDefaultRenderingEngine);
             UseCredSsp = Settings.Default.ConDefaultUseCredSsp;

@@ -5,27 +5,30 @@ using mRemoteNG.UI.TaskDialog;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using mRemoteNG.Messages;
 
 namespace mRemoteNG.App
 {
-    public class CompatibilityChecker
+    public static class CompatibilityChecker
     {
-        public void CheckCompatibility()
+        public static void CheckCompatibility(MessageCollector messageCollector)
         {
-            CheckFipsPolicy();
-            CheckLenovoAutoScrollUtility();
+            CheckFipsPolicy(messageCollector);
+            CheckLenovoAutoScrollUtility(messageCollector);
         }
 
-        private void CheckFipsPolicy()
+        private static void CheckFipsPolicy(MessageCollector messageCollector)
         {
-            if (FipsPolicyEnabledForServer2003() || FipsPolicyEnabledForServer2008AndNewer())
-            {
-                MessageBox.Show(frmMain.Default, string.Format(Language.strErrorFipsPolicyIncompatible, GeneralAppInfo.ProductName, GeneralAppInfo.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error));
-                Environment.Exit(1);
-            }
+            messageCollector.AddMessage(MessageClass.InformationMsg, "Checking FIPS Policy...", true);
+            if (!FipsPolicyEnabledForServer2003() && !FipsPolicyEnabledForServer2008AndNewer()) return;
+            var errorText = string.Format(Language.strErrorFipsPolicyIncompatible, GeneralAppInfo.ProductName,
+                GeneralAppInfo.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            messageCollector.AddMessage(MessageClass.ErrorMsg, errorText, true);
+            MessageBox.Show(FrmMain.Default, errorText);
+            Environment.Exit(1);
         }
 
-        private bool FipsPolicyEnabledForServer2003()
+        private static bool FipsPolicyEnabledForServer2003()
         {
             var regKey = Registry.LocalMachine.OpenSubKey("System\\CurrentControlSet\\Control\\Lsa");
             var fipsPolicy = regKey?.GetValue("FIPSAlgorithmPolicy");
@@ -34,7 +37,7 @@ namespace mRemoteNG.App
             return (int)fipsPolicy != 0;
         }
 
-        private bool FipsPolicyEnabledForServer2008AndNewer()
+        private static bool FipsPolicyEnabledForServer2008AndNewer()
         {
             var regKey = Registry.LocalMachine.OpenSubKey("System\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy");
             var fipsPolicy = regKey?.GetValue("Enabled");
@@ -43,27 +46,27 @@ namespace mRemoteNG.App
             return (int)fipsPolicy != 0;
         }
 
-        private void CheckLenovoAutoScrollUtility()
+        private static void CheckLenovoAutoScrollUtility(MessageCollector messageCollector)
         {
+            messageCollector.AddMessage(MessageClass.InformationMsg, "Checking Lenovo AutoScroll Utility...", true);
+
             if (!Settings.Default.CompatibilityWarnLenovoAutoScrollUtility)
                 return;
 
-            Process[] proccesses = new Process[] { };
+            var proccesses = new Process[] { };
             try
             {
                 proccesses = Process.GetProcessesByName("virtscrl");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Runtime.MessageCollector.AddExceptionMessage("Error in CheckLenovoAutoScrollUtility", ex);
+                messageCollector.AddExceptionMessage("Error in CheckLenovoAutoScrollUtility", ex);
             }
 
-            if (proccesses.Length > 0)
-            {
-                CTaskDialog.MessageBox(Application.ProductName, Language.strCompatibilityProblemDetected, string.Format(Language.strCompatibilityLenovoAutoScrollUtilityDetected, Application.ProductName), "", "", Language.strCheckboxDoNotShowThisMessageAgain, ETaskDialogButtons.Ok, ESysIcons.Warning, ESysIcons.Warning);
-                if (CTaskDialog.VerificationChecked)
-                    Settings.Default.CompatibilityWarnLenovoAutoScrollUtility = false;
-            }
+            if (proccesses.Length <= 0) return;
+            CTaskDialog.MessageBox(Application.ProductName, Language.strCompatibilityProblemDetected, string.Format(Language.strCompatibilityLenovoAutoScrollUtilityDetected, Application.ProductName), "", "", Language.strCheckboxDoNotShowThisMessageAgain, ETaskDialogButtons.Ok, ESysIcons.Warning, ESysIcons.Warning);
+            if (CTaskDialog.VerificationChecked)
+                Settings.Default.CompatibilityWarnLenovoAutoScrollUtility = false;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace mRemoteNG.Config.Serializers
             var schemaVersion = Convert.ToInt32(rdcManNode?.Attributes?["schemaVersion"].Value);
             if (schemaVersion != 1)
             {
-                throw (new FileFormatException($"Unsupported schema version ({schemaVersion})."));
+                throw new FileFormatException($"Unsupported schema version ({schemaVersion}).");
             }
         }
 
@@ -176,7 +176,7 @@ namespace mRemoteNG.Config.Serializers
             var remoteDesktopNode = xmlNode.SelectSingleNode("./remoteDesktop");
             if (remoteDesktopNode?.Attributes?["inherit"].Value == "None")
             {
-                var resolutionString = Convert.ToString(remoteDesktopNode.SelectSingleNode("./size")?.InnerText.Replace(" ", ""));
+                var resolutionString = remoteDesktopNode.SelectSingleNode("./size")?.InnerText.Replace(" ", "");
                 try
                 {
                     connectionInfo.Resolution = (ProtocolRDP.RDPResolutions)Enum.Parse(typeof(ProtocolRDP.RDPResolutions), "Res" + resolutionString);
@@ -293,7 +293,7 @@ namespace mRemoteNG.Config.Serializers
                 var charArray = Encoding.Unicode.GetChars(plaintextData);
                 return new string(charArray);
             }
-            catch (Exception ex)
+            catch (Exception /*ex*/)
             {
                 //Runtime.MessageCollector.AddExceptionMessage("RemoteDesktopConnectionManager.DecryptPassword() failed.", ex, logOnly: true);
                 return null;

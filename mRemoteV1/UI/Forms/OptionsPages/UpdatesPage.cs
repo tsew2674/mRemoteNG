@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using mRemoteNG.App;
+using mRemoteNG.App.Info;
 using mRemoteNG.App.Update;
 using mRemoteNG.Security.SymmetricEncryption;
 using mRemoteNG.Tools;
@@ -54,7 +55,7 @@ namespace mRemoteNG.UI.Forms.OptionsPages
         {
             base.SaveSettings();
 
-            chkCheckForUpdatesOnStartup.Checked = Convert.ToBoolean(Settings.Default.CheckForUpdatesOnStartup);
+            chkCheckForUpdatesOnStartup.Checked = Settings.Default.CheckForUpdatesOnStartup;
             cboUpdateCheckFrequency.Enabled = chkCheckForUpdatesOnStartup.Checked;
             cboUpdateCheckFrequency.Items.Clear();
             var nDaily = cboUpdateCheckFrequency.Items.Add(Language.strUpdateFrequencyDaily);
@@ -84,18 +85,37 @@ namespace mRemoteNG.UI.Forms.OptionsPages
                     break;
             }
 
-            chkUseProxyForAutomaticUpdates.Checked = Convert.ToBoolean(Settings.Default.UpdateUseProxy);
-            pnlProxyBasic.Enabled = Convert.ToBoolean(Settings.Default.UpdateUseProxy);
-            txtProxyAddress.Text = Convert.ToString(Settings.Default.UpdateProxyAddress);
+            var stable = cboReleaseChannel.Items.Add(UpdateChannelInfo.STABLE);
+            var beta = cboReleaseChannel.Items.Add(UpdateChannelInfo.BETA);
+            var dev = cboReleaseChannel.Items.Add(UpdateChannelInfo.DEV);
+            switch (Settings.Default.UpdateChannel)
+            {
+                case UpdateChannelInfo.STABLE:
+                    cboReleaseChannel.SelectedIndex = stable;
+                    break;
+                case UpdateChannelInfo.BETA:
+                    cboReleaseChannel.SelectedIndex = beta;
+                    break;
+                case UpdateChannelInfo.DEV:
+                    cboReleaseChannel.SelectedIndex = dev;
+                    break;
+                default:
+                    cboReleaseChannel.SelectedIndex = stable;
+                    break;
+            }
+
+            chkUseProxyForAutomaticUpdates.Checked = Settings.Default.UpdateUseProxy;
+            pnlProxyBasic.Enabled = Settings.Default.UpdateUseProxy;
+            txtProxyAddress.Text = Settings.Default.UpdateProxyAddress;
             numProxyPort.Value = Convert.ToDecimal(Settings.Default.UpdateProxyPort);
 
-            chkUseProxyAuthentication.Checked = Convert.ToBoolean(Settings.Default.UpdateProxyUseAuthentication);
-            pnlProxyAuthentication.Enabled = Convert.ToBoolean(Settings.Default.UpdateProxyUseAuthentication);
-            txtProxyUsername.Text = Convert.ToString(Settings.Default.UpdateProxyAuthUser);
+            chkUseProxyAuthentication.Checked = Settings.Default.UpdateProxyUseAuthentication;
+            pnlProxyAuthentication.Enabled = Settings.Default.UpdateProxyUseAuthentication;
+            txtProxyUsername.Text = Settings.Default.UpdateProxyAuthUser;
             var cryptographyProvider = new LegacyRijndaelCryptographyProvider();
-            txtProxyPassword.Text = cryptographyProvider.Decrypt(Convert.ToString(Settings.Default.UpdateProxyAuthPass), Runtime.EncryptionKey);
+            txtProxyPassword.Text = cryptographyProvider.Decrypt(Settings.Default.UpdateProxyAuthPass, Runtime.EncryptionKey);
 
-            btnTestProxy.Enabled = Convert.ToBoolean(Settings.Default.UpdateUseProxy);
+            btnTestProxy.Enabled = Settings.Default.UpdateUseProxy;
         }
 
         public override void SaveSettings()
@@ -115,6 +135,8 @@ namespace mRemoteNG.UI.Forms.OptionsPages
             {
                 Settings.Default.CheckForUpdatesFrequencyDays = 31;
             }
+
+            Settings.Default.UpdateChannel = cboReleaseChannel.Text;
 
             Settings.Default.UpdateUseProxy = chkUseProxyForAutomaticUpdates.Checked;
             Settings.Default.UpdateProxyAddress = txtProxyAddress.Text;
@@ -224,12 +246,11 @@ namespace mRemoteNG.UI.Forms.OptionsPages
                     throw e.Error;
                 }
 
-                CTaskDialog.ShowCommandBox(this, Convert.ToString(Application.ProductName),
-                    Language.strProxyTestSucceeded, "", Language.strButtonOK, false);
+                CTaskDialog.ShowCommandBox(this, Application.ProductName, Language.strProxyTestSucceeded, "", Language.strButtonOK, false);
             }
             catch (Exception ex)
             {
-                CTaskDialog.ShowCommandBox(this, Convert.ToString(Application.ProductName), Language.strProxyTestFailed,
+                CTaskDialog.ShowCommandBox(this, Application.ProductName, Language.strProxyTestFailed,
                     MiscTools.GetExceptionMessageRecursive(ex), "", "", "", Language.strButtonOK, false, ESysIcons.Error,
                     0);
             }

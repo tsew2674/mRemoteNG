@@ -156,19 +156,17 @@ namespace mRemoteNG.Security.SymmetricEncryption
             _aeadBlockCipher.DoFinal(cipherText, len);
 
             //Assemble Message
-            using (var combinedStream = new MemoryStream())
+            var combinedStream = new MemoryStream();
+            using (var binaryWriter = new BinaryWriter(combinedStream))
             {
-                using (var binaryWriter = new BinaryWriter(combinedStream))
-                {
-                    //Prepend Authenticated Payload
-                    binaryWriter.Write(nonSecretPayload);
-                    //Prepend Nonce
-                    binaryWriter.Write(nonce);
-                    //Write Cipher Text
-                    binaryWriter.Write(cipherText);
-                }
-                return combinedStream.ToArray();
+                //Prepend Authenticated Payload
+                binaryWriter.Write(nonSecretPayload);
+                //Prepend Nonce
+                binaryWriter.Write(nonce);
+                //Write Cipher Text
+                binaryWriter.Write(cipherText);
             }
+            return combinedStream.ToArray();
         }
 
 
@@ -181,7 +179,7 @@ namespace mRemoteNG.Security.SymmetricEncryption
         private string SimpleDecryptWithPassword(string encryptedMessage, SecureString decryptionKey, int nonSecretPayloadLength = 0)
         {
             if (string.IsNullOrWhiteSpace(encryptedMessage))
-                throw new ArgumentException(@"Encrypted Message Required!", nameof(encryptedMessage));
+                return ""; //throw new ArgumentException(@"Encrypted Message Required!", nameof(encryptedMessage));
 
             var cipherText = Convert.FromBase64String(encryptedMessage);
             var plainText = SimpleDecryptWithPassword(cipherText, decryptionKey.ConvertToUnsecureString(), nonSecretPayloadLength);
@@ -217,7 +215,7 @@ namespace mRemoteNG.Security.SymmetricEncryption
             if (encryptedMessage == null || encryptedMessage.Length == 0)
                 throw new ArgumentException(@"Encrypted Message Required!", nameof(encryptedMessage));
 
-            using (var cipherStream = new MemoryStream(encryptedMessage))
+            var cipherStream = new MemoryStream(encryptedMessage);
             using (var cipherReader = new BinaryReader(cipherStream))
             {
                 //Grab Payload
